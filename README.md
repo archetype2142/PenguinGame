@@ -1,6 +1,7 @@
-
 # PenguinGame 
+![Version](https://img.shields.io/badge/PenguinGame-v0.01-green.svg)
 [![Build Status](https://travis-ci.org/archetype2142/PenguinGame.svg?branch=master)](https://travis-ci.org/archetype2142/PenguinGame)
+
 Penguin game for computer science project.
 
 <hr>
