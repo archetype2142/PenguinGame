@@ -1,4 +1,5 @@
-# PenguinGame
+https://travis-ci.org/archetype2142/PenguinGame.svg?branch=master
+# PenguinGame 
 Penguin game for computer science project.
 
 <hr>
