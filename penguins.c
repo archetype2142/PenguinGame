@@ -32,13 +32,22 @@ int check_valid_move(int x1, int y1, int x2, int y2)
 	}
 	else
 	{
-		for(int x=x1, y=y1;x==x2;x+=sign(x2-x1),y==sign(y2-y1))/* checking fields on diaognals*/
-		{
-			if(y<0||x<0||x>mapSize||y>mapSize||check_penguin(x,y)!=0||check_how_many_fishes(x,y)==0)
+		if(abs(x2-x1)!=abs(y2-y1)
+		   {
+			   pathClear=0
+		   }
+		   else
+		   {
+			for(int x=x1, y=y1;x==x2;x+=sign(x2-x1),y==sign(y2-y1))/* checking fields on diaognals*/
 			{
-				pathClear=0
-				break;
+			if(y<0||x<0||x>mapSize||y>mapSize||check_penguin(x,y)!=0||check_how_many_fishes(x,y)==0)
+				{
+					pathClear=0
+					break;
+				}
 			}
+		   }
+
 		}
 	}
 	return pathClear;
