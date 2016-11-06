@@ -2,6 +2,8 @@
 Penguin game for computer science project.
 
 <hr>
-[Notehub](https://notehub.org/xp55y)
 
-`Try ./penguin test.txt`
+link to [Notehub](https://notehub.org/xp55y)
+pass: penguin
+
+`Try ./penguins test.txt`
