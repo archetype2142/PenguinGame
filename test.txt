@@ -1,4 +1,1 @@
-something something 
-here and there
-show 
-reveal!
+gcc penguins.c
