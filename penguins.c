@@ -3,16 +3,7 @@
 
 //Function declarations
 char *read_file(const char *);
-struct Flow
-{
-	int numbOfFish;
-	int penguin;
-};
-struct player
-{
-	int score; // current score of a player
-	int penguins[, , ]; //array of penguins [penguinID, x, y]
-};
+
 /*void write_file();
 int check_penguin(int, int);
 void placement(int, int);
@@ -21,21 +12,36 @@ int check_valid_move(int, int, int, int);
 
 //Main function
 int main(int argc, char **argv) {
+	struct Flow
+	{
+		int numbOfFish;
+		int penguin;
+	};
+	struct penguin
+	{
+		int x;
+		int y;
+	};
+	struct player
+	{
+		int score; // current score of a player
+		penguin penguins[]; //array of penguins [penguinID, x, y]
+	};
 	/* declare structures and some variables */
 	char *file_output = read_file(argv[1]);
 	fputs(file_output, stdout);
 	free(file_output);
-	
+
 	/*
 	if (phase == placement) {
 		placement();
-	} 
+	}
 	else {
 		movement();
 	}
 	write_file();
 	*/
-	
+
 	return 0;
 }
 
