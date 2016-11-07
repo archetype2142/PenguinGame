@@ -3,6 +3,16 @@
 
 //Function declarations
 char *read_file(const char *);
+struct Flow
+{
+	int numbOfFish;
+	int penguin;
+};
+struct player
+{
+	int score; // current score of a player
+	int penguins[, , ]; //array of penguins [penguinID, x, y]
+};
 /*void write_file();
 int check_penguin(int, int);
 void placement(int, int);
