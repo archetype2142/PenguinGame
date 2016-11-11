@@ -79,8 +79,7 @@ char *read_file(const char *filename) {
 	fclose(file);
 	return result;
 }
-void write_file(char filename, struct Flow map[4][4], struct player players[4])
-{
+/* void write_file(char filename, struct Flow map[4][4], struct player players[4]) {
 	int i, k;
 	FILE *file = fopen(filename, "w");
 	fputs(sizeof(players) + ":" + sizeof(players[0].penguins) + "/n", file);
@@ -94,8 +93,8 @@ void write_file(char filename, struct Flow map[4][4], struct player players[4])
 		fputs(";/n", file);
 	}
 	fputs("MAP/n", file);
-	for (i = 0; i < 10; i++) /*insert map size variables*/
-	{
+	// insert map size variables
+	for (i = 0; i < 10; i++) 	{
 		for (k = 0; k <10; k++)
 		{
 			if (i % 2 == 1 && k == 0)
@@ -150,4 +149,3 @@ int check_valid_move(int x1, int y1, int x2, int y2) {
 	return pathClear;
 }
 */
-
