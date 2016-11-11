@@ -1,28 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Flow
-{
+struct Flow {
 	int numbOfFish;
 	int penguin;
 };
-struct penguin
-{
+struct penguin {
 	int x;
 	int y;
 };
-struct player
-{
+struct player {
 	int score; // current score of a player
 	struct penguin penguins[]; //array of penguins
 };
 //Function declarations
 char *read_file(const char *);
 /*void write_file();
-int check_penguin(int, int);
-=======
 /*int check_penguin(int, int);
->>>>>>> master
 void placement(int, int);
 int check_valid_move(int, int, int, int);
 */
