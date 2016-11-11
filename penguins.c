@@ -18,8 +18,7 @@ struct player
 };
 //Function declarations
 char *read_file(const char *);
-/*void write_file();
-int check_penguin(int, int);
+/*int check_penguin(int, int);
 void placement(int, int);
 int check_valid_move(int, int, int, int);
 */
@@ -79,8 +78,8 @@ char *read_file(const char *filename) {
 	fclose(file);
 	return result;
 }
-void write_file(char filename, struct Flow map[4][4], struct player players[4])
-{
+
+/*void write_file(char *filename, struct Flow map[4][4], struct player players[4]) {
 	int i, k;
 	FILE *file = fopen(filename, "w");
 	fputs(sizeof(players) + ":" + sizeof(players[0].penguins) + "/n", file);
@@ -94,7 +93,8 @@ void write_file(char filename, struct Flow map[4][4], struct player players[4])
 		fputs(";/n", file);
 	}
 	fputs("MAP/n", file);
-	for (i = 0; i < 10; i++) /*insert map size variables*/
+	// insert map size variables
+	for (i = 0; i < 10; i++) 
 	{
 		for (k = 0; k <10; k++)
 		{
@@ -107,7 +107,7 @@ void write_file(char filename, struct Flow map[4][4], struct player players[4])
 		}
 	}
 }
-void placement(int x, int y) {
+ void placement(int x, int y) {
 	scanf("%i %i", &x, &y);
 	if (check_coordinates(x, y) && check_how_many_fishes(x, y) == 1 && !check_pengiun(x, y)) {
 		place_penguin(x, y);
