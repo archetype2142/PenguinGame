@@ -18,7 +18,11 @@ struct player
 };
 //Function declarations
 char *read_file(const char *);
+/*void write_file();
+int check_penguin(int, int);
+=======
 /*int check_penguin(int, int);
+>>>>>>> master
 void placement(int, int);
 int check_valid_move(int, int, int, int);
 */
@@ -107,7 +111,8 @@ char *read_file(const char *filename) {
 		}
 	}
 }
- void placement(int x, int y) {
+
+void placement(int x, int y) {
 	scanf("%i %i", &x, &y);
 	if (check_coordinates(x, y) && check_how_many_fishes(x, y) == 1 && !check_pengiun(x, y)) {
 		place_penguin(x, y);
@@ -150,4 +155,3 @@ int check_valid_move(int x1, int y1, int x2, int y2) {
 	return pathClear;
 }
 */
-
