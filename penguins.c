@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-struct Flow {
+struct floe {
 	int numbOfFish;
 	int penguin;
 };
@@ -13,20 +14,79 @@ struct player {
 	int score; // current score of a player
 	struct penguin penguins[]; //array of penguins
 };
-//Function declarations
+
+/* reads the game board, taking the file name as 
+the input and returns all contents of the file 
+as an array of characters */
 char *read_file(const char *);
-/*void write_file();
-/*int check_penguin(int, int);
+
+/* writes into the game board file after performing
+a move and saves to another file */
+void write_file();
+
+/* checks if a penguin is already present on the 
+floe being assesed for the move */
+int check_penguin(int, int);
+
+/* takes in coordinates to move the penguin to 
+and puts the penguin on the new coordinates*/
 void placement(int, int);
+
+/* checks if the move to be performed is legal
+or not, taking values of current coordinates 
+and coordinates of the floe to be moved on to */
 int check_valid_move(int, int, int, int);
-*/
 
-//Main function
-int main(int argc, char **argv) {
-	/* declare structures and some variables */
+/* checks the number of fishes available on
+the given floe */
+int check_how_many_fishes(int, int);
 
-	struct Flow map[10][10];
-	char *file_output = read_file(argv[1]);
+
+int main(int argc, char* argv[]) {
+
+	char *phase = (char*)malloc(20);
+	char *penguinos = (char*)malloc(20);
+	char *inFile = (char*)malloc(30), *outFile = (char*)malloc(30);
+
+	// check if arguments are less than 3
+	if(argc < 3) {
+		// take all values from user for interactive mode
+		printf("Phase(0 = movement, 1 = placement): ");
+		scanf("%s", phase);
+		if(strcmp(phase, "movement") == 0) {
+			printf("Input file name: ");
+			scanf("%s", inFile);
+			printf("Output file name: ");
+			scanf("%s", outFile);
+		}
+		else {
+			printf("Number of penguins: ");
+			scanf("%s", penguinos);
+			printf("Input file name: ");
+			scanf("%s", inFile);
+			printf("Output file name: ");
+			scanf("%s", outFile);
+		}
+	}
+	// assign command line arguments to variables
+	else {
+		phase = argv[1];
+		if(strcmp(phase, "phase=placement") == 0) {
+			phase = (char*)"placement";
+			penguinos = argv[2];
+			inFile = argv[3];
+			outFile = argv[4];
+			printf("\nPhase: %s\nPenguins: %s\nInputFile: %s\nOutputFile: %s\n", phase, penguinos, inFile, outFile);
+		}
+		else {
+			inFile = argv[2];
+			outFile = argv[3];
+		}
+	}
+	
+	/* declare structures and some variables  */
+	struct floe map[10][10];
+	char *file_output = read_file(inFile);
 	fputs(file_output, stdout);
 	free(file_output);
 	/*
@@ -43,7 +103,7 @@ int main(int argc, char **argv) {
 }
 
 
-//=========================Custom function definitions=========================//
+//=================Custom function definitions===============//
 char *read_file(const char *filename) {
 	long int size = 0;
 	FILE *file = fopen(filename, "r");
@@ -147,5 +207,8 @@ int check_valid_move(int x1, int y1, int x2, int y2) {
 		}
 	}
 	return pathClear;
+}
+int check_how_many_fishes(int x, int y) {
+
 }
 */
