@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 	// check if arguments are less than 3
 	if(argc < 3) {
 		// take all values from user for interactive mode
-		printf("Phase(0 = movement, 1 = placement): ");
+		printf("Phase: ");
 		scanf("%s", phase);
 		if(strcmp(phase, "movement") == 0) {
 			printf("Input file name: ");
