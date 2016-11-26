@@ -1,3 +1,4 @@
+
 int mapSize;
 int sign(int n)
 {
@@ -16,6 +17,15 @@ int sign(int n)
 			return -1;
 		}
 	}
+}
+
+int check_how_many_fishes(int x, int y) {
+
+}
+
+int check_penguin(int x, int y)
+{
+	return 0;
 }
 
 int check_valid_move(int x1, int y1, int x2, int y2) {
