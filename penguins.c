@@ -55,11 +55,10 @@ int main(int argc, char* argv[]) {
 	}
 	
 	/* declare structures and some variables  */
-	struct floe map[10][10];
+	struct floe map[10][10]; //change the hardcoding!!!//
 	char *file_output = read_file(inFile);
 	fputs(file_output, stdout);
 	free(file_output);
-	/*
 	if (phase == placement) {
 	placement();
 	}
@@ -67,7 +66,6 @@ int main(int argc, char* argv[]) {
 	movement();
 	}
 	write_file();
-	*/
 
 	return 0;
 }

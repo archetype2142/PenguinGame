@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "Map.h"
+#include "UserIO.h"
 
 char *read_file(const char *filename) {
 	long int size = 0;
@@ -32,6 +33,11 @@ char *read_file(const char *filename) {
 	//reading entire file and storing in result
 	fclose(file);
 	return result;
+}
+
+void printMap(struct floe map[10][10])
+{
+	int x, y;
 }
 
 void write_file(char *filename, struct floe map[4][4], struct player players[4]) {
