@@ -9,6 +9,9 @@
 
 /* takes in coordinates to move the penguin to 
 and puts the penguin on the new coordinates*/
+void movement(int, int, int, int);
+
+/*takes in coordinates to put a penguin on*/
 void placement(int, int);
 
 
@@ -81,7 +84,6 @@ void placement(int x, int y) {
 }
 void movement(int x1, int y1, int x2, int y2) {
 	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
-	scanf("%i %i %i %i", &x1, &y1, &x2, &y2);
 	check_coordinates();
 	check_pengiun();
 	check_target_coordinates();

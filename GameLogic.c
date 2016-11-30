@@ -1,3 +1,4 @@
+#include "Map.h"
 
 int mapSize;
 int sign(int n)
@@ -55,3 +56,28 @@ int check_valid_move(int x1, int y1, int x2, int y2) {
 	}
 	return pathClear;
 }
+
+int check_target_coordinates(int x, int y, struct floe map[10][10])
+{
+	if (map[x][y].penguin == 0 && map[x][y].numbOfFish != 0)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+int check_coordinates(int x, int y, struct floe map[10][10], int playerId)
+{
+	if (map[x][y].penguin == playerId)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
