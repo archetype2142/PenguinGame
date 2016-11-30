@@ -38,6 +38,35 @@ char *read_file(const char *filename) {
 void printMap(struct floe map[10][10])
 {
 	int x, y;
+	for (y = 0; y < 10; y++)
+	{
+		for (x = 0; x < 10; x++)
+		{
+			if (map[x][y].numbOfFish==0)
+			{
+				printf("X|");
+			}
+			else
+			{
+				if (map[x][y].penguin==1)
+				{
+					printf("A|");
+				}
+				else
+				{
+					if (map[x][y].penguin==2)
+					{
+						printf("B|");
+					}
+					else
+					{
+						printf("%d|", map[x][y].numbOfFish);
+					}
+				}
+			}
+		}
+		printf("\n");
+	}
 }
 
 void write_file(char *filename, struct floe map[4][4], struct player players[4]) {

@@ -9,11 +9,15 @@
 
 /* takes in coordinates to move the penguin to 
 and puts the penguin on the new coordinates*/
+void movement(int, int, int, int);
+
+/*takes in coordinates to put a penguin on*/
 void placement(int, int);
 
 
 int main(int argc, char* argv[]) {
-
+	/* declare structures and some variables  */
+	struct floe map[10][10]; //change the hardcoding!!!//
 	char *phase = (char*)malloc(20);
 	char *penguinos = (char*)malloc(20);
 	char *inFile = (char*)malloc(30), *outFile = (char*)malloc(30);
@@ -54,8 +58,6 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	
-	/* declare structures and some variables  */
-	struct floe map[10][10]; //change the hardcoding!!!//
 	char *file_output = read_file(inFile);
 	fputs(file_output, stdout);
 	free(file_output);
@@ -81,10 +83,8 @@ void placement(int x, int y) {
 }
 void movement(int x1, int y1, int x2, int y2) {
 	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
-	scanf("%i %i %i %i", &x1, &y1, &x2, &y2);
 	check_coordinates();
 	check_pengiun();
 	check_target_coordinates();
 	check_valid_move();
 }
-

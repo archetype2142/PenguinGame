@@ -13,3 +13,10 @@ int check_penguin(int, int);
 or not, taking values of current coordinates
 and coordinates of the floe to be moved on to */
 int check_valid_move(int x1, int y1, int x2, int y2);
+
+/*checks if floe of given coordinates can be moved onto*/
+int check_target_coordinates(int x, int y, struct floe map[10][10]);
+
+
+/*checks if there is a penguin on given coordinates*/
+int check_coordinates(int x, int y, struct floe map[10][10], int playerId);
