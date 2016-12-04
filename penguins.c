@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "map.h"
+//#include "map.h"
 #include "UserIO.h"
 #include "GameLogic.h"
-
-
 
 /* takes in coordinates to move the penguin to 
 and puts the penguin on the new coordinates*/
@@ -17,9 +15,9 @@ void placement(int, int);
 
 int main(int argc, char* argv[]) {
 
-	char *phase = (char*)malloc(20);
-	char *penguinos = (char*)malloc(20);
-	char *inFile = (char*)malloc(30), *outFile = (char*)malloc(30);
+	char *phase;
+	char *penguinos;
+	char *inFile, *outFile;
 
 	// check if arguments are less than 3
 	if(argc < 3) {
@@ -62,11 +60,11 @@ int main(int argc, char* argv[]) {
 	char *file_output = read_file(inFile);
 	fputs(file_output, stdout);
 	free(file_output);
-	if (phase == placement) {
-	placement();
+	if (strcmp(phase, "placement") == 0) {
+		placement();
 	}
 	else {
-	movement();
+		movement();
 	}
 	write_file();
 
