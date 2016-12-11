@@ -1,5 +1,5 @@
 #pragma once
-struct floe {
+struct Floe {
 	int numbOfFish; //amount of fish on the floe
 	int penguin; //player ID of owner of penguin on this floe
 };

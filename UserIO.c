@@ -34,7 +34,7 @@ void *read_file(const char *filename, struct player players[4]) {
 	fclose(file);
 }
 
-void printMap(struct floe map[10][10])
+void printMap(struct Floe map[10][10])
 {
 	int x, y;
 	for (y = 0; y < 10; y++)
@@ -68,7 +68,7 @@ void printMap(struct floe map[10][10])
 	}
 }
 
-void write_file(char *filename, struct floe map[4][4], struct player players[4]) {
+void write_file(char *filename, struct Floe map[4][4], struct player players[4]) {
 	int i, k;
 	FILE *file = fopen(filename, "w");
 	fputs(sizeof(players), file);
