@@ -2,9 +2,13 @@
 #include "Map.h"
 #include "UserIO.h"
 
-char *read_file(const char *filename) {
-	long int size = 0;
+
+void *read_file(const char *filename, struct player players[4]) {
+	int plays = 0, pingus = 0;
+	int x = 0, y = 0;
+	char result;
 	FILE *file = fopen(filename, "r");
+	rewind(file);
 
 	//if can't open the file
 	if (!file) {
@@ -12,27 +16,22 @@ char *read_file(const char *filename) {
 		return NULL;
 	}
 
-	// seek to the 0th byte before the end of file
-	fseek(file, 0, SEEK_END);
-	//store size of "file" in variable size
-	size = ftell(file);
-	//go back to beginning of the file
-	rewind(file);
-
-	char *result = (char *)malloc(size);
-
-	if (!result) {
-		fputs("Memory error.\n", stderr);
-		return NULL;
+	int k = 0;
+	
+	while(fscanf(file, "%c", &result) != EOF) {
+		fscanf(file, " %d;%d;\n", &plays, &pingus);
+		for (int i = 0; i < plays; ++i) {
+			fscanf(file, ":%d:%d;\n", &players[i].penguins[k].x, &players[i].penguins[k].y);
+		}
 	}
 
-	if (fread(result, 1, size, file) != size) {
-		fputs("Read error.\n", stderr);
-		return NULL;
+	k = 0; 
+	printf("players: %d\npenguins: %d\n", plays, pingus);
+	for (int i = 0; i < plays; ++i) {
+		printf("player %d\nx: %d\ny: %d\n\n", i, players[i].penguins[k].x, players[i].penguins[k].y);
 	}
-	//reading entire file and storing in result
+	
 	fclose(file);
-	return result;
 }
 
 void printMap(struct floe map[10][10])

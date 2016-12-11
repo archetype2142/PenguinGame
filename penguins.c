@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
 	
 	/* declare structures and some variables  */
 	struct floe map[10][10]; //change the hardcoding!!!//
-	char *file_output = read_file(inFile);
+	read_file(inFile, players);
 	fputs(file_output, stdout);
 	free(file_output);
 	if (strcmp(phase, "placement") == 0) {
