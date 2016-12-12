@@ -11,4 +11,4 @@ as an array of characters */
 char *read_file(const char *filename);
 
 /*a function that prints the map in console window. Very rudementary and ugly*/
-void printMap(struct Floe map[][]);
+void printMap(void *mapP, int sizeX, int sizeY);

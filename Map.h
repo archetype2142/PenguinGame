@@ -1,7 +1,7 @@
 #pragma once
 struct Floe {
 	int numbOfFish; //amount of fish on the floe
-	int penguin; //player ID of owner of penguin on this floe
+	int whosPenguin; //player ID of owner of penguin on this floe
 };
 struct penguin {
 	int x; //x coordinate of a penguin
