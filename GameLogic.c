@@ -32,7 +32,8 @@ int check_penguin(int x, int y, void *mapP, int sizeX, int sizeY)
 	return (*map)[x][y].whosPenguin;
 }
 
-int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY) {
+int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY)//update to use new structure//
+{
 	int pathClear = 1;
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int y, x;

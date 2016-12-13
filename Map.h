@@ -9,7 +9,7 @@ struct penguin {
 };
 struct player {
 	int score; // current score of a player
-	struct penguin penguins[10]; //array of penguins
+	struct penguin penguins[10]; //array of penguins, hardcoding might need to be fixed
 };
 struct vector
 {
@@ -17,4 +17,15 @@ struct vector
 	int yInitial;
 	int xTarget;
 	int yTarget;
+};
+//useful when moving around the map//
+struct directions
+{
+	int x;
+	int y;
+}vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
+struct point
+{
+	int x;
+	int y;
 };
