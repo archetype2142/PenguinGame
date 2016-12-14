@@ -2,9 +2,13 @@
 #include "Map.h"
 #include "UserIO.h"
 
-char *read_file(const char *filename) {
-	long int size = 0;
+
+void *read_file(const char *filename, struct player players[4]) {
+	int plays = 0, pingus = 0;
+	int x = 0, y = 0;
+	char result;
 	FILE *file = fopen(filename, "r");
+	rewind(file);
 
 	//if can't open the file
 	if (!file) {
@@ -12,49 +16,45 @@ char *read_file(const char *filename) {
 		return NULL;
 	}
 
-	// seek to the 0th byte before the end of file
-	fseek(file, 0, SEEK_END);
-	//store size of "file" in variable size
-	size = ftell(file);
-	//go back to beginning of the file
-	rewind(file);
-
-	char *result = (char *)malloc(size);
-
-	if (!result) {
-		fputs("Memory error.\n", stderr);
-		return NULL;
+	int k = 0;
+	
+	while(fscanf(file, "%c", &result) != EOF) {
+		fscanf(file, " %d;%d;\n", &plays, &pingus);
+		for (int i = 0; i < plays; ++i) {
+			fscanf(file, ":%d:%d;\n", &players[i].penguins[k].x, &players[i].penguins[k].y);
+		}
 	}
 
-	if (fread(result, 1, size, file) != size) {
-		fputs("Read error.\n", stderr);
-		return NULL;
+	k = 0; 
+	printf("players: %d\npenguins: %d\n", plays, pingus);
+	for (int i = 0; i < plays; ++i) {
+		printf("player %d\nx: %d\ny: %d\n\n", i, players[i].penguins[k].x, players[i].penguins[k].y);
 	}
-	//reading entire file and storing in result
+	
 	fclose(file);
-	return result;
 }
 
-void printMap(struct floe map[10][10])
+void printMap(void *mapP, int sizeX, int sizeY)
 {
+	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int x, y;
 	for (y = 0; y < 10; y++)
 	{
 		for (x = 0; x < 10; x++)
 		{
-			if (map[x][y].numbOfFish==0)
+			if ((*map)[x][y].numbOfFish==0)
 			{
 				printf("X|");
 			}
 			else
 			{
-				if (map[x][y].penguin==1)
+				if ((*map)[x][y].whosPenguin==1)
 				{
 					printf("A|");
 				}
 				else
 				{
-					if (map[x][y].penguin==2)
+					if ((*map)[x][y].whosPenguin==2)
 					{
 						printf("B|");
 					}
@@ -69,7 +69,8 @@ void printMap(struct floe map[10][10])
 	}
 }
 
-void write_file(char *filename, struct floe map[4][4], struct player players[4]) {
+void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[4]) {
+	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int i, k;
 	FILE *file = fopen(filename, "w");
 	fputs(sizeof(players), file);
@@ -90,15 +91,15 @@ void write_file(char *filename, struct floe map[4][4], struct player players[4])
 	}
 	fputs("MAP/n", file);
 	// insert map size variables
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < sizeX; i++)
 	{
-		for (k = 0; k <10; k++)
+		for (k = 0; k <sizeY; k++)
 		{
 			if (i % 2 == 1 && k == 0)
 			{
 				k = 1;
 			}
-			fputs(i + ":" + k + map[i][k].numbOfFish + map[i][k].penguin, file);
+			fputs(i + ":" + k + (*map)[i][k].numbOfFish + (*map)[i][k].whosPenguin, file);
 			fputs("/n", file);
 		}
 	}

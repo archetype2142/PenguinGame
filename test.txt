@@ -1,9 +1,13 @@
-Welcome to the space ipsum
+ 3;9;
+0:1:1:4;
+1:2:4:2;
+2:1:5:1;
+MAP
+5
+0:1:1:0
+1:2:3:1
+3:3:2:0
+4:4:0:1
+6:5:3:2
+8:7:2:2
 
-The path of a cosmonaut is not an easy, triumphant march to glory. You have to get to know the meaning not just of joy but also of grief, before being allowed in the spacecraft cabin.
-
-That's one small step for [a] man, one giant leap for mankind.
-
-To be the first to enter the cosmos, to engage, single-handed, in an unprecedented duel with nature—could one dream of anything more?
-
-I don't know what you could say about a day in which you have seen four beautiful sunsets.
