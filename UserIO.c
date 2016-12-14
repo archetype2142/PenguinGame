@@ -3,10 +3,12 @@
 #include "UserIO.h"
 
 
-void *read_file(const char *filename, struct player players[4]) {
+void *read_file(const char *filename, struct floe map[10][10], struct player players[4]) {
 	int plays = 0, pingus = 0;
 	int x = 0, y = 0;
 	char result;
+	int mapSize = 0; //put into file
+
 	FILE *file = fopen(filename, "r");
 	rewind(file);
 
@@ -17,20 +19,31 @@ void *read_file(const char *filename, struct player players[4]) {
 	}
 
 	int k = 0;
-	
 	while(fscanf(file, "%c", &result) != EOF) {
 		fscanf(file, " %d;%d;\n", &plays, &pingus);
 		for (int i = 0; i < plays; ++i) {
-			fscanf(file, ":%d:%d;\n", &players[i].penguins[k].x, &players[i].penguins[k].y);
+			fscanf(file, "%d:%d:%d:%d;\n", &players[i].id, &players[i].score, &players[i].penguins[k].x, &players[i].penguins[k].y);
+		}
+		if(fscanf(file, "MAP") == 0) {
+			fscanf(file, "%d\n", &mapSize);
+			break;
+		}
+	}
+	while(fscanf(file, "%c", &result) != EOF) {
+		for (int i = 0; i < mapSize; ++i) {
+			fscanf(file, "%d:%d:%d:%d\n", &map[i][k].x, &map[i][k].y, &map[i][k].numbOfFish, &map[i][k].penguin);
 		}
 	}
 
 	k = 0; 
-	printf("players: %d\npenguins: %d\n", plays, pingus);
+	printf("players: %d\npenguins: %d\n\n", plays, pingus);
 	for (int i = 0; i < plays; ++i) {
-		printf("player %d\nx: %d\ny: %d\n\n", i, players[i].penguins[k].x, players[i].penguins[k].y);
+		printf("====Player %d=====\nScore: %d\nx: %d, y: %d\n\n", players[i].id, players[i].score, players[i].penguins[k].x, players[i].penguins[k].y);
 	}
 	
+	for (int i = 0; i < mapSize; ++i) {
+		printf("Floe #%d\nx: %d, y: %d\nNumb of penguins: %d\nPenguin: %d\n\n", i+1, map[i][k].x, map[i][k].y, map[i][k].numbOfFish, map[i][k].penguin);
+	}
 	fclose(file);
 }
 
