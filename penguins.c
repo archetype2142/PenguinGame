@@ -12,6 +12,9 @@ void movement(int, int, int, int, void *mapP, int, int, int);
 /*takes in coordinates to put a penguin on*/
 void placement(int, int, void *mapP, int, int, int);
 
+/*the interactive mode. handles all user input output*/
+void interactive(void *mapP, int, int, int, struct player players[]);//to do!!!!
+
 
 int main(int argc, char* argv[]) {
 
@@ -85,6 +88,9 @@ void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID)
 	{
 		place_penguin(x, y, playerID, mapP, sizeX, sizeY);
 	}
+}
+void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct player players[])
+{
 }
 void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID) {
 	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
