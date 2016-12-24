@@ -10,6 +10,7 @@ struct penguin {
 struct player {
 	int score; // current score of a player
 	struct penguin penguins[10]; //array of penguins, hardcoding might need to be fixed
+	int playerID;
 };
 struct vector
 {

@@ -99,10 +99,10 @@ void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player 
 	fputs(":", file);
 	fputs(sizeof(players[0].penguins), file);
 	fputs("/n", file);
-	for (i = 0; i < sizeof(players); i++)
+	for (i = 0; i < sizeof(players)/sizeof(struct player); i++)
 	{
-		fputs(i, file);
-		for (k = 0; k < sizeof(players[0].penguins); k++)
+		fputs(players[i].playerID, file);
+		for (k = 0; k < sizeof(players[0].penguins)/sizeof(struct penguin); k++)
 		{
 			fputs(":", file);
 			fputs(players[i].penguins[k].x, file);

@@ -95,3 +95,16 @@ void place_penguin(int x, int y, int playerID, void *mapP, int sizeX, int sizeY)
 	(*map)[x][y].whosPenguin = playerID;
 }
 
+int giveIndex(int playerID, struct player players[])
+{
+	int i;
+	for (i = 0; i < sizeof(players) / sizeof(struct player); i++)
+	{
+		if (players[i].playerID == playerID)
+		{
+			return i;
+			break;
+		}
+	}
+}
+
