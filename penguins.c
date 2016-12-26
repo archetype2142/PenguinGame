@@ -5,23 +5,24 @@
 #include "UserIO.h"
 #include "GameLogic.h"
 
-
-
 /* takes in coordinates to move the penguin to 
 and puts the penguin on the new coordinates*/
-void movement(int, int, int, int);
+void movement(int, int, int, int, void *mapP, int, int, int);
 
 /*takes in coordinates to put a penguin on*/
-void placement(int, int);
+void placement(int, int, void *mapP, int, int, int);
+
+/*the interactive mode. handles all user input output*/
+void interactive(void *mapP, int, int, int, struct player players[]);//to do!!!!
 
 
 int main(int argc, char* argv[]) {
-	/* declare structures and some variables  */
-	struct floe map[10][10]; //change the hardcoding!!!//
-	char *phase = (char*)malloc(20);
-	char *penguinos = (char*)malloc(20);
-	char *inFile = (char*)malloc(30), *outFile = (char*)malloc(30);
 
+	char *phase;
+	char *penguinos;
+	char *inFile, *outFile;
+	void *mapPointer;
+	int sizeX, sizeY, NumberOfplayers, x1, x2, y1, y2, playerID;
 	// check if arguments are less than 3
 	if(argc < 3) {
 		// take all values from user for interactive mode
@@ -58,16 +59,20 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	
-	char *file_output = read_file(inFile);
+	/* declare structures and some variables  */
+	struct Floe map[sizeX][sizeY]; //change the hardcoding!!!//
+	struct player players[NumberOfplayers];
+	read_file(inFile, players);
 	fputs(file_output, stdout);
 	free(file_output);
-	if (phase == placement) {
-	placement();
+	mapPointer = *map;
+	if (strcmp(phase, "placement") == 0) {
+		placement(x1, x2, mapPointer, sizeX, sizeY, playerID);
 	}
 	else {
-	movement();
+		movement(x1, y1, x2, y2, mapPointer, sizeX, sizeY,playerID);
 	}
-	write_file();
+	write_file(outFile, struct Floe &map, struct player &players);
 
 	return 0;
 }
@@ -75,16 +80,23 @@ int main(int argc, char* argv[]) {
 
 //=================Custom function definitions===============//
 
-void placement(int x, int y) {
+void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID)
+{
+	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	scanf("%i %i", &x, &y);
-	if (check_coordinates(x, y) && check_how_many_fishes(x, y) == 1 && !check_pengiun(x, y)) {
-		place_penguin(x, y);
+	if (check_coordinates(x, y, mapP, sizeX, sizeY, playerID) && check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_pengiun(x, y, mapP, sizeX, sizeY))
+	{
+		place_penguin(x, y, playerID, mapP, sizeX, sizeY);
 	}
 }
-void movement(int x1, int y1, int x2, int y2) {
-	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
-	check_coordinates();
-	check_pengiun();
-	check_target_coordinates();
-	check_valid_move();
+void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct player players[])
+{
 }
+void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID) {
+	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
+	check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID);
+	check_penguin(x1, x2, mapP, sizeX, sizeY);
+	check_target_coordinates(x2, y2, mapP, sizeX, sizeY);
+	check_valid_move(x1, y1, x2, y2, mapP, sizeX, sizeY);
+}
+

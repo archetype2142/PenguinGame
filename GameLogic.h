@@ -22,3 +22,6 @@ int  check_coordinates(int x, int y, void *mapP, int sizeX, int sizeY, int playe
 
 /*places a penguin belonging to playerID*/
 void place_penguin(int x, int y, int playerID, void *mapP, int sizeX, int sizeY);
+
+/*function that retrievs index of player of playerID*/
+int giveIndex(int playerID, struct player players[]);
