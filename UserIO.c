@@ -69,38 +69,53 @@ void printMap(void *mapP, int sizeX, int sizeY)
 	}
 }
 
-void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[4]) {
+void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[]) {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	int i, k;
-	FILE *file = fopen(filename, "w");
-	fputs(sizeof(players), file);
+	int i, k, numbOfPenguins = sizeof(players[0].penguins) / sizeof(struct penguin), numbOfPlayers = sizeof(players) / sizeof(struct player);
+	char buffer[20];
+	FILE *file = fopen("file.txt", "w");
+	sprintf(buffer, "%d", numbOfPlayers);
+	fputs(buffer, file);
 	fputs(":", file);
-	fputs(sizeof(players[0].penguins), file);
-	fputs("/n", file);
-	for (i = 0; i < sizeof(players); i++)
+	sprintf(buffer, "%d", numbOfPenguins);
+	fputs(buffer, file);
+	fputs("\n", file);
+	for (i = 0; i < numbOfPlayers; i++)
 	{
-		fputs(i, file);
-		for (k = 0; k < sizeof(players[0].penguins); k++)
+		sprintf(buffer, "%d", players[i].playerID);
+		fputs(buffer, file);
+		for (k = 0; k < numbOfPenguins; k++)
 		{
 			fputs(":", file);
-			fputs(players[i].penguins[k].x, file);
+			sprintf(buffer, "%d", players[i].penguins[k].x);
+			fputs(buffer, file);
 			fputs(":", file);
-			fputs(players[i].penguins[k].y, file);
+			sprintf(buffer, "%d", players[i].penguins[k].y);
+			fputs(buffer, file);
 		}
-		fputs(";/n", file);
+		fputs(";\n", file);
 	}
-	fputs("MAP/n", file);
+	fputs("MAP\n", file);
 	// insert map size variables
-	for (i = 0; i < sizeX; i++)
+	for (i = 0; i < sizeY; i++)
 	{
-		for (k = 0; k <sizeY; k++)
+		for (k = 0; k <sizeX; k++)
 		{
-			if (i % 2 == 1 && k == 0)
+			if ((*map)[k][i].numbOfFish>0)
 			{
-				k = 1;
+				sprintf(buffer, "%d", k);
+				fputs(buffer, file);
+				fputs(":", file);
+				sprintf(buffer, "%d", i);
+				fputs(buffer, file);
+				fputs(":", file);
+				sprintf(buffer, "%d", (*map)[k][i].numbOfFish);
+				fputs(buffer, file);
+				fputs(":", file);
+				sprintf(buffer, "%d", (*map)[k][i].whosPenguin);
+				fputs(buffer, file);
+				fputs("\n", file);
 			}
-			fputs(i + ":" + k + (*map)[i][k].numbOfFish + (*map)[i][k].whosPenguin, file);
-			fputs("/n", file);
 		}
 	}
 }
