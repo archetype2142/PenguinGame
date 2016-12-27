@@ -54,16 +54,16 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 	fscanf(file, "%d:%d", &sizeX, &sizeY);
 
 	
-	mapPointer = malloc(sizeof(struct Floe)*sizeX*sizeY);
+	mapPointer = malloc(sizeof(struct Floe)*(*sizeX)*(*sizeY));
 		
-	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapPointer;
+	struct Floe(*map)[(*sizeX)][(*sizeY)] = (struct Floe(*)[(*sizeX)][(*sizeY)]) mapPointer;
 	//not working yet
 	int junk = 0;
 	while(ch != EOF) {
 		ch =  fgetc(file);
 		for (int i = 0; i < sizeY; i++) {
 			for (int j = 0; j < sizeX; j++) {
-				fscanf(file, "%d:%d:%d:%d\n", &junk, &junk, mapPointer[j][i].numbOfFish, mapPointer[j][i].whosPenguin);
+				fscanf(file, "%d:%d:%d:%d\n", &junk, &junk, (*map)[j][i].numbOfFish, (*map)[j][i].whosPenguin);
 			}
 		}
 	}
