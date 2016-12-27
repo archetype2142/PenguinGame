@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "map.h"
+#include "Map.h"
 #include "UserIO.h"
 #include "GameLogic.h"
 
@@ -62,9 +62,8 @@ int main(int argc, char* argv[]) {
 	/* declare structures and some variables  */
 	struct Floe map[sizeX][sizeY]; //change the hardcoding!!!//
 	struct player players[NumberOfplayers];
-	read_file(inFile, players);
-	fputs(file_output, stdout);
-	free(file_output);
+	read_file(inFile, players, map);
+
 	mapPointer = *map;
 	if (strcmp(phase, "placement") == 0) {
 		placement(x1, x2, mapPointer, sizeX, sizeY, playerID);
