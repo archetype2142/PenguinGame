@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 	read_file(inFile, players, map, &sizeX, &sizeY);
 	if (argc == 2)
 	{
-		interactive(map, sizeX, sizeY, playerID, players);
+		interactive(map, sizeX, sizeY, MY_ID, players);
 	}
 	else
 	{

@@ -3,14 +3,17 @@
 #include "Map.h"
 #include "UserIO.h"
 
-void *read_file(const char *filename, struct player *players, void *map, int sizeX, int sizeY) {
+
+void read_file(const char *filename, struct player *players, void *mapPointer, int *sizeX, int *sizeY) 
+{
 	int num_of_players = 0, num_of_pingus = 0, lines = 0;
 	char ch;
 	FILE *file = fopen(filename, "r");
 	rewind(file);
 
 	//if can't open the file
-	if (!file) {
+	if (!file) 
+	{
 		fputs("File error", stderr);
 		return NULL;
 	}
@@ -20,6 +23,11 @@ void *read_file(const char *filename, struct player *players, void *map, int siz
 		fscanf(file, "%d;%d;", &num_of_players, &num_of_pingus);
 		ch = fgetc(file);
 	}
+
+	//fscanf(file, "%d;%d;", &num_of_players, &num_of_pingus);
+	//ch = fgetc(file);
+
+
 	(*players).penguins = malloc(sizeof(struct penguin)*num_of_pingus);
 
 	//Reads player stats and Map
@@ -44,14 +52,18 @@ void *read_file(const char *filename, struct player *players, void *map, int siz
 
 	ch = fgetc(file);
 	fscanf(file, "%d:%d", &sizeX, &sizeY);
-	map=malloc(sizeof(struct Floe)*sizeX*sizeY)
+
+	
+	mapPointer = malloc(sizeof(struct Floe)*sizeX*sizeY);
+		
+	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapPointer;
 	//not working yet
 	int junk = 0;
 	while(ch != EOF) {
 		ch =  fgetc(file);
 		for (int i = 0; i < sizeY; i++) {
 			for (int j = 0; j < sizeX; j++) {
-				fscanf(file, "%d:%d:%d:%d\n", &junk, &junk, &map[j][i].numbOfFish, &map[j][i].whosPenguin);
+				fscanf(file, "%d:%d:%d:%d\n", &junk, &junk, mapPointer[j][i].numbOfFish, mapPointer[j][i].whosPenguin);
 			}
 		}
 	}
@@ -68,7 +80,7 @@ void *read_file(const char *filename, struct player *players, void *map, int siz
 	printf("\nsizeX: %d\nsizeY: %d\n", sizeX, sizeY);
 	for (int i = 0; i < sizeY; i++) {
 		for (int j = 0; j < sizeX; j++) {
-			printf("\nX: %d, Y: %d\nNumber of Fishes: %d\nPenguin belong to player: %d\n", j, i, map[j][i].numbOfFish, map[j][i].whosPenguin);
+			printf("\nX: %d, Y: %d\nNumber of Fishes: %d\nPenguin belong to player: %d\n", j, i, mapPointer[j][i].numbOfFish, mapPointer[j][i].whosPenguin);
 		}
 	}	fclose(file);
 }

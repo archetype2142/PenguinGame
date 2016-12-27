@@ -1,5 +1,5 @@
 #pragma once
-#define MY_ID 3242;
+#define MY_ID 3242
 struct Floe {
 	int numbOfFish; //amount of fish on the floe
 	int whosPenguin; //player ID of owner of penguin on this floe
