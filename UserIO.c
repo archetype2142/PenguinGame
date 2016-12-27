@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "Map.h"
 #include "UserIO.h"
 
-void *read_file(const char *filename, struct player players[], struct Floe map[][5]) {
-	int num_of_players = 0, num_of_pingus = 0, sizeX, sizeY, lines = 0;
+void *read_file(const char *filename, struct player *players, void *map, int sizeX, int sizeY) {
+	int num_of_players = 0, num_of_pingus = 0, lines = 0;
 	char ch;
 	FILE *file = fopen(filename, "r");
 	rewind(file);
@@ -19,6 +20,7 @@ void *read_file(const char *filename, struct player players[], struct Floe map[]
 		fscanf(file, "%d;%d;", &num_of_players, &num_of_pingus);
 		ch = fgetc(file);
 	}
+	(*players).penguins = malloc(sizeof(struct penguin)*num_of_pingus);
 
 	//Reads player stats and Map
 	char buffer[20];
@@ -42,7 +44,7 @@ void *read_file(const char *filename, struct player players[], struct Floe map[]
 
 	ch = fgetc(file);
 	fscanf(file, "%d:%d", &sizeX, &sizeY);
-
+	map=malloc(sizeof(struct Floe)*sizeX*sizeY)
 	//not working yet
 	int junk = 0;
 	while(ch != EOF) {
@@ -128,9 +130,10 @@ void PrintMap(void *mapP, int x, int y)
 		printf("\n");
 	}
 }
+
 void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[]) {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	int i, k, numbOfPenguins = sizeof(players[0].penguins) / sizeof(struct penguin), numbOfPlayers = sizeof(players) / sizeof(struct player);
+	int i, k, numbOfPenguins = sizeof(players[0].penguins) / sizeof(struct penguin), numbOfPlayers = sizeof(players) / sizeof(struct player);//possible error, numbofplayers evaluated to 0
 	char buffer[20];
 	FILE *file = fopen("file.txt", "w");
 	sprintf(buffer, "%d", numbOfPlayers);
@@ -177,4 +180,5 @@ void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player 
 			}
 		}
 	}
+	fclose(file);
 }

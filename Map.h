@@ -1,4 +1,5 @@
 #pragma once
+#define MY_ID 3242;
 struct Floe {
 	int numbOfFish; //amount of fish on the floe
 	int whosPenguin; //player ID of owner of penguin on this floe
@@ -9,7 +10,7 @@ struct penguin {
 };
 struct player {
 	int score; // current score of a player
-	struct penguin penguins[10]; //array of penguins, hardcoding might need to be fixed
+	struct penguin *penguins; //array of penguins, hardcoding might need to be fixed
 	int playerID;
 };
 struct vector

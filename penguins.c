@@ -17,7 +17,9 @@ void interactive(void *mapP, int, int, int, struct player players[]);//to do!!!!
 
 
 int main(int argc, char* argv[]) {
-
+	/* declare structures and some variables  */
+	struct Floe *map; 
+	struct player *players;
 	char *phase;
 	char *penguinos;
 	char *inFile, *outFile;
@@ -58,21 +60,21 @@ int main(int argc, char* argv[]) {
 			outFile = argv[3];
 		}
 	}
-	
-	/* declare structures and some variables  */
-	struct Floe map[sizeX][sizeY]; //change the hardcoding!!!//
-	struct player players[NumberOfplayers];
-	read_file(inFile, players, map);
-
-	mapPointer = *map;
-	if (strcmp(phase, "placement") == 0) {
-		placement(x1, x2, mapPointer, sizeX, sizeY, playerID);
+	read_file(inFile, players, map, &sizeX, &sizeY);
+	if (argc == 2)
+	{
+		interactive(map, sizeX, sizeY, playerID, players);
 	}
-	else {
-		movement(x1, y1, x2, y2, mapPointer, sizeX, sizeY,playerID);
+	else
+	{
+		if (strcmp(phase, "placement") == 0) {
+			placement(x1, x2, mapPointer, sizeX, sizeY, playerID);
+		}
+		else {
+			movement(x1, y1, x2, y2, map, sizeX, sizeY, playerID);
+		}
+		write_file(outFile, map, players);
 	}
-	write_file(outFile, struct Floe &map, struct player &players);
-
 	return 0;
 }
 
