@@ -1,6 +1,0 @@
-language: c
-compiler:
-  - clang
-  - gcc
-install: true
-script: gcc penguins.c

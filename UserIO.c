@@ -11,9 +11,8 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 	FILE *file = fopen(filename, "r");
 	rewind(file);
 
-	//if can't open the file
-	if (!file) 
-	{
+	//Checks if file can be opened
+	if (!file) {
 		fputs("File error", stderr);
 		return NULL;
 	}
@@ -24,25 +23,18 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 		ch = fgetc(file);
 	}
 
-	//fscanf(file, "%d;%d;", &num_of_players, &num_of_pingus);
-	//ch = fgetc(file);
-
-
-	(*players).penguins = malloc(sizeof(struct penguin)*num_of_pingus);
 
 	//Reads player stats and Map
 	char buffer[20];
-	int i = 0;
 	while(lines < num_of_players) {
-		fgets(buffer, sizeof buffer, file);
 		lines += 1;
-		printf("%s", buffer);
-		sscanf(buffer, "%d:%d", &players[i].playerID, &players[i].score);
-		//=============================THIS PART NEEDS WORK=================================
-		for (int j = 0; j < num_of_pingus - 1; j++) {
-			fscanf(file, ":%d:%d", &players[i].penguins[j].x, &players[i].penguins[j].y);
+		for (int i = 0; i < num_of_players; i++) {
+			fscanf(file, "%d:%d", &players[i].playerID, &players[i].score);	
+			for (int j = 0; j < num_of_pingus; j++) {
+				fscanf(file, ":%d:%d", &players[i].penguins[j].x, &players[i].penguins[j].y);
+			}
+			fscanf(file, ";\n");
 		}
-		i += 1;
 	}
 
 	//seek to the end of 'Map'
@@ -51,19 +43,18 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 
 
 	ch = fgetc(file);
-	fscanf(file, "%d:%d", &sizeX, &sizeY);
+	fscanf(file, "%d:%d", sizeX, sizeY);
 
-	
 	mapPointer = malloc(sizeof(struct Floe)*(*sizeX)*(*sizeY));
-		
 	struct Floe(*map)[(*sizeX)][(*sizeY)] = (struct Floe(*)[(*sizeX)][(*sizeY)]) mapPointer;
-	//not working yet
+
+	//Scanning map
 	int junk = 0;
 	while(ch != EOF) {
 		ch =  fgetc(file);
-		for (int i = 0; i < sizeY; i++) {
-			for (int j = 0; j < sizeX; j++) {
-				fscanf(file, "%d:%d:%d:%d\n", &junk, &junk, (*map)[j][i].numbOfFish, (*map)[j][i].whosPenguin);
+		for (int i = 0; i < *sizeY; i++) {
+			for (int j = 0; j < *sizeX; j++) {
+				fscanf(file, "%d:%d:%d:%d\n", &junk, &junk, &(*map)[j][i].numbOfFish, &(*map)[j][i].whosPenguin);
 			}
 		}
 	}
@@ -77,12 +68,13 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 			printf("Penguin %d\nx: %d, y: %d\n", j + 1, players[i].penguins[j].x, players[i].penguins[j].y);
 		}
 	}
-	printf("\nsizeX: %d\nsizeY: %d\n", sizeX, sizeY);
-	for (int i = 0; i < sizeY; i++) {
-		for (int j = 0; j < sizeX; j++) {
-			printf("\nX: %d, Y: %d\nNumber of Fishes: %d\nPenguin belong to player: %d\n", j, i, mapPointer[j][i].numbOfFish, mapPointer[j][i].whosPenguin);
+	printf("\nsizeX: %d\nsizeY: %d\n", *sizeX, *sizeY);
+	for (int i = 0; i < *sizeY; i++) {
+		for (int j = 0; j < *sizeX; j++) {
+			printf("\nX: %d, Y: %d\nNumber of Fishes: %d\nPenguin belong to player: %d\n", j, i, (*map)[j][i].numbOfFish, (*map)[j][i].whosPenguin);
 		}
-	}	fclose(file);
+	}	
+	fclose(file);
 }
 
 void PrintMap(void *mapP, int x, int y)
