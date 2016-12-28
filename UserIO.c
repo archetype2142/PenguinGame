@@ -4,7 +4,7 @@
 #include "UserIO.h"
 
 
-void *read_file(const char *filename, struct player *players, void *mapPointer, int *sizeX, int *sizeY) 
+void read_file(const char *filename, struct player *players, void *mapPointer, int *sizeX, int *sizeY) 
 {
 	int num_of_players = 0, num_of_pingus = 0, lines = 0;
 	char ch;
