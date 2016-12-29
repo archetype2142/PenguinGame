@@ -4,9 +4,7 @@
 struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player players[])
 {
 	struct vector best;
-	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	struct Floe mapTMP[sizeX][sizeY];
-	void *mapTMPP = mapTMP;
+	void *mapTMPP = malloc(sizeof(struct Floe)*sizeX*sizeY);
 	int i, direction = 0, distanse = 0, bestvalue = 0;
 	for (i = 0; i < sizeof(players[playerID].penguins); i++)//evaluating evry possible move for all penguins of playerID//
 	{
@@ -14,7 +12,7 @@ struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player
 		{
 			for (distanse = 0; distanse < 100; distanse++)//create stop condition
 			{
-				makeMove(mapP, mapTMPP, sizeX, sizeY, direction, distanse, players[playerID].penguins[i].x, players[playerID].penguins[i].y);
+				makeMove(mapP, mapTMPP, sizeX, sizeY, direction, distanse, players[playerID].penguins[i].x, players[playerID].penguins[i].y, playerID);
 				if (bestvalue<evaluate(mapTMPP, sizeX, sizeY, playerID, players))//new best move has been found, generating its vector//
 				{
 					findTarget(&best, players[playerID].penguins[i].x, players[playerID].penguins[i].y, distanse, direction);
@@ -42,7 +40,7 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 			{
 				x = 1;
 			}
-			if ((*map).flows[x][y].numbOfFish == 1 && (*map).flows[x][y].penguin == 0)
+			if ((*map)[x][y].numbOfFish == 1 && (*map)[x][y].whosPenguin == 0)
 			{
 				if (evaluate(mapP, sizeX, sizeY, playerID, players)>best)
 				{
@@ -56,12 +54,31 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 	return result;
 }
 
-int evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct player players[])// needs reworking 
+int evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct player players[])// needs reworking (might be fixed already XD)
 {
-	int direction, sum=0;
-	for (direction = 0; direction < 6; direction++)
+	int direction, sum=0, i,k;
+	for (i = 0; i < sizeof(players) / sizeof(struct player); i++)//fix
 	{
-		sum += evaluateBranch(mapP, sizeX, sizeY, x, y, direction);//fix!
+		if (players[i].playerID == playerID)
+		{
+			for (k = 0; k < players[i].numberOfPenguins; k++)
+			{
+				for (direction = 0; direction < 6; direction++)
+				{
+					sum += evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
+				}
+			}
+		}
+		else
+		{
+			for (k = 0; k < players[i].numberOfPenguins; k++)
+			{
+				for (direction = 0; direction < 6; direction++)
+				{
+					sum -= evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
+				}
+			}
+		}
 	}
 	return sum;
 }
@@ -114,9 +131,20 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction
 	return sum;
 }
 
-void makeMove(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int direction, int distanse, int x, int y)//do this motherfucker cos i dont wanna//
+void makeMove(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int direction, int distanse, int x, int y, int playerID)
 {
-
+	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapOrgP;
+	struct Floe(*mapnew)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapNewP;
+	int x1, y1;
+	for (y1 = 0; y1 < sizeY; y1 ++)
+	{
+		for (x1 = 0; x1  < sizeX; x1 ++)
+		{
+			(*mapnew)[x1][y1] = (*map)[x1][y1];
+		}
+	}
+	(*mapnew)[x][y].whosPenguin = 0;
+	(*mapnew)[x + (vectors[direction].x*distanse)][y + (vectors[direction].y*distanse)].whosPenguin = playerID;
 }
 
 struct vector convert(void *mapP, int sizeX, int sizeY, int x, int y, struct player players[],int playerID, int penguinID)

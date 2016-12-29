@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "UserIO.h"
 #include "GameLogic.h"
+#include "penguin-9000.h"
 
 /* takes in coordinates to move the penguin to 
 and puts the penguin on the new coordinates*/
@@ -16,21 +17,25 @@ void placement(int, int, void *mapP, int, int, int);
 void interactive(void *mapP, int, int, int, struct player players[]);//to do!!!!
 
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
 	/* declare structures and some variables  */
-	struct Floe *map; 
+	struct Floe *map;
+	struct point target;
+	struct vector moveVector;
 	struct player *players;
 	char *phase;
 	char *penguinos;
 	char *inFile, *outFile;
-	void *mapPointer;
 	int sizeX, sizeY, NumberOfplayers, x1, x2, y1, y2, playerID;
 	// check if arguments are less than 3
-	if(argc < 3) {
+	if(argc < 3)
+	{
 		// take all values from user for interactive mode
 		printf("Phase: ");
 		scanf("%s", phase);
-		if(strcmp(phase, "movement") == 0) {
+		if(strcmp(phase, "movement") == 0)
+		{
 			printf("Input file name: ");
 			scanf("%s", inFile);
 			printf("Output file name: ");
@@ -48,7 +53,8 @@ int main(int argc, char* argv[]) {
 	// assign command line arguments to variables
 	else {
 		phase = argv[1];
-		if(strcmp(phase, "phase=placement") == 0) {
+		if(strcmp(phase, "phase=placement") == 0)
+		{
 			phase = (char*)"placement";
 			penguinos = argv[2];
 			inFile = argv[3];
@@ -67,13 +73,17 @@ int main(int argc, char* argv[]) {
 	}
 	else
 	{
-		if (strcmp(phase, "placement") == 0) {
-			placement(x1, x2, mapPointer, sizeX, sizeY, playerID);
+		if (strcmp(phase, "placement") == 0)
+		{
+			target = place(map, sizeX, sizeY, MY_ID, players);
+			placement(target.x, target.y, map, sizeX, sizeY, MY_ID);
 		}
-		else {
-			movement(x1, y1, x2, y2, map, sizeX, sizeY, playerID);
+		else
+		{
+			moveVector = move(MY_ID, map, sizeX, sizeY, players);
+			movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID);
 		}
-		write_file(outFile, map, players);
+		write_file(outFile, map, sizeX,sizeY,players);
 	}
 	return 0;
 }
@@ -84,7 +94,6 @@ int main(int argc, char* argv[]) {
 void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID)
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	scanf("%i %i", &x, &y);
 	if (check_coordinates(x, y, mapP, sizeX, sizeY, playerID) && check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_pengiun(x, y, mapP, sizeX, sizeY))
 	{
 		place_penguin(x, y, playerID, mapP, sizeX, sizeY);
@@ -93,7 +102,8 @@ void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID)
 void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct player players[])
 {
 }
-void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID) {
+void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID)
+{
 	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
 	check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID);
 	check_penguin(x1, x2, mapP, sizeX, sizeY);
