@@ -1,4 +1,4 @@
-﻿#include "penguin-9000.h"
+﻿
 #include "Map.h"
 
 struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player players[])
@@ -87,7 +87,7 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int i, sum=0;
-	switch (direction)
+	/*switch (direction)
 	{
 	case 0:
 		for (i = 1; x-i < 0&& (*map).flows[x - i][y - i].penguin==0&& (*map).flows[x - i][y - i].numbOfFish!=0; i++)
@@ -127,7 +127,7 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction
 		break;
 	default:
 		break;
-	}
+	}*/
 	return sum;
 }
 

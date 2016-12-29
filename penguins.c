@@ -6,7 +6,9 @@
 #include "GameLogic.h"
 #include "penguin-9000.h"
 
-/* takes in coordinates to move the penguin to 
+struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
+
+/* takes in coordinates to move the penguin to
 and puts the penguin on the new coordinates*/
 void movement(int, int, int, int, void *mapP, int, int, int);
 
@@ -17,38 +19,22 @@ void placement(int, int, void *mapP, int, int, int);
 void interactive(void *mapP, int, int, int, struct player players[]);//to do!!!!
 
 
-int main(int argc, char* argv[]) 
+int main(int argc, char* argv[])
 {
 	/* declare structures and some variables  */
-	struct Floe *map;
+	struct Floe *map=NULL;
 	struct point target;
 	struct vector moveVector;
-	struct player *players;
+	struct player *players=NULL;
 	char *phase;
 	char *penguinos;
 	char *inFile, *outFile;
-	int sizeX, sizeY, NumberOfplayers, x1, x2, y1, y2, playerID;
+	int sizeX, sizeY/*, NumberOfplayers*/;
 	// check if arguments are less than 3
 	if(argc < 3)
 	{
-		// take all values from user for interactive mode
-		printf("Phase: ");
-		scanf("%s", phase);
-		if(strcmp(phase, "movement") == 0)
-		{
-			printf("Input file name: ");
-			scanf("%s", inFile);
-			printf("Output file name: ");
-			scanf("%s", outFile);
-		}
-		else {
-			printf("Number of penguins: ");
-			scanf("%s", penguinos);
-			printf("Input file name: ");
-			scanf("%s", inFile);
-			printf("Output file name: ");
-			scanf("%s", outFile);
-		}
+	    printf("invalid number of parameters");
+	    return 1;
 	}
 	// assign command line arguments to variables
 	else {
@@ -93,14 +79,34 @@ int main(int argc, char* argv[])
 
 void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID)
 {
-	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	if (check_coordinates(x, y, mapP, sizeX, sizeY, playerID) && check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_pengiun(x, y, mapP, sizeX, sizeY))
+	if (check_coordinates(x, y, mapP, sizeX, sizeY, playerID) && check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_penguin(x, y, mapP, sizeX, sizeY))
 	{
 		place_penguin(x, y, playerID, mapP, sizeX, sizeY);
 	}
 }
 void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct player players[])
 {
+    char penguinos[10], phase[10];
+	char inFile[10], outFile[10];
+    // take all values from user for interactive mode
+    printf("Phase: ");
+    scanf("%s", phase);
+    if(strcmp(phase, "movement") == 0)
+    {
+        printf("Input file name: ");
+        scanf("%s", inFile);
+        printf("Output file name: ");
+        scanf("%s", outFile);
+    }
+    else
+    {
+        printf("Number of penguins: ");
+        scanf("%s", penguinos);
+        printf("Input file name: ");
+        scanf("%s", inFile);
+        printf("Output file name: ");
+        scanf("%s", outFile);
+    }
 }
 void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID)
 {

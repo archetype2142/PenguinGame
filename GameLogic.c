@@ -1,9 +1,12 @@
+#include <stdlib.h>
 #include "Map.h"
 
+
 int mapSize;
+
 int sign(int n)
 {
-	if (n>0)
+    if (n>0)
 	{
 		return 1;
 	}
@@ -19,7 +22,6 @@ int sign(int n)
 		}
 	}
 }
-
 int check_how_many_fishes(int x, int y, void *mapP, int sizeX, int sizeY)
 {
     struct Floe (*map)[sizeX][sizeY]= (struct Floe(*)[sizeX][sizeY]) mapP;
@@ -35,8 +37,8 @@ int check_penguin(int x, int y, void *mapP, int sizeX, int sizeY)
 int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY)
 {
 	int pathClear = 1;
-	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	int y, x;
+	//struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
+	int y, x = 0;
 	// checking fields above or below current field
 	if ((x2 - x1) == 0 && (y2 - y1) % 2 == 0)
 	{
@@ -56,7 +58,7 @@ int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int 
 		}
 		else {
 			// checking fields on diaognals
-			for (x = x1, y = y1; x == x2; x += sign(x2 - x1), y == sign(y2 - y1)) 
+			for (x = x1, y = y1; x == x2; x += sign(x2 - x1), y == sign(y2 - y1))
 			{
 				if (y < 0 || x < 0 || x > mapSize || y > mapSize || check_penguin(x, y, mapP, sizeX, sizeY) != 0 || check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 0)
 				{
@@ -101,16 +103,12 @@ void place_penguin(int x, int y, int playerID, void *mapP, int sizeX, int sizeY)
 	(*map)[x][y].whosPenguin = playerID;
 }
 
-int giveIndex(int playerID, struct player players[])
+int giveIndex(int playerID, struct player players[], int playerCount)
 {
 	int i;
-	for (i = 0; i < sizeof(players) / sizeof(struct player); i++)
-	{
+	for (i = 0; i < playerCount; i++)
 		if (players[i].playerID == playerID)
-		{
 			return i;
-			break;
-		}
-	}
+    return -1;
 }
 

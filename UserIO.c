@@ -31,11 +31,11 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 	while(lines < num_of_players)
 	{
 		lines += 1;
-		for (int i = 0; i < num_of_players; i++) 
+		for (int i = 0; i < num_of_players; i++)
 		{
 			fscanf(file, "%d:%d", &players[i].playerID, &players[i].score);
 			players[i].numberOfPenguins = num_of_pingus;
-			for (int j = 0; j < num_of_pingus; j++) 
+			for (int j = 0; j < num_of_pingus; j++)
 			{
 				fscanf(file, ":%d:%d", &players[i].penguins[j].x, &players[i].penguins[j].y);
 			}
@@ -59,7 +59,7 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 	while(ch != EOF)
 	{
 		ch =  fgetc(file);
-		for (int i = 0; i < *sizeY; i++) 
+		for (int i = 0; i < *sizeY; i++)
 		{
 			for (int j = 0; j < *sizeX; j++)
 			{
@@ -79,9 +79,9 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 		}
 	}
 	printf("\nsizeX: %d\nsizeY: %d\n", *sizeX, *sizeY);
-	for (int i = 0; i < *sizeY; i++) 
+	for (int i = 0; i < *sizeY; i++)
 	{
-		for (int j = 0; j < *sizeX; j++) 
+		for (int j = 0; j < *sizeX; j++)
 		{
 			printf("\nX: %d, Y: %d\nNumber of Fishes: %d\nPenguin belong to player: %d\n", j, i, (*map)[j][i].numbOfFish, (*map)[j][i].whosPenguin);
 		}
@@ -117,7 +117,7 @@ void PrintMap1(void *mapP, int x, int y)
 				}
 				else if (Xcoordinate % 4 == 3)
 				{
-                    if (check_penguin(Xcoordinate,Ycoordinate)!=0
+                    if (check_penguin(Xcoordinate,Ycoordinate)!=0)
 					{
 					PenguinID = (*map)[Xcoordinate][Ycoordinate].whosPenguin;
 					printf("%c", PenguinID); // printing id of penguin
@@ -136,7 +136,7 @@ void PrintMap1(void *mapP, int x, int y)
 				}
 				else if (Xcoordinate % 4 == 1)
 				{
-					if (check_penguin(Xcoordinate,Ycoordinate)!=0
+					if (check_penguin(Xcoordinate,Ycoordinate)!=0)
 					{
 					PenguinID = (*map)[Xcoordinate][Ycoordinate].whosPenguin;
 					printf("%c", PenguinID); // printing id of penguin
@@ -144,6 +144,7 @@ void PrintMap1(void *mapP, int x, int y)
 					else
 					{
                         printf("%d",(*map)[Xcoordinate][Ycoordinate].numbOfFish); // printing number of fish
+				}
 				}
 				else if (Xcoordinate % 4 == 2)
 				{
@@ -178,7 +179,7 @@ void PrintMap2(void *mapP, int x, int y)
 				}
 				else if (Xcoordinate % 4 == 1)
 				{
-                    if (check_penguin(Xcoordinate,Ycoordinate)!=0
+                    if (check_penguin(Xcoordinate,Ycoordinate)!=0)
 					{
 					PenguinID = (*map)[Xcoordinate][Ycoordinate].whosPenguin;
 					printf("%c", PenguinID); // printing id of penguin
@@ -214,7 +215,7 @@ void PrintMap2(void *mapP, int x, int y)
 				}
 				else if (Xcoordinate % 4 == 3)
 				{
-                    if (check_penguin(Xcoordinate,Ycoordinate)!=0
+                    if (check_penguin(Xcoordinate,Ycoordinate)!=0)
 					{
 					PenguinID = (*map)[Xcoordinate][Ycoordinate].whosPenguin;
 					printf("%c", PenguinID); // printing id of penguin
@@ -242,15 +243,15 @@ while (map[x][y]==0)
             }
 if (b%a==0)
     {
-    PrintMap1(void *mapP, int x, int y);
+    PrintMap1(mapP, x, y);
     }
     else
     {
-    PrintMap2(void *mapP, int x, int y);
+    PrintMap2(mapP,  x, y);
     }
 }
-
-void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[]) 
+}
+void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[])
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int i, k, numbOfPenguins = players[0].numberOfPenguins, numbOfPlayers = sizeof(players) / sizeof(struct player);//possible error, numbofplayers evaluated to 0

@@ -7,7 +7,7 @@ void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player 
 
 /* reads the game board, taking the file name as
 the input and returns all contents of the file
-as an array of characters 
+as an array of characters
 */
 void read_file(const char *filename, struct player *players, void *mapPointer, int *sizeX, int *sizeY);
 

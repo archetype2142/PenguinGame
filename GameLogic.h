@@ -1,5 +1,6 @@
-#include "GameLogic.c"
+
 #include "Map.h"
+
 
 /* checks the number of fishes available on
 the given floe */
