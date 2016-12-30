@@ -3,13 +3,13 @@
 #include <stdlib.h>
 
 //function that returns the best caluculated move for a given player//
-struct vector  move(int playerID, void *mapP, int sizeX, int sizeY, struct player players[]);
+struct vector  move(int playerID, void *mapP, int sizeX, int sizeY, struct player players[], int numberOfPlayers);
 
 //function that evaluates a given situation for player of id: playerID, takes into account oponents//
-int evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct player players[]);
+int evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct player players[], int numberOfPlayers);
 
 //function returning coordinates for a penguin placment as playerID//
-struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player players[]);
+struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player players[], int numberOfPlayers);
 
 //function that goes from a flow in a particular direction, and returns the sum of flow values//
 int evaluateBranch(void *mapP, int sizeX, int sizeY,  int x, int y, int direction);

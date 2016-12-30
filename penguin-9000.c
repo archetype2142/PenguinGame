@@ -1,24 +1,26 @@
-﻿
+﻿#include <stdlib.h>
 #include "Map.h"
+#include "GameLogic.h"
+#include "penguin-9000.h"
 
-struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player players[])
+struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player players[],int numberOfPlayers)
 {
 	struct vector best;
 	void *mapTMPP = malloc(sizeof(struct Floe)*sizeX*sizeY);
 	int i, direction = 0, distanse = 0, bestvalue = 0;
-	for (i = 0; i < sizeof(players[playerID].penguins); i++)//evaluating evry possible move for all penguins of playerID//
+	for (i = 0; i < players[giveIndex(playerID,players,numberOfPlayers)].numberOfPenguins; i++)//evaluating evry possible move for all penguins of playerID//
 	{
 		for ( direction = 0; direction < 6; direction++)
 		{
 			for (distanse = 0; distanse < 100; distanse++)//create stop condition
 			{
-				makeMove(mapP, mapTMPP, sizeX, sizeY, direction, distanse, players[playerID].penguins[i].x, players[playerID].penguins[i].y, playerID);
-				if (bestvalue<evaluate(mapTMPP, sizeX, sizeY, playerID, players))//new best move has been found, generating its vector//
+				makeMove(mapP, mapTMPP, sizeX, sizeY, direction, distanse, players[giveIndex(playerID,players,numberOfPlayers)].penguins[i].x, players[giveIndex(playerID,players,numberOfPlayers)].penguins[i].y, playerID);
+				if (bestvalue<evaluate(mapTMPP, sizeX, sizeY, playerID, players,numberOfPlayers))//new best move has been found, generating its vector//
 				{
 					findTarget(&best, players[playerID].penguins[i].x, players[playerID].penguins[i].y, distanse, direction);
 					best.xInitial = players[playerID].penguins[i].x;
 					best.yInitial = players[playerID].penguins[i].y;
-					bestvalue = evaluate(mapTMPP, sizeX, sizeY, playerID, players);
+					bestvalue = evaluate(mapTMPP, sizeX, sizeY, playerID, players,numberOfPlayers);
 				}
 			}
 		}
@@ -26,7 +28,7 @@ struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player
 	return best;
 }
 
-struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player players[])
+struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player players[], int numberOfPlayers)
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	struct point result;
@@ -42,11 +44,11 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 			}
 			if ((*map)[x][y].numbOfFish == 1 && (*map)[x][y].whosPenguin == 0)
 			{
-				if (evaluate(mapP, sizeX, sizeY, playerID, players)>best)
+				if (evaluate(mapP, sizeX, sizeY, playerID, players,numberOfPlayers)>best)
 				{
 					result.x = x;
 					result.y = y;
-					best = evaluate(mapP, sizeX, sizeY, playerID, players);
+					best = evaluate(mapP, sizeX, sizeY, playerID, players,numberOfPlayers);
 				}
 			}
 		}
@@ -54,10 +56,10 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 	return result;
 }
 
-int evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct player players[])// needs reworking (might be fixed already XD)
+int evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct player players[], int numberOfPlayers)// needs reworking (might be fixed already XD)
 {
 	int direction, sum=0, i,k;
-	for (i = 0; i < sizeof(players) / sizeof(struct player); i++)//fix
+	for (i = 0; i < numberOfPlayers; i++)//fix
 	{
 		if (players[i].playerID == playerID)
 		{

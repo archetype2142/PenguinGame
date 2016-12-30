@@ -27,7 +27,6 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 
 
 	//Reads player stats and Map
-	char buffer[20];
 	while(lines < num_of_players)
 	{
 		lines += 1;
@@ -88,7 +87,7 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 	}
 	fclose(file);
 }
-
+/*
 void PrintMap1(void *mapP, int x, int y)
 {
 	enum penguinID
@@ -158,6 +157,7 @@ void PrintMap1(void *mapP, int x, int y)
 		}
 		printf("\n");
 	}
+}
 }
 void PrintMap2(void *mapP, int x, int y)
 {
@@ -250,11 +250,11 @@ if (b%a==0)
     PrintMap2(mapP,  x, y);
     }
 }
-}
-void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[])
+*/
+void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[], int numbOfPlayers)
 {
-	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	int i, k, numbOfPenguins = players[0].numberOfPenguins, numbOfPlayers = sizeof(players) / sizeof(struct player);//possible error, numbofplayers evaluated to 0
+	struct Floe(*map)[sizeX][sizeY] = (struct Floe (*)[sizeX][sizeY]) mapP;
+	int i, k, numbOfPenguins = players[0].numberOfPenguins;
 	char buffer[20];
 	FILE *file = fopen("file.txt", "w");
 	sprintf(buffer, "%d", numbOfPlayers);
@@ -284,7 +284,7 @@ void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player 
 	{
 		for (k = 0; k <sizeX; k++)
 		{
-			if ((*map)[k][i].numbOfFish>=0)
+			if ((*map)[k][i].numbOfFish>=0&&(*map)[k][i].numbOfFish<4)
 			{
 				sprintf(buffer, "%d", k);
 				fputs(buffer, file);

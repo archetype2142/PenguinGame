@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 	char *phase;
 	char *penguinos;
 	char *inFile, *outFile;
-	int sizeX, sizeY/*, NumberOfplayers*/;
+	int sizeX, sizeY, NumberOfplayers=0;
 	// check if arguments are less than 3
 	if(argc < 3)
 	{
@@ -61,15 +61,15 @@ int main(int argc, char* argv[])
 	{
 		if (strcmp(phase, "placement") == 0)
 		{
-			target = place(map, sizeX, sizeY, MY_ID, players);
+			target = place(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
 			placement(target.x, target.y, map, sizeX, sizeY, MY_ID);
 		}
 		else
 		{
-			moveVector = move(MY_ID, map, sizeX, sizeY, players);
+			moveVector = move(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
 			movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID);
 		}
-		write_file(outFile, map, sizeX,sizeY,players);
+		write_file(outFile, map, sizeX,sizeY,players, NumberOfplayers);
 	}
 	return 0;
 }

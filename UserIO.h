@@ -3,7 +3,7 @@
 
 /* writes into the game board file after performing
 a move and saves to another file */
-void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[]);
+void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[], int numbOfPlayers);
 
 /* reads the game board, taking the file name as
 the input and returns all contents of the file
