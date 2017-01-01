@@ -4,21 +4,21 @@
 #include "UserIO.h"
 
 
-void read_file(const char *filename, struct player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
+int read_file(const char *filename, struct player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
 {
 	int num_of_pingus = 0, lines = 0, i, j, x, y;
 	char ch;
 	FILE *file = fopen(filename, "r");
-	rewind(file);
 
 	//Checks if file can be opened
 	if (!file)
 	{
 		fputs("File error", stderr);
-		return NULL;
+		return 0;
 	}
 
 	//Reads first line
+	// ???????????????????????????????????????????
 	while(ch != '\n')
 	{
 		fscanf(file, "%d;%d;", num_of_players, &num_of_pingus);
@@ -86,6 +86,7 @@ void read_file(const char *filename, struct player **players, struct Floe **mapP
 		}
 	}
 	fclose(file);
+	return 1;
 }
 /*
 void PrintMap1(void *mapP, int x, int y)
@@ -251,14 +252,14 @@ if (b%a==0)
     }
 }
 */
-void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[], int numbOfPlayers)
+int write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[], int numbOfPlayers)
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe (*)[sizeX][sizeY]) mapP;
 	int i, k, numbOfPenguins = players[0].numberOfPenguins;
 	char buffer[20];
-	FILE *file = fopen("file.txt", "w");
-	sprintf(buffer, "%d", numbOfPlayers);
-	fputs(buffer, file);
+	FILE *file = fopen(filename, "w");
+	fprintf(file, "%d", numbOfPlayers);
+//	fputs(buffer, file);
 	fputs(";", file);
 	sprintf(buffer, "%d;", numbOfPenguins);
 	fputs(buffer, file);
@@ -270,10 +271,29 @@ void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player 
 		for (k = 0; k < numbOfPenguins; k++)
 		{
 			fputs(":", file);
-			sprintf(buffer, "%d", players[i].penguins[k].x);
-			fputs(buffer, file);
+			if(players[i].penguins[k].x>-1)
+            {
+                sprintf(buffer, "%d", players[i].penguins[k].x);
+            }
+            else
+            {
+                sprintf(buffer, "%d", -1);
+            }
+            fputs(buffer, file);
+            if(players[i].penguins[k].x>-1)
+            {
+                sprintf(buffer, "%d", players[i].penguins[k].x);
+            }
+
 			fputs(":", file);
-			sprintf(buffer, "%d", players[i].penguins[k].y);
+			if(players[i].penguins[k].y>-1)
+            {
+                sprintf(buffer, "%d", players[i].penguins[k].y);
+            }
+            else
+            {
+                sprintf(buffer, "%d", -1);
+            }
 			fputs(buffer, file);
 		}
 		fputs(";\n", file);
@@ -303,4 +323,5 @@ void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player 
 		}
 	}
 	fclose(file);
+	return 1;
 }

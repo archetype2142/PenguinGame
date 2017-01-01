@@ -23,9 +23,11 @@ struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player
 					best.yInitial = players[playerID].penguins[i].y;
 					bestvalue = evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
 				}
+
 			}
 		}
 	}
+    free(mapTMPP);
 	return best;
 }
 
@@ -36,10 +38,10 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 	struct player *playerstmp=copyplayers(players,numberOfPlayers);
 	struct point result;
 	int x, y;
-	int best=0;
+	int best=-1;
 	for (y = 0; y < sizeY; y++)
 	{
-		for (x = 0; x < sizeX; x+=2)
+		for (x = 0; x < sizeX; x++)
 		{
 			if ((*map)[x][y].numbOfFish == 1 && (*map)[x][y].whosPenguin == 0)
 			{
@@ -48,43 +50,64 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 				{
 					result.x = x;
 					result.y = y;
-					best = evaluate(mapP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
+					best = evaluate(mapTMP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
 				}
 			}
 		}
 	}
+	free(mapTMP);
 	return result;
 }
 
 struct player *copyplayers(struct player players[], int playerCount)
 {
+    int i,k;
+    struct player *copy=malloc(sizeof(struct player)*playerCount);
+    for(i=0;i<playerCount;i++)
+    {
+        copy[i]=players[i];
+        for(k=0;k<copy[i].numberOfPenguins;k++)
+        {
+            copy[i].penguins=malloc(sizeof(struct penguin)*copy[i].numberOfPenguins);
+        }
 
+    }
+    return copy;
 }
 
 int evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct player players[], int numberOfPlayers)// needs reworking (might be fixed already XD)
 {
-	int direction, sum=0, i,k;
+	int direction, sum=-1, i,k;
 	for (i = 0; i < numberOfPlayers; i++)//fix
 	{
 		if (players[i].playerID == playerID)
 		{
 			for (k = 0; k < players[i].numberOfPenguins; k++)
 			{
-				for (direction = 0; direction < 6; direction++)
-				{
-					sum += evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
-				}
+                if(players[i].penguins[k].x>=0&&players[i].penguins[k].y>=0)
+                {
+                    for (direction = 0; direction < 6; direction++)
+                    {
+                        sum += evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
+                    }
+                }
 			}
 		}
 		else
 		{
-			for (k = 0; k < players[i].numberOfPenguins; k++)
-			{
-				for (direction = 0; direction < 6; direction++)
-				{
-					sum -= evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
-				}
-			}
+            if (players[i].playerID != playerID&&players[i].playerID>0)
+            {
+                for (k = 0; k < players[i].numberOfPenguins; k++)
+                {
+                    if(players[i].penguins[k].x>=0&&players[i].penguins[k].y>=0)
+                    {
+                        for (direction = 0; direction < 6; direction++)
+                        {
+                            sum -= evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
+                        }
+                    }
+                }
+            }
 		}
 	}
 	return sum;
@@ -94,9 +117,9 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int i, sum=0;
-	for(i=0;i*vectors[direction].x<=sizeX&&i*vectors[direction].y<=sizeY&&i*vectors[direction].x>=0&&i*vectors[direction].y>=0;i++)
+	for(i=0;i*vectors[direction].x<=sizeX-1&&i*vectors[direction].y<=sizeY-1&&i*vectors[direction].x>=0&&i*vectors[direction].y>=0;i++)
     {
-        sum+=(*map)[i*vectors[direction].x][i*vectors[direction].y].numbOfFish*(*map)[i*vectors[direction].x][i*vectors[direction].y].numbOfFish;
+        sum+=(*map)[i*vectors[direction].x][i*vectors[direction].y].numbOfFish;
     }
 	return sum;
 }

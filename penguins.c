@@ -37,7 +37,8 @@ int main(int argc, char* argv[])
 	    return 1;
 	}
 	// assign command line arguments to variables
-	else {
+	else
+    {
 		phase = argv[1];
 		if(strcmp(phase, "phase=placement") == 0)
 		{
@@ -47,7 +48,8 @@ int main(int argc, char* argv[])
 			outFile = argv[4];
 			printf("\nPhase: %s\nPenguins: %s\nInputFile: %s\nOutputFile: %s\n", phase, penguinos, inFile, outFile);
 		}
-		else {
+		else
+		{
 			inFile = argv[2];
 			outFile = argv[3];
 		}
@@ -64,6 +66,7 @@ int main(int argc, char* argv[])
 		    checkIfPlaying(MY_ID,players,NumberOfplayers);
 			target = place(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
 			placement(target.x, target.y, map, sizeX, sizeY, MY_ID,players,NumberOfplayers);
+			printf("placed penguin on: x=%d y=%d",target.x,target.y);
 		}
 		else
 		{
@@ -81,12 +84,12 @@ int main(int argc, char* argv[])
 void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct player players[],int playerCount)
 {
     int i;
-	if (check_coordinates(x, y, mapP, sizeX, sizeY, playerID) && check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_penguin(x, y, mapP, sizeX, sizeY))
+	if (check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_penguin(x, y, mapP, sizeX, sizeY))
 	{
 		place_penguin(x, y, playerID, mapP, sizeX, sizeY);
 			for(i=0;i<players[0].numberOfPenguins;i++)
         {
-            if(players[giveIndex(playerID,players,playerCount)].penguins[i].x==-1&&players[giveIndex(playerID,players,playerCount)].penguins[i].y==-1)
+            if(players[giveIndex(playerID,players,playerCount)].penguins[i].x<0&&players[giveIndex(playerID,players,playerCount)].penguins[i].y<0)
             {
                 players[giveIndex(playerID,players,playerCount)].penguins[i].x=x;
                 players[giveIndex(playerID,players,playerCount)].penguins[i].y=y;
