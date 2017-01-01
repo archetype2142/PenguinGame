@@ -1,6 +1,11 @@
 
 #include "Map.h"
+/* takes in coordinates to move the penguin to
+and puts the penguin on the new coordinates*/
+void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct player players[],int playerCount);
 
+/*takes in coordinates to put a penguin on*/
+void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct player players[],int playerCount);
 
 /* checks the number of fishes available on
 the given floe */

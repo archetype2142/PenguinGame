@@ -4,7 +4,7 @@
 #include "UserIO.h"
 
 
-void read_file(const char *filename, struct player **players, void **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
+void read_file(const char *filename, struct player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
 {
 	int num_of_pingus = 0, lines = 0, i, j, x, y;
 	char ch;
@@ -259,8 +259,8 @@ void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player 
 	FILE *file = fopen("file.txt", "w");
 	sprintf(buffer, "%d", numbOfPlayers);
 	fputs(buffer, file);
-	fputs(":", file);
-	sprintf(buffer, "%d", numbOfPenguins);
+	fputs(";", file);
+	sprintf(buffer, "%d;", numbOfPenguins);
 	fputs(buffer, file);
 	fputs("\n", file);
 	for (i = 0; i < numbOfPlayers; i++)

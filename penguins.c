@@ -10,10 +10,10 @@ struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
 
 /* takes in coordinates to move the penguin to
 and puts the penguin on the new coordinates*/
-void movement(int, int, int, int, void *mapP, int, int, int);
+void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct player players[],int playerCount);
 
 /*takes in coordinates to put a penguin on*/
-void placement(int, int, void *mapP, int, int, int);
+void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct player players[],int playerCount);
 
 /*the interactive mode. handles all user input output*/
 void interactive(void *mapP, int, int, int, struct player players[]);//to do!!!!
@@ -63,12 +63,12 @@ int main(int argc, char* argv[])
 		{
 		    checkIfPlaying(MY_ID,players,NumberOfplayers);
 			target = place(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
-			placement(target.x, target.y, map, sizeX, sizeY, MY_ID);
+			placement(target.x, target.y, map, sizeX, sizeY, MY_ID,players,NumberOfplayers);
 		}
 		else
 		{
 			moveVector = move(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
-			movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID);
+			movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
 		}
 		write_file(outFile, map, sizeX,sizeY,players, NumberOfplayers);
 	}
@@ -78,11 +78,21 @@ int main(int argc, char* argv[])
 
 //=================Custom function definitions===============//
 
-void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID)
+void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct player players[],int playerCount)
 {
+    int i;
 	if (check_coordinates(x, y, mapP, sizeX, sizeY, playerID) && check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_penguin(x, y, mapP, sizeX, sizeY))
 	{
 		place_penguin(x, y, playerID, mapP, sizeX, sizeY);
+			for(i=0;i<players[0].numberOfPenguins;i++)
+        {
+            if(players[giveIndex(playerID,players,playerCount)].penguins[i].x==-1&&players[giveIndex(playerID,players,playerCount)].penguins[i].y==-1)
+            {
+                players[giveIndex(playerID,players,playerCount)].penguins[i].x=x;
+                players[giveIndex(playerID,players,playerCount)].penguins[i].y=y;
+                break;
+            }
+        }
 	}
 }
 void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct player players[])
@@ -109,12 +119,25 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct player 
         scanf("%s", outFile);
     }
 }
-void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID)
+void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct player players[],int playerCount)
 {
+    int i;
 	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
+    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID);
 	check_penguin(x1, x2, mapP, sizeX, sizeY);
 	check_target_coordinates(x2, y2, mapP, sizeX, sizeY);
 	check_valid_move(x1, y1, x2, y2, mapP, sizeX, sizeY);
+	(*map)[x1][y1].whosPenguin=0;
+	(*map)[x2][y2].whosPenguin=playerID;
+	for(i=0;i<players[0].numberOfPenguins;i++)
+    {
+        if(players[giveIndex(playerID,players,playerCount)].penguins[i].x==x1&&players[giveIndex(playerID,players,playerCount)].penguins[i].y==y1)
+        {
+            players[giveIndex(playerID,players,playerCount)].penguins[i].x=x2;
+            players[giveIndex(playerID,players,playerCount)].penguins[i].y=y2;
+            break;
+        }
+    }
 }
 

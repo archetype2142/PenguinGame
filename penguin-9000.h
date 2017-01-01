@@ -15,7 +15,7 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 int evaluateBranch(void *mapP, int sizeX, int sizeY,  int x, int y, int direction);
 
 //function that projects a move of a penguin for evaluation
-void makeMove(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int direction, int distanse, int x, int y, int playerID);
+void makeMove(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int direction, int distanse, int x, int y, int playerID, struct player players[],int numberOfPlayers);
 
 void makePlace(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int x, int y, int playerID,struct player *players,int playerCount);
 
@@ -24,3 +24,5 @@ struct vector convert(void *mapP, int sizeX, int sizeY, int x, int y, struct pla
 
 //function that takes in penguin coordinates, direction and distance and returns target coordinates
 void findTarget(struct vector *vector, int x, int y, int distance, int direction);
+
+struct player *copyplayers(struct player players[], int playerCount);

@@ -7,6 +7,7 @@ struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player
 {
 	struct vector best;
 	void *mapTMPP = malloc(sizeof(struct Floe)*sizeX*sizeY);
+    struct player *playerstmp=copyplayers(players,numberOfPlayers);
 	int i, direction = 0, distanse = 0, bestvalue = 0;
 	for (i = 0; i < players[giveIndex(playerID,players,numberOfPlayers)].numberOfPenguins; i++)//evaluating evry possible move for all penguins of playerID//
 	{
@@ -14,13 +15,13 @@ struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player
 		{
 			for (distanse = 0; distanse < 100; distanse++)//create stop condition
 			{
-				makeMove(mapP, mapTMPP, sizeX, sizeY, direction, distanse, players[giveIndex(playerID,players,numberOfPlayers)].penguins[i].x, players[giveIndex(playerID,players,numberOfPlayers)].penguins[i].y, playerID);
-				if (bestvalue<evaluate(mapTMPP, sizeX, sizeY, playerID, players,numberOfPlayers))//new best move has been found, generating its vector//
+				makeMove(mapP, mapTMPP, sizeX, sizeY, direction, distanse, players[giveIndex(playerID,players,numberOfPlayers)].penguins[i].x, players[giveIndex(playerID,players,numberOfPlayers)].penguins[i].y, playerID,playerstmp,numberOfPlayers);
+				if (bestvalue<evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers))//new best move has been found, generating its vector//
 				{
 					findTarget(&best, players[playerID].penguins[i].x, players[playerID].penguins[i].y, distanse, direction);
 					best.xInitial = players[playerID].penguins[i].x;
 					best.yInitial = players[playerID].penguins[i].y;
-					bestvalue = evaluate(mapTMPP, sizeX, sizeY, playerID, players,numberOfPlayers);
+					bestvalue = evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
 				}
 			}
 		}
@@ -32,6 +33,7 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	struct Floe *mapTMP = malloc(sizeof(struct Floe)*sizeX*sizeY);
+	struct player *playerstmp=copyplayers(players,numberOfPlayers);
 	struct point result;
 	int x, y;
 	int best=0;
@@ -41,17 +43,22 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 		{
 			if ((*map)[x][y].numbOfFish == 1 && (*map)[x][y].whosPenguin == 0)
 			{
-			    makePlace(mapP,mapTMP,sizeX,sizeY,x,y,playerID,players,numberOfPlayers);
-				if (evaluate(mapTMP, sizeX, sizeY, playerID, players,numberOfPlayers)>best)
+			    makePlace(mapP,mapTMP,sizeX,sizeY,x,y,playerID,playerstmp,numberOfPlayers);
+				if (evaluate(mapTMP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers)>best)
 				{
 					result.x = x;
 					result.y = y;
-					best = evaluate(mapP, sizeX, sizeY, playerID, players,numberOfPlayers);
+					best = evaluate(mapP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
 				}
 			}
 		}
 	}
 	return result;
+}
+
+struct player *copyplayers(struct player players[], int playerCount)
+{
+
 }
 
 int evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct player players[], int numberOfPlayers)// needs reworking (might be fixed already XD)
@@ -94,7 +101,7 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction
 	return sum;
 }
 
-void makeMove(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int direction, int distanse, int x, int y, int playerID)
+void makeMove(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int direction, int distanse, int x, int y, int playerID, struct player players[],int numberOfPlayers)
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapOrgP;
 	struct Floe(*mapnew)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapNewP;
@@ -106,8 +113,7 @@ void makeMove(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int direction,
 			(*mapnew)[x1][y1] = (*map)[x1][y1];
 		}
 	}
-	(*mapnew)[x][y].whosPenguin = 0;
-	(*mapnew)[x + (vectors[direction].x*distanse)][y + (vectors[direction].y*distanse)].whosPenguin = playerID;
+	movement(x,y,x+vectors[direction].x*distanse,y+vectors[direction].y*distanse,mapNewP,sizeX,sizeY,playerID,players,numberOfPlayers);
 }
 
 void makePlace(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int x, int y, int playerID,struct player *players,int playerCount)
@@ -122,7 +128,7 @@ void makePlace(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int x, int y,
 			(*mapnew)[x1][y1] = (*map)[x1][y1];
 		}
 	}
-	(*mapnew)[x][y].whosPenguin = playerID;
+	placement(x, y, mapNewP,sizeX,sizeY,playerID,players,playerCount);
 }
 
 
