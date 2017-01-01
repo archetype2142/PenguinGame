@@ -14,7 +14,7 @@ int read_file(const char *filename, struct player **players, struct Floe **mapPo
 	if (!file)
 	{
 		fputs("File error", stderr);
-		return 0;
+		return -1;
 	}
 
 	//Reads first line
@@ -86,7 +86,7 @@ int read_file(const char *filename, struct player **players, struct Floe **mapPo
 		}
 	}
 	fclose(file);
-	return 1;
+	return *num_of_players;
 }
 /*
 void PrintMap1(void *mapP, int x, int y)

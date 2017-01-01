@@ -1,2 +1,0 @@
-penguins: penguins.c GameLogic.c UserIO.c
-	gcc -o penguins UserIO.c penguins.c GameLogic.c Map.c -I.
