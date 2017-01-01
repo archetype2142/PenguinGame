@@ -4,9 +4,9 @@
 #include "UserIO.h"
 
 
-void read_file(const char *filename, struct player *players, void *mapPointer, int *sizeX, int *sizeY)
+void read_file(const char *filename, struct player **players, void **mapPointer, int *sizeX, int *sizeY)
 {
-	int num_of_players = 0, num_of_pingus = 0, lines = 0;
+	int num_of_players = 0, num_of_pingus = 0, lines = 0, i, j, x, y;
 	char ch;
 	FILE *file = fopen(filename, "r");
 	rewind(file);
@@ -24,45 +24,45 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 		fscanf(file, "%d;%d;", &num_of_players, &num_of_pingus);
 		ch = fgetc(file);
 	}
-
-
+	(*players)=malloc(sizeof(struct player)*num_of_players);
 	//Reads player stats and Map
 	while(lines < num_of_players)
 	{
 		lines += 1;
-		for (int i = 0; i < num_of_players; i++)
+		for (i = 0; i < num_of_players; i++)
 		{
-			fscanf(file, "%d:%d", &players[i].playerID, &players[i].score);
-			players[i].numberOfPenguins = num_of_pingus;
-			for (int j = 0; j < num_of_pingus; j++)
+			fscanf(file, "%d:%d", &(*players)[i].playerID, &(*players)[i].score);
+			(*players)[i].numberOfPenguins = num_of_pingus;
+			(*players)[i].penguins=malloc(sizeof(struct penguin)*num_of_pingus);
+			for ( j = 0; j < num_of_pingus; j++)
 			{
-				fscanf(file, ":%d:%d", &players[i].penguins[j].x, &players[i].penguins[j].y);
+				fscanf(file, ":%d:%d", &(*players)[i].penguins[j].x, &(*players)[i].penguins[j].y);
 			}
 			fscanf(file, ";\n");
 		}
 	}
 
 	//seek to the end of 'Map'
-	while(ch != 'p')
+	while(ch != 'P')
 		ch = getc(file);
 
 
 	ch = fgetc(file);
 	fscanf(file, "%d:%d", sizeX, sizeY);
 
-	mapPointer = malloc(sizeof(struct Floe)*(*sizeX)*(*sizeY));
-	struct Floe(*map)[(*sizeX)][(*sizeY)] = (struct Floe(*)[(*sizeX)][(*sizeY)]) mapPointer;
+	(*mapPointer) = malloc(sizeof(struct Floe)*(*sizeX)*(*sizeY));
+	struct Floe(*map)[(*sizeX)][(*sizeY)] = (struct Floe(*)[(*sizeX)][(*sizeY)]) (*mapPointer);
 
 	//Scanning map
-	int junk = 0;
 	while(ch != EOF)
 	{
 		ch =  fgetc(file);
-		for (int i = 0; i < *sizeY; i++)
+		for (i = 0; i < *sizeY; i++)
 		{
-			for (int j = 0; j < *sizeX; j++)
+			for (j = 0; j < *sizeX; j++)
 			{
-				fscanf(file, "%d:%d:%d:%d\n", &junk, &junk, &(*map)[j][i].numbOfFish, &(*map)[j][i].whosPenguin);
+				fscanf(file, "%d:%d:", &x, &y);
+				fscanf(file,"%d:%d\n",&(*map)[x][y].numbOfFish, &(*map)[x][y].whosPenguin);
 			}
 		}
 	}
@@ -70,17 +70,17 @@ void read_file(const char *filename, struct player *players, void *mapPointer, i
 	//Printing all what scanned for testing
 	printf("\nPlayers: %d\nPenguins per player: %d\n", num_of_players, num_of_pingus);
 
-	for (int i = 0; i < num_of_players; ++i)
+	for (i = 0; i < num_of_players; ++i)
 	{
-		printf("\nPlayer ID: %d\nScore: %d\n", players[i].playerID, players[i].score);
-		for (int j = 0; j < num_of_pingus; ++j)	{
-			printf("Penguin %d\nx: %d, y: %d\n", j + 1, players[i].penguins[j].x, players[i].penguins[j].y);
+		printf("\nPlayer ID: %d\nScore: %d\n", (*players)[i].playerID, (*players)[i].score);
+		for (j = 0; j < num_of_pingus; ++j)	{
+			printf("Penguin %d\nx: %d, y: %d\n", j + 1, (*players)[i].penguins[j].x, (*players)[i].penguins[j].y);
 		}
 	}
 	printf("\nsizeX: %d\nsizeY: %d\n", *sizeX, *sizeY);
-	for (int i = 0; i < *sizeY; i++)
+	for (i = 0; i < *sizeY; i++)
 	{
-		for (int j = 0; j < *sizeX; j++)
+		for (j = 0; j < *sizeX; j++)
 		{
 			printf("\nX: %d, Y: %d\nNumber of Fishes: %d\nPenguin belong to player: %d\n", j, i, (*map)[j][i].numbOfFish, (*map)[j][i].whosPenguin);
 		}

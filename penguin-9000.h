@@ -17,6 +17,8 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY,  int x, int y, int directio
 //function that projects a move of a penguin for evaluation
 void makeMove(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int direction, int distanse, int x, int y, int playerID);
 
+void makePlace(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int x, int y, int playerID);
+
 //converting map to a vector
 struct vector convert(void *mapP, int sizeX, int sizeY, int x, int y, struct player players[],int playerId, int penguinId);
 

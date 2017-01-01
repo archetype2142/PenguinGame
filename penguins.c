@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 			outFile = argv[3];
 		}
 	}
-	read_file(inFile, players, map, &sizeX, &sizeY);
+	read_file(inFile, &players, &map, &sizeX, &sizeY);
 	if (argc == 2)
 	{
 		interactive(map, sizeX, sizeY, MY_ID, players);
