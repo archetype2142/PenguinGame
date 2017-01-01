@@ -9,7 +9,7 @@ void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player 
 the input and returns all contents of the file
 as an array of characters
 */
-void read_file(const char *filename, struct player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players);
+int read_file(const char *filename, struct player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players);
 
 /*a function that prints the map in console window. Very rudementary and ugly*/
 void PrintMap(void *mapP, int sizeX, int sizeY);

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "Map.h"
-#include "userIO.h"
+#include "UserIO.h"
 
 void randomise(int sizeX, int sizeY, struct Floe map[sizeX][sizeY] )
 {

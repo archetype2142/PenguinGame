@@ -4,7 +4,7 @@
 #include "UserIO.h"
 
 
-void read_file(const char *filename, struct player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
+int read_file(const char *filename, struct player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
 {
 	int num_of_pingus = 0, lines = 0, i, j, x, y;
 	char ch;
@@ -15,7 +15,7 @@ void read_file(const char *filename, struct player **players, struct Floe **mapP
 	if (!file)
 	{
 		fputs("File error", stderr);
-		return NULL;
+		return -1;
 	}
 
 	//Reads first line
@@ -86,6 +86,7 @@ void read_file(const char *filename, struct player **players, struct Floe **mapP
 		}
 	}
 	fclose(file);
+	return *num_of_players;
 }
 /*
 void PrintMap1(void *mapP, int x, int y)
