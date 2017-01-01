@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 			outFile = argv[3];
 		}
 	}
-	read_file(inFile, &players, &map, &sizeX, &sizeY);
+	read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers);
 	if (argc == 2)
 	{
 		interactive(map, sizeX, sizeY, MY_ID, players);
@@ -61,6 +61,7 @@ int main(int argc, char* argv[])
 	{
 		if (strcmp(phase, "placement") == 0)
 		{
+		    checkIfPlaying(MY_ID,players,NumberOfplayers);
 			target = place(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
 			placement(target.x, target.y, map, sizeX, sizeY, MY_ID);
 		}

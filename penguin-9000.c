@@ -31,7 +31,7 @@ struct vector move(int playerID, void *mapP, int sizeX, int sizeY, struct player
 struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player players[], int numberOfPlayers)
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	struct Floe *mapTMP = malloc(sizeof(struct Floe)*sizeX*sizeY);;
+	struct Floe *mapTMP = malloc(sizeof(struct Floe)*sizeX*sizeY);
 	struct point result;
 	int x, y;
 	int best=0;
@@ -39,13 +39,9 @@ struct point place(void *mapP, int sizeX, int sizeY, int playerID, struct player
 	{
 		for (x = 0; x < sizeX; x+=2)
 		{
-			if (y % 2 == 1 && x == 0)
-			{
-				x = 1;
-			}
 			if ((*map)[x][y].numbOfFish == 1 && (*map)[x][y].whosPenguin == 0)
 			{
-			    makePlace(mapP,mapTMP,sizeX,sizeY,x,y,playerID);
+			    makePlace(mapP,mapTMP,sizeX,sizeY,x,y,playerID,players,numberOfPlayers);
 				if (evaluate(mapTMP, sizeX, sizeY, playerID, players,numberOfPlayers)>best)
 				{
 					result.x = x;
@@ -91,47 +87,10 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int i, sum=0;
-	/*switch (direction)
-	{
-	case 0:
-		for (i = 1; x-i < 0&& (*map).flows[x - i][y - i].penguin==0&& (*map).flows[x - i][y - i].numbOfFish!=0; i++)
-		{
-			sum += (*map).flows[x - i][y - i].numbOfFish*(*map).flows[x - i][y - i].numbOfFish; //using squares so 3 fish will be much more valuable than 1 fish//
-		}
-		break;
-	case 1:
-		for (i = 1; y - 2*i < 0 && (*map).flows[x][y - 2 * i].penguin == 0 && (*map).flows[x][y - 2 * i].numbOfFish != 0; i++)
-		{
-			sum += (*map).flows[x][y - 2*i].numbOfFish*(*map).flows[x][y - 2*i].numbOfFish; //using squares so 3 fish will be much more valuable than 1 fish//
-		}
-		break;
-	case 2:
-		for (i = 1; x + i < sizeX && (*map).flows[x + i][y - i].penguin == 0 && (*map).flows[x + i][y - i].numbOfFish != 0; i++)
-		{
-			sum += (*map).flows[x + i][y - i].numbOfFish*(*map).flows[x + i][y - i].numbOfFish; //using squares so 3 fish will be much more valuable than 1 fish//
-		}
-		break;
-	case 3:
-		for (i = 1; x + i < sizeX && (*map).flows[x + i][y + i].penguin == 0 && (*map).flows[x + i][y + i].numbOfFish != 0; i++)
-		{
-			sum += (*map).flows[x + i][y + i].numbOfFish*(*map).flows[x + i][y + i].numbOfFish; //using squares so 3 fish will be much more valuable than 1 fish//
-		}
-		break;
-	case 4:
-		for (i = 1; y + 2*i < sizeY && (*map).flows[x][y + 2 * i].penguin == 0 && (*map).flows[x][y + 2 * i].numbOfFish != 0; i++)
-		{
-			sum += (*map).flows[x][y + 2 * i].numbOfFish*(*map).flows[x][y + 2 * i].numbOfFish; //using squares so 3 fish will be much more valuable than 1 fish//
-		}
-		break;
-	case 5:
-		for (i = 1; x - i > 0 && (*map).flows[x-i][y -i].penguin == 0 && (*map).flows[x - i][y - i].numbOfFish != 0; i++)
-		{
-			sum += (*map).flows[x - i][y - i].numbOfFish*(*map).flows[x - i][y - i].numbOfFish; //using squares so 3 fish will be much more valuable than 1 fish//
-		}
-		break;
-	default:
-		break;
-	}*/
+	for(i=0;i*vectors[direction].x<=sizeX&&i*vectors[direction].y<=sizeY&&i*vectors[direction].x>=0&&i*vectors[direction].y>=0;i++)
+    {
+        sum+=(*map)[i*vectors[direction].x][i*vectors[direction].y].numbOfFish*(*map)[i*vectors[direction].x][i*vectors[direction].y].numbOfFish;
+    }
 	return sum;
 }
 
@@ -151,7 +110,7 @@ void makeMove(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int direction,
 	(*mapnew)[x + (vectors[direction].x*distanse)][y + (vectors[direction].y*distanse)].whosPenguin = playerID;
 }
 
-void makePlace(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int x, int y, int playerID)
+void makePlace(void *mapOrgP, void *mapNewP, int sizeX, int sizeY, int x, int y, int playerID,struct player *players,int playerCount)
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapOrgP;
 	struct Floe(*mapnew)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapNewP;

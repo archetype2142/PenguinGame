@@ -4,9 +4,9 @@
 #include "UserIO.h"
 
 
-void read_file(const char *filename, struct player **players, void **mapPointer, int *sizeX, int *sizeY)
+void read_file(const char *filename, struct player **players, void **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
 {
-	int num_of_players = 0, num_of_pingus = 0, lines = 0, i, j, x, y;
+	int num_of_pingus = 0, lines = 0, i, j, x, y;
 	char ch;
 	FILE *file = fopen(filename, "r");
 	rewind(file);
@@ -21,15 +21,15 @@ void read_file(const char *filename, struct player **players, void **mapPointer,
 	//Reads first line
 	while(ch != '\n')
 	{
-		fscanf(file, "%d;%d;", &num_of_players, &num_of_pingus);
+		fscanf(file, "%d;%d;", num_of_players, &num_of_pingus);
 		ch = fgetc(file);
 	}
-	(*players)=malloc(sizeof(struct player)*num_of_players);
+	(*players)=malloc(sizeof(struct player)*(*num_of_players));
 	//Reads player stats and Map
-	while(lines < num_of_players)
+	while(lines < (*num_of_players))
 	{
 		lines += 1;
-		for (i = 0; i < num_of_players; i++)
+		for (i = 0; i < (*num_of_players); i++)
 		{
 			fscanf(file, "%d:%d", &(*players)[i].playerID, &(*players)[i].score);
 			(*players)[i].numberOfPenguins = num_of_pingus;
@@ -68,9 +68,9 @@ void read_file(const char *filename, struct player **players, void **mapPointer,
 	}
 
 	//Printing all what scanned for testing
-	printf("\nPlayers: %d\nPenguins per player: %d\n", num_of_players, num_of_pingus);
+	printf("\nPlayers: %d\nPenguins per player: %d\n", (*num_of_players), num_of_pingus);
 
-	for (i = 0; i < num_of_players; ++i)
+	for (i = 0; i < (*num_of_players); ++i)
 	{
 		printf("\nPlayer ID: %d\nScore: %d\n", (*players)[i].playerID, (*players)[i].score);
 		for (j = 0; j < num_of_pingus; ++j)	{
@@ -279,7 +279,8 @@ void write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player 
 		fputs(";\n", file);
 	}
 	fputs("MAP\n", file);
-	// insert map size variables
+	sprintf(buffer,"%d:%d\n",sizeX,sizeY);
+	fputs(buffer,file);
 	for (i = 0; i < sizeY; i++)
 	{
 		for (k = 0; k <sizeX; k++)

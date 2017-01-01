@@ -112,3 +112,22 @@ int giveIndex(int playerID, struct player players[], int playerCount)
     return -1;
 }
 
+void checkIfPlaying(int playerID, struct player *players, int playerCount)
+{
+    int i, freePlace=99999, isPlaying=0;
+    for(i=playerCount;i>=0;i--)
+    {
+        if(players[i].playerID==-1)
+        {
+            freePlace=i;
+        }
+        if(players[i].playerID==playerID)
+        {
+            isPlaying=1;
+        }
+    }
+    if(isPlaying==0)
+    {
+        players[freePlace].playerID=playerID;
+    }
+}
