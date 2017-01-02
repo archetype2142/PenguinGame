@@ -13,7 +13,7 @@ struct penguin
 	int y; //y coordinate of a penguin
 };
 
-struct player
+struct Player
 {
 	int score; // current score of a player
 	struct penguin *penguins; //array of penguins, hardcoding might need to be fixed
@@ -21,7 +21,7 @@ struct player
 	int playerID;
 };
 
-struct vector
+struct Vector
 {
 	int xInitial;
 	int yInitial;
@@ -37,7 +37,7 @@ struct directions
 	int y;
 };
 
-struct point
+struct Point
 {
 	int x;
 	int y;

@@ -2,10 +2,10 @@
 #include "Map.h"
 /* takes in coordinates to move the penguin to
 and puts the penguin on the new coordinates*/
-void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct player players[],int playerCount);
+void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
 
 /*takes in coordinates to put a penguin on*/
-void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct player players[],int playerCount);
+void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
 
 /* checks the number of fishes available on
 the given floe */
@@ -30,6 +30,6 @@ int  check_coordinates(int x, int y, void *mapP, int sizeX, int sizeY, int playe
 void place_penguin(int x, int y, int playerID, void *mapP, int sizeX, int sizeY);
 
 /*function that retrievs index of player of playerID*/
-int giveIndex(int playerID, struct player players[], int playerCount);
+int giveIndex(int playerID, struct Player players[], int playerCount);
 
-void checkIfPlaying(int playerID, struct player *players, int playerCount);
+void checkIfPlaying(int playerID, struct Player *players, int playerCount);

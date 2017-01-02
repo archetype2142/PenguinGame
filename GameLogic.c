@@ -103,7 +103,7 @@ void place_penguin(int x, int y, int playerID, void *mapP, int sizeX, int sizeY)
 	(*map)[x][y].whosPenguin = playerID;
 }
 
-int giveIndex(int playerID, struct player players[], int playerCount)
+int giveIndex(int playerID, struct Player players[], int playerCount)
 {
 	int i;
 	for (i = 0; i < playerCount; i++)
@@ -112,7 +112,7 @@ int giveIndex(int playerID, struct player players[], int playerCount)
     return -1;
 }
 
-void checkIfPlaying(int playerID, struct player *players, int playerCount)
+void checkIfPlaying(int playerID, struct Player *players, int playerCount)
 {
     int i, freePlace=99999, isPlaying=0;
     for(i=playerCount;i>=0;i--)

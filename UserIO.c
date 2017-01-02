@@ -4,7 +4,7 @@
 #include "UserIO.h"
 
 
-int read_file(const char *filename, struct player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
+int read_file(const char *filename, struct Player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
 {
 	int num_of_pingus = 0, i, j, x, y;
 	char ch;
@@ -23,7 +23,7 @@ int read_file(const char *filename, struct player **players, struct Floe **mapPo
 		fscanf(file, "%d;%d;", num_of_players, &num_of_pingus);
 		ch = fgetc(file);
 	}
-	(*players)=malloc(sizeof(struct player)*(*num_of_players));
+	(*players)=malloc(sizeof(struct Player)*(*num_of_players));
 	//Reads player stats and Map
 		for (i = 0; i < (*num_of_players); i++)
 		{
@@ -247,7 +247,7 @@ if (b%a==0)
     }
 }
 */
-int write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player players[], int numbOfPlayers)
+int write_file(char *filename, void *mapP, int sizeX, int sizeY, struct Player players[], int numbOfPlayers)
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe (*)[sizeX][sizeY]) mapP;
 	int i, k, numbOfPenguins = players[0].numberOfPenguins;
@@ -270,7 +270,7 @@ int write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player p
 		{
 			if ((*map)[k][i].numbOfFish>=0&&(*map)[k][i].numbOfFish<4)
 			{
-				fprintf(file,"%d:%d:%d:%d",k,i,(*map)[k][i].numbOfFish,(*map)[k][i].whosPenguin);
+				fprintf(file,"%d:%d:%d:%d\n",k,i,(*map)[k][i].numbOfFish,(*map)[k][i].whosPenguin);
 			}
 		}
 	}
