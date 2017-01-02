@@ -6,15 +6,14 @@
 
 int read_file(const char *filename, struct player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
 {
-	int num_of_pingus = 0, lines = 0, i, j, x, y;
+	int num_of_pingus = 0, i, j, x, y;
 	char ch;
 	FILE *file = fopen(filename, "r");
 
 	//Checks if file can be opened
 	if (!file)
 	{
-		fputs("File error", stderr);
-		return -1;
+		return 0;
 	}
 
 	//Reads first line
@@ -26,9 +25,6 @@ int read_file(const char *filename, struct player **players, struct Floe **mapPo
 	}
 	(*players)=malloc(sizeof(struct player)*(*num_of_players));
 	//Reads player stats and Map
-	while(lines < (*num_of_players))
-	{
-		lines += 1;
 		for (i = 0; i < (*num_of_players); i++)
 		{
 			fscanf(file, "%d:%d", &(*players)[i].playerID, &(*players)[i].score);
@@ -40,7 +36,6 @@ int read_file(const char *filename, struct player **players, struct Floe **mapPo
 			}
 			fscanf(file, ";\n");
 		}
-	}
 
 	//seek to the end of 'Map'
 	while(ch != 'P')
@@ -76,7 +71,7 @@ int read_file(const char *filename, struct player **players, struct Floe **mapPo
 		for (j = 0; j < num_of_pingus; ++j)	{
 			printf("Penguin %d\nx: %d, y: %d\n", j + 1, (*players)[i].penguins[j].x, (*players)[i].penguins[j].y);
 		}
-	}
+	}/*
 	printf("\nsizeX: %d\nsizeY: %d\n", *sizeX, *sizeY);
 	for (i = 0; i < *sizeY; i++)
 	{
@@ -84,9 +79,9 @@ int read_file(const char *filename, struct player **players, struct Floe **mapPo
 		{
 			printf("\nX: %d, Y: %d\nNumber of Fishes: %d\nPenguin belong to player: %d\n", j, i, (*map)[j][i].numbOfFish, (*map)[j][i].whosPenguin);
 		}
-	}
+	}*/
 	fclose(file);
-	return *num_of_players;
+	return 1;
 }
 /*
 void PrintMap1(void *mapP, int x, int y)
@@ -256,69 +251,26 @@ int write_file(char *filename, void *mapP, int sizeX, int sizeY, struct player p
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe (*)[sizeX][sizeY]) mapP;
 	int i, k, numbOfPenguins = players[0].numberOfPenguins;
-	char buffer[20];
 	FILE *file = fopen(filename, "w");
-	fprintf(file, "%d", numbOfPlayers);
-//	fputs(buffer, file);
-	fputs(";", file);
-	sprintf(buffer, "%d;", numbOfPenguins);
-	fputs(buffer, file);
-	fputs("\n", file);
+	fprintf(file, "%d;%d;\n", numbOfPlayers,numbOfPenguins);
 	for (i = 0; i < numbOfPlayers; i++)
 	{
-		sprintf(buffer, "%d", players[i].playerID);
-		fputs(buffer, file);
+		fprintf(file, "%d:%d", players[i].playerID, players[i].score);
 		for (k = 0; k < numbOfPenguins; k++)
 		{
-			fputs(":", file);
-			if(players[i].penguins[k].x>-1)
-            {
-                sprintf(buffer, "%d", players[i].penguins[k].x);
-            }
-            else
-            {
-                sprintf(buffer, "%d", -1);
-            }
-            fputs(buffer, file);
-            if(players[i].penguins[k].x>-1)
-            {
-                sprintf(buffer, "%d", players[i].penguins[k].x);
-            }
-
-			fputs(":", file);
-			if(players[i].penguins[k].y>-1)
-            {
-                sprintf(buffer, "%d", players[i].penguins[k].y);
-            }
-            else
-            {
-                sprintf(buffer, "%d", -1);
-            }
-			fputs(buffer, file);
+            fprintf(file, ":%d:%d",players[i].penguins[k].x, players[i].penguins[k].y);
 		}
 		fputs(";\n", file);
 	}
 	fputs("MAP\n", file);
-	sprintf(buffer,"%d:%d\n",sizeX,sizeY);
-	fputs(buffer,file);
+	fprintf(file,"%d:%d\n",sizeX,sizeY);
 	for (i = 0; i < sizeY; i++)
 	{
 		for (k = 0; k <sizeX; k++)
 		{
 			if ((*map)[k][i].numbOfFish>=0&&(*map)[k][i].numbOfFish<4)
 			{
-				sprintf(buffer, "%d", k);
-				fputs(buffer, file);
-				fputs(":", file);
-				sprintf(buffer, "%d", i);
-				fputs(buffer, file);
-				fputs(":", file);
-				sprintf(buffer, "%d", (*map)[k][i].numbOfFish);
-				fputs(buffer, file);
-				fputs(":", file);
-				sprintf(buffer, "%d", (*map)[k][i].whosPenguin);
-				fputs(buffer, file);
-				fputs("\n", file);
+				fprintf(file,"%d:%d:%d:%d",k,i,(*map)[k][i].numbOfFish,(*map)[k][i].whosPenguin);
 			}
 		}
 	}

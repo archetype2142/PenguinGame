@@ -117,9 +117,10 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int i, sum=0;
-	for(i=0;i*vectors[direction].x<=sizeX-1&&i*vectors[direction].y<=sizeY-1&&i*vectors[direction].x>=0&&i*vectors[direction].y>=0;i++)
+	for(i=0;i*vectors[direction].x<=sizeX-1&&i*vectors[direction].y<=sizeY-1&&i*vectors[direction].x>=0&&i*vectors[direction].y>=0;)
     {
         sum+=(*map)[i*vectors[direction].x][i*vectors[direction].y].numbOfFish;
+        i++;
     }
 	return sum;
 }

@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 	char *inFile, *outFile;
 	int sizeX, sizeY, NumberOfplayers=0;
 	// check if arguments are less than 3
-	if(argc < 3)
+	if(argc < 3&&argc!=0)
 	{
 	    printf("invalid number of parameters");
 	    return 1;
@@ -54,27 +54,45 @@ int main(int argc, char* argv[])
 			outFile = argv[3];
 		}
 	}
-	read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers);
-	if (argc == 2)
+    if (argc == 0)
 	{
+	    printf("no command line arguments\ninteractive mode selected\nprovide input file:\n");
+	    inFile=malloc(sizeof(char)*40);
+	    scanf("%s",inFile);
+	    if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
+        {
+            printf("failed to read %s",inFile);
+            getchar();
+            exit(1);
+        }
 		interactive(map, sizeX, sizeY, MY_ID, players);
 	}
 	else
-	{
-		if (strcmp(phase, "placement") == 0)
-		{
-		    checkIfPlaying(MY_ID,players,NumberOfplayers);
-			target = place(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
-			placement(target.x, target.y, map, sizeX, sizeY, MY_ID,players,NumberOfplayers);
-			printf("placed penguin on: x=%d y=%d",target.x,target.y);
-		}
-		else
-		{
-			moveVector = move(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
-			movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
-		}
-		write_file(outFile, map, sizeX,sizeY,players, NumberOfplayers);
-	}
+    {
+        if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
+        {
+            fputs("File error", stderr);
+            printf("failed to read %s",inFile);
+            getchar();
+            exit(1);
+        }
+        else
+        {
+            if (strcmp(phase, "placement") == 0)
+            {
+                checkIfPlaying(MY_ID,players,NumberOfplayers);
+                target = place(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+                placement(target.x, target.y, map, sizeX, sizeY, MY_ID,players,NumberOfplayers);
+                printf("placed penguin on: x=%d y=%d",target.x,target.y);
+            }
+            else
+            {
+                moveVector = move(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
+                movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+            }
+            write_file(outFile, map, sizeX,sizeY,players, NumberOfplayers);
+        }
+    }
 	return 0;
 }
 
