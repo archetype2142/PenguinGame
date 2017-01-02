@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 	char *filename = argv[1];
 	int sizeX=atoi(argv[2]), sizeY=atoi(argv[3]), playersn=atoi(argv[4]), penguins=atoi(argv[5]), i,k;
 	struct Floe map[sizeX][sizeY];
-	struct player players[playersn];
+	struct Player players[playersn];
 	for(i=0;i<playersn;i++)
     {
         players[i].numberOfPenguins=penguins;
