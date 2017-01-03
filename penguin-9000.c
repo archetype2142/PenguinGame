@@ -140,7 +140,7 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction
 	int i, sum=0;
 	for(i=1; x+i*vectors[direction].x<sizeX && y+i*vectors[direction].y<sizeY && x+i*vectors[direction].x>=0 && y+i*vectors[direction].y>=0 && (*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].numbOfFish!=0 && (*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].whosPenguin==0; i++)
     {
-        sum+=(*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].numbOfFish;
+        sum+=(*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].numbOfFish*(*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].numbOfFish;
     }
     sum += (*map)[x][y].numbOfFish;
 	return sum;
