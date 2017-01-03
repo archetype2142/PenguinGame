@@ -83,6 +83,7 @@ int read_file(const char *filename, struct Player **players, struct Floe **mapPo
 	fclose(file);
 	return 1;
 }
+/*
 void PrintMap1(void *mapP, int x, int y)
 {
 	enum penguinID
@@ -252,6 +253,7 @@ if (((a+1)%(b+1))==0)
     PrintMap2(void *mapP, int x, int y);
     }
 }
+*/
 int write_file(char *filename, void *mapP, int sizeX, int sizeY, struct Player players[], int numbOfPlayers)
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe (*)[sizeX][sizeY]) mapP;
