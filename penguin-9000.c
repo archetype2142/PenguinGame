@@ -9,7 +9,7 @@ struct Vector movePenguin(int playerID, void *mapP, int sizeX, int sizeY, struct
 	struct Vector best={-1,-1,-1,-1};
 	void *mapTMPP = malloc(sizeof(struct Floe)*sizeX*sizeY);
     struct Player *playerstmp=copyplayers(players,numberOfPlayers);
-	int i, direction = 0, distanse = 0, bestvalue = 0, playerIndex=giveIndex(playerID,players,numberOfPlayers), newEvaluate;
+	int i, flag=1, direction = 0, distanse = 0, bestvalue = 0, playerIndex=giveIndex(playerID,players,numberOfPlayers), newEvaluate;
 	for (i = 0; i < players[playerIndex].numberOfPenguins; i++)//evaluating evry possible move for all penguins of playerID//
 	{
 		for ( direction = 0; direction < 6; direction++)
@@ -25,8 +25,9 @@ struct Vector movePenguin(int playerID, void *mapP, int sizeX, int sizeY, struct
                          mapTMPP,sizeX,sizeY,playerID,playerstmp,numberOfPlayers))
                    {
                     newEvaluate=evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
-                    if (bestvalue<newEvaluate)//new best move has been found, generating its vector//
+                    if (bestvalue<newEvaluate || flag)//new best move has been found, generating its vector//
                     {
+                        flag=0;
                         best.xInitial = players[playerIndex].penguins[i].x;
                         best.yInitial = players[playerIndex].penguins[i].y;
                         best.xTarget=players[playerIndex].penguins[i].x+vectors[direction].x*distanse;
@@ -48,7 +49,7 @@ struct Point placePenguin(void *mapP, int sizeX, int sizeY, int playerID, struct
 	struct Floe *mapTMP = malloc(sizeof(struct Floe)*sizeX*sizeY);
 	struct Player *playerstmp;
 	struct Point result={-1,-1};
-	int x, y;
+	int x, y, flag=1;
 	int best=0;
 	for (y = 0; y < sizeY; y++)
 	{
@@ -60,8 +61,9 @@ struct Point placePenguin(void *mapP, int sizeX, int sizeY, int playerID, struct
                 memcpy( mapTMP, * map, sizeof(struct Floe) * sizeX * sizeY);
                 placement(x, y, mapTMP,sizeX,sizeY,playerID,playerstmp,numberOfPlayers);
 			    int newEvalueate = evaluate(mapTMP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
-				if (newEvalueate>best)
+				if (newEvalueate>best || flag)
 				{
+				    flag=0;
 					result.x = x;
 					result.y = y;
 					best = newEvalueate;

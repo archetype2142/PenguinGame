@@ -42,7 +42,6 @@ int main(int argc, char* argv[])
 		phase = argv[1];
 		if(strcmp(phase, "phase=placement") == 0)
 		{
-			phase = (char*)"placement";
 			penguinos = argv[2];
 			inFile = argv[3];
 			outFile = argv[4];
@@ -78,7 +77,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            if (strcmp(phase, "placement") == 0)
+            if (strcmp(phase, "phase=placement") == 0)
             {
                 checkIfPlaying(MY_ID,players,NumberOfplayers);
                 target = placePenguin(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
