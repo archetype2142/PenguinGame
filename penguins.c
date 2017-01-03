@@ -99,7 +99,10 @@ int main(int argc, char* argv[])
                 {
                     moveVector = movePenguin(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
                     if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
+                    {
                         movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+                        printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
+                    }
                         else
                         {
                             printf("error in movePenguin function!");
@@ -177,6 +180,8 @@ int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, i
 	{
         (*map)[x1][y1].whosPenguin=0;
         (*map)[x2][y2].whosPenguin=playerID;
+        players[giveIndex(playerID,players,playerCount)].score+=(*map)[x1][y1].numbOfFish;
+        (*map)[x2][y2].numbOfFish=0;
         for(i=0;i<players[0].numberOfPenguins;i++)
         {
             if(players[giveIndex(playerID,players,playerCount)].penguins[i].x==x1&&players[giveIndex(playerID,players,playerCount)].penguins[i].y==y1)

@@ -3,6 +3,7 @@
 #include <time.h>
 #include "Map.h"
 #include "UserIO.h"
+struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
 
 void randomise(int sizeX, int sizeY, struct Floe map[sizeX][sizeY] )
 {
@@ -27,10 +28,11 @@ int main(int argc, char* argv[])
 	char *filename = argv[1];
 	int sizeX=atoi(argv[2]), sizeY=atoi(argv[3]), playersn=atoi(argv[4]), penguins=atoi(argv[5]), i,k;
 	struct Floe map[sizeX][sizeY];
-	struct player players[playersn];
+	struct Player players[playersn];
 	for(i=0;i<playersn;i++)
     {
         players[i].numberOfPenguins=penguins;
+        players[i].score=0;
         players[i].penguins = malloc(sizeof(struct penguin)*penguins);
         for(k=0;k<penguins;k++)
         {
