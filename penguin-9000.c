@@ -14,23 +14,27 @@ struct Vector movePenguin(int playerID, void *mapP, int sizeX, int sizeY, struct
 	{
 		for ( direction = 0; direction < 6; direction++)
 		{
-			for (distanse = 0; distanse < 100; distanse++)//create stop condition
+		    memcpy(mapTMPP,mapP,sizeof(struct Floe)*sizeX*sizeY);
+			for (distanse = 1;players[playerIndex].penguins[i].x+vectors[direction].x*distanse>=0 && players[playerIndex].penguins[i].y+vectors[direction].y*distanse>=0 &&
+                              players[playerIndex].penguins[i].x+vectors[direction].x*distanse<sizeX && players[playerIndex].penguins[i].y+vectors[direction].y*distanse<sizeY; distanse++)//create stop condition
 			{
-			    memcpy(mapTMPP,mapP,sizeof(struct Floe)*sizeX*sizeY);
-                movement(players[giveIndex(playerID,players,numberOfPlayers)].penguins[i].x,
+                if(movement(players[playerIndex].penguins[i].x,
                          players[playerIndex].penguins[i].y ,
                          players[playerIndex].penguins[i].x+vectors[direction].x*distanse,
                          players[playerIndex].penguins[i].y+vectors[direction].y*distanse,
-                         mapTMPP,sizeX,sizeY,playerID,players,numberOfPlayers);
-                         newEvaluate=evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
-				if (bestvalue<newEvaluate)//new best move has been found, generating its vector//
-				{
-					findTarget(&best, players[playerID].penguins[i].x, players[playerID].penguins[i].y, distanse, direction);
-					best.xInitial = players[playerID].penguins[i].x;
-					best.yInitial = players[playerID].penguins[i].y;
-					bestvalue = newEvaluate;
-				}
-
+                         mapTMPP,sizeX,sizeY,playerID,playerstmp,numberOfPlayers))
+                   {
+                    newEvaluate=evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
+                    if (bestvalue<newEvaluate)//new best move has been found, generating its vector//
+                    {
+                        best.xInitial = players[playerIndex].penguins[i].x;
+                        best.yInitial = players[playerIndex].penguins[i].y;
+                        best.xTarget=players[playerIndex].penguins[i].x+vectors[direction].x*distanse;
+                        best.yTarget=players[playerIndex].penguins[i].y+vectors[direction].y*distanse;
+                        bestvalue = newEvaluate;
+                    }
+                   }
+			    memcpy(mapTMPP,mapP,sizeof(struct Floe)*sizeX*sizeY);
 			}
 		}
 	}
@@ -153,6 +157,6 @@ struct Vector convert(void *mapP, int sizeX, int sizeY, int x, int y, struct Pla
 
 void findTarget(struct Vector * Vector, int x, int y, int distance, int direction)
 {
-	(*Vector).xTarget = vectors[direction].x*distance;
-	(*Vector).yTarget = vectors[direction].y*distance;
+	(*Vector).xTarget = x+vectors[direction].x*distance;
+	(*Vector).yTarget = y+vectors[direction].y*distance;
 }

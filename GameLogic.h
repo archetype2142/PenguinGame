@@ -2,7 +2,7 @@
 #include "Map.h"
 /* takes in coordinates to move the penguin to
 and puts the penguin on the new coordinates*/
-void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
+int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
 
 /*takes in coordinates to put a penguin on*/
 void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
@@ -33,3 +33,6 @@ void place_penguin(int x, int y, int playerID, void *mapP, int sizeX, int sizeY)
 int giveIndex(int playerID, struct Player players[], int playerCount);
 
 void checkIfPlaying(int playerID, struct Player *players, int playerCount);
+
+//checks if there is a move possible
+int IsGameOver(void *mapP, int sizeX, int sizeY, struct Player players[],int playerCount);

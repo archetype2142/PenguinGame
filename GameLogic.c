@@ -37,7 +37,6 @@ int check_penguin(int x, int y, void *mapP, int sizeX, int sizeY)
 int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY)
 {
 	int pathClear = 1;
-	//struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int y, x = 0;
 	// checking fields above or below current field
 	if ((x2 - x1) == 0 && (y2 - y1) % 2 == 0)
@@ -74,7 +73,7 @@ int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int 
 int check_target_coordinates(int x, int y, void *mapP, int sizeX, int sizeY)
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	if ((*map)[x][y].whosPenguin == 0 && (*map)[x][y].numbOfFish != 0)
+	if (x>=0 && y >=0 && x<sizeX && y<sizeY && (*map)[x][y].whosPenguin == 0 && (*map)[x][y].numbOfFish != 0)
 	{
 		return 1;
 	}
@@ -114,7 +113,7 @@ int giveIndex(int playerID, struct Player players[], int playerCount)
 
 void checkIfPlaying(int playerID, struct Player *players, int playerCount)
 {
-    int i, freePlace=99999, isPlaying=0;
+    int i, freePlace, isPlaying=0;
     for(i=playerCount;i>=0;i--)
     {
         if(players[i].playerID==-1)
@@ -130,4 +129,24 @@ void checkIfPlaying(int playerID, struct Player *players, int playerCount)
     {
         players[freePlace].playerID=playerID;
     }
+}
+
+int IsGameOver(void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
+{
+    int i,k, directions=0, movePossible=0;
+	for(i=0;i<playerCount;i++)
+    {
+        for(k=0;k<players[i].numberOfPenguins;k++)
+        {
+            for(directions=0;directions<6;directions++)
+            {
+                if(check_target_coordinates(players[i].penguins[k].x+vectors[directions].x,players[i].penguins[k].y+vectors[directions].y,mapP,sizeX,sizeY))
+                {
+                    movePossible=1;
+                }
+            }
+        }
+
+    }
+    return movePossible;
 }
