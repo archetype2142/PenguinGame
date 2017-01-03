@@ -92,55 +92,57 @@ void PrintMap1(void *mapP, int x, int y)
 	}PenguinID;
 	struct Floe(*map)[x][y] = (struct Floe(*)[x][y]) mapP;
 	int Xcoordinate, Ycoordinate;
-	for (Ycoordinate = 0; Ycoordinate < y; Ycoordinate++)
-	{
-		for (Xcoordinate = 0; Xcoordinate < x; Xcoordinate++)
-		{
-			if (Ycoordinate % 2 == 0)
-			{
-				if (Xcoordinate % 4 == 0)
-				{
-					printf("/");
-				}
-				else if (Xcoordinate % 4 == 1)
-				{
-					printf(" ");
-				}
-				else if (Xcoordinate % 4 == 2)
-				{
-					printf("\\");
-				}
-				else if (Xcoordinate % 4 == 3)
-				{
-                    if (check_penguin(Xcoordinate,Ycoordinate)!=0)
-					{
-					PenguinID = (*map)[Xcoordinate][Ycoordinate].whosPenguin;
-					printf("%c", PenguinID); // printing id of penguin
-					}
-					else
-					{
-                        printf("%d",(*map)[Xcoordinate][Ycoordinate].numbOfFish); //printing number of fish
-				    }
+	int x1,y1;
+        for (Ycoordinate=0,y1=STARTING POINT; Ycoordinate < y;Ycoordinate++,y1++)
+        {
+            for (Xcoordinate=0, x1=STARTING POINT; Xcoordinate < x;x1+2,Xcoordinate++)
+            {
+                if (Ycoordinate % 2 == 0)
+                {
+                    if (Xcoordinate % 4 == 0)
+                    {
+                        printf("/");
+                    }
+                    else if (Xcoordinate % 4 == 1)
+                    {
+                        printf(" ");
+                    }
+                    else if (Xcoordinate % 4 == 2)
+                    {
+                        printf("\\");
+                    }
+                    else if (Xcoordinate % 4 == 3)
+                    {
+                        if (check_penguin(x1,y1)!=0)
+                        {
+                        PenguinID = (*map)[x1][y1].whosPenguin;
+                        printf("%c", PenguinID); // printing id of penguin
+                        }
+                        else
+                        {
+                            printf("%d",(*map)[x1][y1].numbOfFish); //printing number of fish
+                        }
+                    }
                 }
-			else
-			{
+                else
+                {
 
-				if (Xcoordinate % 4 == 0)
+                    if (Xcoordinate % 4 == 0)
 				{
 					printf("\\");
 				}
 				else if (Xcoordinate % 4 == 1)
 				{
-					if (check_penguin(Xcoordinate,Ycoordinate)!=0)
+					if (check_penguin(x1,y1)!=0)
 					{
-					PenguinID = (*map)[Xcoordinate][Ycoordinate].whosPenguin;
+					PenguinID = (*map)[x1][y1].whosPenguin;
 					printf("%c", PenguinID); // printing id of penguin
 					}
 					else
 					{
-                        printf("%d",(*map)[Xcoordinate][Ycoordinate].numbOfFish); // printing number of fish
-				}
-				}
+                        printf("%d",(*map)[x1][y1].numbOfFish); // printing number of fish
+                    }
+                }
 				else if (Xcoordinate % 4 == 2)
 				{
 					printf("/");
@@ -152,9 +154,8 @@ void PrintMap1(void *mapP, int x, int y)
 			}
 		}
 		printf("\n");
-	}
-}
-}
+                }
+    }
 void PrintMap2(void *mapP, int x, int y)
 {
     enum penguinID
@@ -162,10 +163,11 @@ void PrintMap2(void *mapP, int x, int y)
 		X = 0, A = 1, B = 2, C = 3, D = 4
 	}PenguinID;
 	struct Floe(*map)[x][y] = (struct Floe(*)[x][y]) mapP;
-	int Xcoordinate, Ycoordinate;
-	for (Ycoordinate = 0; Ycoordinate < y; Ycoordinate++)
-	{
-		for (Xcoordinate = 0; Xcoordinate < x; Xcoordinate++)
+	int Xcoordinate, Ycoordinate,x1,y1;
+
+        for (Ycoordinate=0,y1=STARTING POINT Ycoordinate < y;Ycoordinate++,y1++)
+        {
+            for (Xcoordinate=0, x1=STARTING POINT; Xcoordinate < x;x1+2,Xcoordinate++)
 		{
 			if (Ycoordinate % 2 == 0)
 			{
@@ -175,14 +177,14 @@ void PrintMap2(void *mapP, int x, int y)
 				}
 				else if (Xcoordinate % 4 == 1)
 				{
-                    if (check_penguin(Xcoordinate,Ycoordinate)!=0)
+                    if (check_penguin(x1,y1)!=0)
 					{
-					PenguinID = (*map)[Xcoordinate][Ycoordinate].whosPenguin;
+					PenguinID = (*map)[x1][y1].whosPenguin;
 					printf("%c", PenguinID); // printing id of penguin
 					}
 					else
 					{
-                        printf("%d",(*map)[Xcoordinate][Ycoordinate].numbOfFish); //printing number of fish
+                        printf("%d",(*map)[x1][y1].numbOfFish); //printing number of fish
 				    }
 				}
 				else if (Xcoordinate % 4 == 2)
@@ -211,39 +213,44 @@ void PrintMap2(void *mapP, int x, int y)
 				}
 				else if (Xcoordinate % 4 == 3)
 				{
-                    if (check_penguin(Xcoordinate,Ycoordinate)!=0)
+                    if (check_penguin(x1,y1)!=0)
 					{
-					PenguinID = (*map)[Xcoordinate][Ycoordinate].whosPenguin;
+					PenguinID = (*map)[x1][y1].whosPenguin;
 					printf("%c", PenguinID); // printing id of penguin
 					}
 					else
 					{
-                        printf("%d",(*map)[Xcoordinate][Ycoordinate].numbOfFish); //printing number of fish
+                        printf("%d",(*map)[x1][y1].numbOfFish); //printing number of fish
 				    }
 				}
 			}
 		}
 		printf("\n");
 	}
-}
+        }
 void PrintMap(void *mapP, int x, int y)
 {
-int a,b;
-while (map[x][y]==0)
-            {
-                for (Xcoordinate=0; Xcoordinate<x; Xcoordinate++)
+int a=0,b=0,Xcoordinate,Ycoordinate,flag=0;
+struct Floe(*map)[x][y] = (struct Floe(*)[x][y]) mapP;
+
+                for (Xcoordinate=0; flag==1; Xcoordinate++)
+                    for (Ycoordinate=0; flag==1; Ycoordinate++)
                     {
-                    a=x;             // does not work
-                    b=y;
+                        if ((*map)[Xcoordinate][Ycoordinate]!=0)
+                        {
+                            a=Xcoordinate;
+                            b=Ycoordinate;
+                            flag=1;
+                            break;
+                        }
                     }
-            }
-if (b%a==0)
+if (((a+1)%(b+1))==0)
     {
-    PrintMap1(mapP, x, y);
+    PrintMap1(void *mapP, int x, int y);
     }
     else
     {
-    PrintMap2(mapP,  x, y);
+    PrintMap2(void *mapP, int x, int y);
     }
 }
 */

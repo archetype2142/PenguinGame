@@ -9,27 +9,32 @@ struct Vector movePenguin(int playerID, void *mapP, int sizeX, int sizeY, struct
 	struct Vector best={-1,-1,-1,-1};
 	void *mapTMPP = malloc(sizeof(struct Floe)*sizeX*sizeY);
     struct Player *playerstmp=copyplayers(players,numberOfPlayers);
-	int i, direction = 0, distanse = 0, bestvalue = 0, playerIndex=giveIndex(playerID,players,numberOfPlayers);
+	int i, direction = 0, distanse = 0, bestvalue = 0, playerIndex=giveIndex(playerID,players,numberOfPlayers), newEvaluate;
 	for (i = 0; i < players[playerIndex].numberOfPenguins; i++)//evaluating evry possible move for all penguins of playerID//
 	{
 		for ( direction = 0; direction < 6; direction++)
 		{
-			for (distanse = 0; distanse < 100; distanse++)//create stop condition
+		    memcpy(mapTMPP,mapP,sizeof(struct Floe)*sizeX*sizeY);
+			for (distanse = 1;players[playerIndex].penguins[i].x+vectors[direction].x*distanse>=0 && players[playerIndex].penguins[i].y+vectors[direction].y*distanse>=0 &&
+                              players[playerIndex].penguins[i].x+vectors[direction].x*distanse<sizeX && players[playerIndex].penguins[i].y+vectors[direction].y*distanse<sizeY; distanse++)//create stop condition
 			{
-			    memcpy(mapTMPP,mapP,sizeof(struct Floe)*sizeX*sizeY);
-                movement(players[giveIndex(playerID,players,numberOfPlayers)].penguins[i].x,
+                if(movement(players[playerIndex].penguins[i].x,
                          players[playerIndex].penguins[i].y ,
                          players[playerIndex].penguins[i].x+vectors[direction].x*distanse,
                          players[playerIndex].penguins[i].y+vectors[direction].y*distanse,
-                         mapTMPP,sizeX,sizeY,playerID,players,numberOfPlayers);
-				if (bestvalue<evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers))//new best move has been found, generating its vector//
-				{
-					findTarget(&best, players[playerID].penguins[i].x, players[playerID].penguins[i].y, distanse, direction);
-					best.xInitial = players[playerID].penguins[i].x;
-					best.yInitial = players[playerID].penguins[i].y;
-					bestvalue = evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
-				}
-
+                         mapTMPP,sizeX,sizeY,playerID,playerstmp,numberOfPlayers))
+                   {
+                    newEvaluate=evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
+                    if (bestvalue<newEvaluate)//new best move has been found, generating its vector//
+                    {
+                        best.xInitial = players[playerIndex].penguins[i].x;
+                        best.yInitial = players[playerIndex].penguins[i].y;
+                        best.xTarget=players[playerIndex].penguins[i].x+vectors[direction].x*distanse;
+                        best.yTarget=players[playerIndex].penguins[i].y+vectors[direction].y*distanse;
+                        bestvalue = newEvaluate;
+                    }
+                   }
+			    memcpy(mapTMPP,mapP,sizeof(struct Floe)*sizeX*sizeY);
 			}
 		}
 	}
@@ -131,7 +136,7 @@ int evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction
 {
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
 	int i, sum=0;
-	for(i=1; x+i*vectors[direction].x<sizeX && y+i*vectors[direction].y<sizeY && x+i*vectors[direction].x>=0 && y+i*vectors[direction].y>=0; i++)
+	for(i=1; x+i*vectors[direction].x<sizeX && y+i*vectors[direction].y<sizeY && x+i*vectors[direction].x>=0 && y+i*vectors[direction].y>=0 && (*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].numbOfFish!=0 && (*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].whosPenguin==0; i++)
     {
         sum+=(*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].numbOfFish;
     }
@@ -152,6 +157,6 @@ struct Vector convert(void *mapP, int sizeX, int sizeY, int x, int y, struct Pla
 
 void findTarget(struct Vector * Vector, int x, int y, int distance, int direction)
 {
-	(*Vector).xTarget = vectors[direction].x*distance;
-	(*Vector).yTarget = vectors[direction].y*distance;
+	(*Vector).xTarget = x+vectors[direction].x*distance;
+	(*Vector).yTarget = y+vectors[direction].y*distance;
 }

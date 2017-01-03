@@ -10,7 +10,7 @@ struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
 
 /* takes in coordinates to move the penguin to
 and puts the penguin on the new coordinates*/
-void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
+int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
 
 /*takes in coordinates to put a penguin on*/
 void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
@@ -88,16 +88,33 @@ int main(int argc, char* argv[])
                     printf("placed penguin on: x=%d y=%d",target.x,target.y);
                 }
                 else
+                {
+                    printf("failed to place a penguin");
+                    getchar();
                     exit(1);
+                }
             }
             else
             {
+                if(IsGameOver(map,sizeX,sizeY,players,NumberOfplayers))
+                {
+                    moveVector = movePenguin(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
+                    if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
+                        movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+                        else
+                        {
+                            printf("error in movePenguin function!");
+                            getchar();
+                            exit(1);
+                        }
 
-                moveVector = movePenguin(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
-                if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
-                    movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
-                    else
-                        exit(1);
+                }
+                else
+                {
+                    printf("no move possible!");
+                    getchar();
+                    exit(1);
+                }
             }
             if(!write_file(outFile, map, sizeX,sizeY,players, NumberOfplayers))
             {
@@ -152,25 +169,29 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player 
         scanf("%s", outFile);
     }
 }
-void movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
+int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
 {
     int i;
 	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
     struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID);
-	check_penguin(x1, x2, mapP, sizeX, sizeY);
-	check_target_coordinates(x2, y2, mapP, sizeX, sizeY);
-	check_valid_move(x1, y1, x2, y2, mapP, sizeX, sizeY);
-	(*map)[x1][y1].whosPenguin=0;
-	(*map)[x2][y2].whosPenguin=playerID;
-	for(i=0;i<players[0].numberOfPenguins;i++)
-    {
-        if(players[giveIndex(playerID,players,playerCount)].penguins[i].x==x1&&players[giveIndex(playerID,players,playerCount)].penguins[i].y==y1)
+	if(x1>=0 && y1 >=0 && x1<sizeX && y1<sizeY && x2>=0 && y2 >=0 && x2<sizeX && y2<sizeY && check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID) && check_penguin(x1, x2, mapP, sizeX, sizeY) && check_target_coordinates(x2, y2, mapP, sizeX, sizeY) &&	check_valid_move(x1, y1, x2, y2, mapP, sizeX, sizeY))
+	{
+        (*map)[x1][y1].whosPenguin=0;
+        (*map)[x2][y2].whosPenguin=playerID;
+        for(i=0;i<players[0].numberOfPenguins;i++)
         {
-            players[giveIndex(playerID,players,playerCount)].penguins[i].x=x2;
-            players[giveIndex(playerID,players,playerCount)].penguins[i].y=y2;
-            break;
+            if(players[giveIndex(playerID,players,playerCount)].penguins[i].x==x1&&players[giveIndex(playerID,players,playerCount)].penguins[i].y==y1)
+            {
+                players[giveIndex(playerID,players,playerCount)].penguins[i].x=x2;
+                players[giveIndex(playerID,players,playerCount)].penguins[i].y=y2;
+                break;
+            }
         }
-    }
+        return 1;
+	}
+	else
+    {
+    return 0;
+	}
 }
 
