@@ -34,6 +34,8 @@ struct Vector movePenguin(int playerID, void *mapP, int sizeX, int sizeY, struct
                         bestvalue = newEvaluate;
                     }
                    }
+                   free(playerstmp);
+                   playerstmp=copyplayers(players,numberOfPlayers);
 			    memcpy(mapTMPP,mapP,sizeof(struct Floe)*sizeX*sizeY);
 			}
 		}
