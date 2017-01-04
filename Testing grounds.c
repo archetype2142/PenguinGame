@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     struct Player *players;
     while(numbOfTests>0)
     {
-        sprintf(buffer,"%s %s.txt %d %d %d %d",mapgenerator,filename,50,50,2,8); //map generator location, map name, sizex, sizey, players, pinguins
+        sprintf(buffer,"%s %s.txt %d %d %d %d",mapgenerator,filename,30,30,2,3); //map generator location, map name, sizex, sizey, players, pinguins
         system(buffer);
         printf("map generated!");
         sprintf(buffer,"%s.txt",filename);
@@ -60,17 +60,18 @@ int main(int argc, char* argv[])
             }
             moved1=0;
             moved2=0;
-            printf("\n%d\n",i);
         }
         sprintf(buffer,"%s.txt",filename);
         read_file(buffer, &players, &map, &sizeX, &sizeY, &numberOfPlayers);
-        if(players[giveIndex(1,players,numberOfPlayers)].score>players[giveIndex(2,players,numberOfPlayers)].score)
+        if(players[giveIndex(1,players,numberOfPlayers)].score>players[giveIndex(2,players,numberOfPlayers)].score && players[giveIndex(2,players,numberOfPlayers)].score && players[giveIndex(1,players,numberOfPlayers)].score>players[giveIndex(2,players,numberOfPlayers)].score)
         {
             score1++;
         }
         else
         {
-            score2++;
+            if(players[giveIndex(1,players,numberOfPlayers)].score==players[giveIndex(2,players,numberOfPlayers)].score);
+            else
+                score2++;
         }
         printf("score1:%d\nscore2:%d",score1,score2);
         numbOfTests--;
