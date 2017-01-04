@@ -17,49 +17,49 @@ int main(int argc, char* argv[])
     struct Player *players;
     while(numbOfTests>0)
     {
-        sprintf(buffer,"%s %s.txt %d %d %d %d",mapgenerator,filename,30,30,2,3); //map generator location, map name, sizex, sizey, players, pinguins
+        sprintf(buffer,"%s %s.txt %d %d %d %d",mapgenerator,filename,30,30,2,2); //map generator location, map name, sizex, sizey, players, pinguins
         system(buffer);
-        printf("map generated!");
+        printf("\n===================\nMAP GENERATED!\n===================\n");
         sprintf(buffer,"%s.txt",filename);
         read_file(buffer, &players,&map,&sizeX,&sizeY, &numberOfPlayers);
-        while(!whatphase(players,numberOfPlayers) || (playerHasMove(players, numberOfPlayers,map,sizeX,sizeY,2) && playerHasMove(players, numberOfPlayers,map,sizeX,sizeY,1)))
+        while(!whatphase(players,numberOfPlayers) || IsGameOver(map,sizeX,sizeY,players,numberOfPlayers))
         {
             i++;
             sprintf(buffer,"%s.txt",filename);
             read_file(buffer, &players, &map, &sizeX, &sizeY, &numberOfPlayers);
             if(!whatphase(players,numberOfPlayers))
             {
-                sprintf(buffer,"%s %s %d %s.txt %s%d.txt", program1,"phase=placement",players[0].numberOfPenguins,filename,filename,1);
+                sprintf(buffer,"%s %s %d %s.txt %s.txt", program1,"phase=placement",players[0].numberOfPenguins,filename,filename);
                 system(buffer);
-                sprintf(buffer,"%s %s %d %s%d.txt %s.txt", program2,"phase=placement",players[0].numberOfPenguins,filename,1,filename);
+                sprintf(buffer,"%s %s %d %s.txt %s.txt", program2,"phase=placement",players[0].numberOfPenguins,filename,filename);
                 system(buffer);
             }
             else
             {
                 if(IsGameOver(map,sizeX,sizeY,players,numberOfPlayers))
                     {
-                        sprintf(buffer,"%s %s %s.txt %s%d.txt", program1,"phase=movement",filename,filename,1);
+                        moved1=0;
+                        moved2=0;
+                        sprintf(buffer,"%s %s %s.txt %s.txt", program1,"phase=movement",filename,filename);
                         if(playerHasMove(players, numberOfPlayers,map,sizeX,sizeY,1))
                         {
                             system(buffer);
                             moved1=1;
                         }
-                        sprintf(buffer,"%s1.txt",filename);
+                        sprintf(buffer,"%s.txt",filename);
                         read_file(buffer, &players,&map,&sizeX,&sizeY, &numberOfPlayers);
-                        sprintf(buffer,"%s %s %s%d.txt %s.txt", program2,"phase=movement",filename,1,filename);
+                        sprintf(buffer,"%s %s %s.txt %s.txt", program2,"phase=movement",filename,filename);
                         if(playerHasMove(players, numberOfPlayers,map,sizeX,sizeY,2))
                         {
                             system(buffer);
                             moved2=1;
                         }
-                        if(!(moved2*moved1))
+                        if((!moved2 && !moved1))
                             break;
                     }
                     else
                         break;
             }
-            moved1=0;
-            moved2=0;
         }
         sprintf(buffer,"%s.txt",filename);
         read_file(buffer, &players, &map, &sizeX, &sizeY, &numberOfPlayers);
@@ -73,8 +73,10 @@ int main(int argc, char* argv[])
             else
                 score2++;
         }
-        printf("score1:%d\nscore2:%d",score1,score2);
+        system("cls");
+        printf("\n===========\nSCORE1:%d\nTHIS GAME:%d\nSCORE2:%d\nTHIS GAME:%d\n==========\n",score1,players[giveIndex(1,players,numberOfPlayers)].score,score2,players[giveIndex(2,players,numberOfPlayers)].score);
         numbOfTests--;
+        printf("TESTS LEFT %d",numbOfTests);
     }
     printf("\nGAME ENDED\nscore1:%d\nscore2:%d",score1,score2);
     getchar();

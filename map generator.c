@@ -12,7 +12,7 @@ void randomise(int sizeX, int sizeY, struct Floe map[sizeX][sizeY] )
 	for (y = 0; y < sizeY; y++)
 		for (x = ((y) % 2); x < sizeX; x += 2)
 		{
-			map[x][y].numbOfFish =1 + (rand()%2);
+			map[x][y].numbOfFish =1 + (rand()%3);
 			map[x][y].whosPenguin = 0;
 		}
     for (y = 0; y < sizeY; y++)
@@ -21,6 +21,11 @@ void randomise(int sizeX, int sizeY, struct Floe map[sizeX][sizeY] )
 			map[x][y].numbOfFish =0;
 			map[x][y].whosPenguin = 0;
 		}
+        for (y = 0; y < sizeY; y++)
+            for (x =0; x < sizeX; x++)
+            {
+                map[x][y].whosPenguin = 0;
+            }
 }
 
 int main(int argc, char* argv[])
