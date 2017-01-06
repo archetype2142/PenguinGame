@@ -112,7 +112,7 @@ float evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct Player pla
                 {
                     for (direction = 0; direction < 6; direction++)
                     {
-                        sum += (check_how_many_fishes(players[i].penguins[k].x,players[i].penguins[k].y,mapP,sizeX,sizeY))* evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction)/ giveAgression(players,numberOfPlayers,mapP,sizeX,sizeY,playerID);
+                        sum += pow(check_how_many_fishes(players[i].penguins[k].x,players[i].penguins[k].y,mapP,sizeX,sizeY),2)* evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction)/ giveAgression(players,numberOfPlayers,mapP,sizeX,sizeY,playerID);
                     }
                 }
 			}
@@ -127,7 +127,7 @@ float evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct Player pla
                     {
                         for (direction = 0; direction < 6; direction++)
                         {
-                            sum -= (check_how_many_fishes(players[i].penguins[k].x,players[i].penguins[k].y,mapP,sizeX,sizeY))* giveAgression(players,numberOfPlayers,mapP,sizeX,sizeY,playerID) * evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
+                            sum -= pow(check_how_many_fishes(players[i].penguins[k].x,players[i].penguins[k].y,mapP,sizeX,sizeY),2)* giveAgression(players,numberOfPlayers,mapP,sizeX,sizeY,playerID) * evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
                         }
                     }
                 }
@@ -187,6 +187,6 @@ float giveAgression(struct Player players[], int PlayerCount, struct Floe *mapp,
             enemyScore+=players[x].score;
         }
     }
-    aggresion= ((float) players[giveIndex(playerID,players,PlayerCount)].score/ (float) enemyScore)/numOfFloes;
+    aggresion= ((float) players[giveIndex(playerID,players,PlayerCount)].score/ (float) enemyScore)/numOfFloes*sizeX*sizeY/2;
     return aggresion;
 }
