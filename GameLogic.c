@@ -36,38 +36,34 @@ int check_penguin(int x, int y, void *mapP, int sizeX, int sizeY)
 
 int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY)
 {
-	int pathClear = 1;
-	int y, x = 0;
-	// checking fields above or below current field
-	if ((x2 - x1) == 0 && (y2 - y1) % 2 == 0)
-	{
-		for (y = y1; y == y2; y += sign(y2 - y1) * 2)
-		{
-			if (y < 0 || y > mapSize || check_penguin(x1, y, mapP, sizeX, sizeY) != 0 || check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 0)
-			{
-				pathClear = 0;
-				break;
-			}
-		}
-	}
-	else {
-		if (abs(x2 - x1) != abs(y2 - y1))
-		{
-			pathClear = 0;
-		}
-		else {
-			// checking fields on diaognals
-			for (x = x1, y = y1; x == x2; x += sign(x2 - x1), y == sign(y2 - y1))
-			{
-				if (y < 0 || x < 0 || x > mapSize || y > mapSize || check_penguin(x, y, mapP, sizeX, sizeY) != 0 || check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 0)
-				{
-					pathClear = 0;
-					break;
-				}
-			}
-		}
-	}
-	return pathClear;
+    struct directions vectors1[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
+    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
+	int pathClear = 0;
+	int i, direction;
+	for(direction=0;direction<6;direction++)
+    {
+        if(((x2-x1)==vectors1[direction].x||(vectors1[direction].x!=0&&(x2-x1)%vectors1[direction].x==0)) && ((y2-y1)==vectors1[direction].y||(y2-y1)%vectors1[direction].y==0) && sign(x2-x1)==sign(vectors1[direction].x) && sign(y2-y1)==sign(vectors1[direction].y))
+        {
+            pathClear=1;
+            break;
+        }
+
+    }
+    if(pathClear)
+    {
+        for(i=1;x1+vectors1[direction].x*i<sizeX &&x1+vectors1[direction].x*i>=0 && y1+vectors1[direction].y*i<sizeY &&y1+vectors1[direction].y*i>=0;i++)
+        {
+            if((*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].whosPenguin!=0 && (*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].numbOfFish==0)
+            {
+                return 0;
+            }
+            if(x1+vectors1[direction].x==x2 && y1+vectors1[direction].y==y2)
+            {
+                return 1;
+            }
+        }
+    }
+	return 0;
 }
 
 int check_target_coordinates(int x, int y, void *mapP, int sizeX, int sizeY)
