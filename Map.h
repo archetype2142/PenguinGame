@@ -1,5 +1,6 @@
 #pragma once
-#define MY_ID 3242
+#define MY_ID 2
+
 
 struct Floe
 {

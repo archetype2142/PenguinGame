@@ -47,5 +47,6 @@ int main(int argc, char* argv[])
         players[i].playerID = -1;
     }
     randomise(sizeX, sizeY, map);
+    BasicPrintMao(map,sizeX,sizeY);
     write_file(filename, map, sizeX, sizeY, players,playersn);
 	}

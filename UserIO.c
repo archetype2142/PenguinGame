@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "Map.h"
 #include "UserIO.h"
+#include "GameLogic.h"
 
 
 int read_file(const char *filename, struct Player **players, struct Floe **mapPointer, int *sizeX, int *sizeY, int *num_of_players)
@@ -284,4 +285,25 @@ int write_file(char *filename, void *mapP, int sizeX, int sizeY, struct Player p
 	}
 	fclose(file);
 	return 1;
+}
+
+void BasicPrintMao(void *mapP, int sizeX, int sizeY, struct Player players[], int playerCount)
+{
+    int x, y;
+    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
+    for(y=0;y<sizeY;y++)
+    {
+        for(x=0;x<sizeX;x++)
+        {
+            if((*map)[x][y].whosPenguin!=0)
+            {
+                printf("|%c",'A'+giveIndex((*map)[x][y].whosPenguin,players,playerCount));
+            }
+            else
+            {
+                (*map)[x][y].numbOfFish>0?printf("|%d",(*map)[x][y].numbOfFish):printf("|%c",' ');
+            }
+        }
+        printf("\n");
+    }
 }
