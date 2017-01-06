@@ -113,27 +113,25 @@ int giveIndex(int playerID, struct Player players[], int playerCount)
 
 void checkIfPlaying(int playerID, struct Player *players, int playerCount)
 {
-    int i, freePlace, isPlaying=0;
-    for(i=playerCount;i>=0;i--)
+    int i, freePlace = -1;
+    for(i=0; i<playerCount; i++)
     {
-        if(players[i].playerID==-1)
-        {
-            freePlace=i;
-        }
+        if(freePlace == -1 && players[i].playerID==-1)
+           freePlace=i;
         if(players[i].playerID==playerID)
         {
-            isPlaying=1;
+            players[i].playerID=playerID;
+            return;
         }
     }
-    if(isPlaying==0)
-    {
+
+    if(freePlace>=0)
         players[freePlace].playerID=playerID;
-    }
 }
 
-int IsGameOver(void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
+int IsGameOver(void *mapP, int sizeX, int sizeY, struct Player players[],int playerCount)
 {
-    int i,k, directions=0, movePossible=0;
+    int i,k, directions=0;
 	for(i=0;i<playerCount;i++)
     {
         for(k=0;k<players[i].numberOfPenguins;k++)
@@ -142,11 +140,11 @@ int IsGameOver(void *mapP, int sizeX, int sizeY, int playerID, struct Player pla
             {
                 if(check_target_coordinates(players[i].penguins[k].x+vectors[directions].x,players[i].penguins[k].y+vectors[directions].y,mapP,sizeX,sizeY))
                 {
-                    movePossible=1;
+                    return 1;
                 }
             }
         }
 
     }
-    return movePossible;
+    return 0;
 }

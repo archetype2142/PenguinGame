@@ -3,6 +3,7 @@
 #include <time.h>
 #include "Map.h"
 #include "UserIO.h"
+struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
 
 void randomise(int sizeX, int sizeY, struct Floe map[sizeX][sizeY] )
 {
@@ -11,7 +12,7 @@ void randomise(int sizeX, int sizeY, struct Floe map[sizeX][sizeY] )
 	for (y = 0; y < sizeY; y++)
 		for (x = ((y) % 2); x < sizeX; x += 2)
 		{
-			map[x][y].numbOfFish =1 + (rand()%2);
+			map[x][y].numbOfFish =1 + (rand()%3);
 			map[x][y].whosPenguin = 0;
 		}
     for (y = 0; y < sizeY; y++)
@@ -20,6 +21,11 @@ void randomise(int sizeX, int sizeY, struct Floe map[sizeX][sizeY] )
 			map[x][y].numbOfFish =0;
 			map[x][y].whosPenguin = 0;
 		}
+        for (y = 0; y < sizeY; y++)
+            for (x =0; x < sizeX; x++)
+            {
+                map[x][y].whosPenguin = 0;
+            }
 }
 
 int main(int argc, char* argv[])
@@ -31,6 +37,7 @@ int main(int argc, char* argv[])
 	for(i=0;i<playersn;i++)
     {
         players[i].numberOfPenguins=penguins;
+        players[i].score=0;
         players[i].penguins = malloc(sizeof(struct penguin)*penguins);
         for(k=0;k<penguins;k++)
         {

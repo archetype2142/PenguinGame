@@ -42,7 +42,6 @@ int main(int argc, char* argv[])
 		phase = argv[1];
 		if(strcmp(phase, "phase=placement") == 0)
 		{
-			phase = (char*)"placement";
 			penguinos = argv[2];
 			inFile = argv[3];
 			outFile = argv[4];
@@ -78,14 +77,16 @@ int main(int argc, char* argv[])
         }
         else
         {
-            if (strcmp(phase, "placement") == 0)
+            if (strcmp(phase, "phase=placement") == 0)
             {
                 checkIfPlaying(MY_ID,players,NumberOfplayers);
                 target = placePenguin(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
                 if(target.x!=-1 || target.y!=-1)
                 {
                     placement(target.x, target.y, map, sizeX, sizeY, MY_ID,players,NumberOfplayers);
+					#ifdef debug
                     printf("placed penguin on: x=%d y=%d",target.x,target.y);
+					#endif
                 }
                 else
                 {
@@ -100,7 +101,12 @@ int main(int argc, char* argv[])
                 {
                     moveVector = movePenguin(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
                     if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
+                    {
                         movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+                        #ifdef debug
+                        printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
+                        #endif // debug
+					}
                         else
                         {
                             printf("error in movePenguin function!");
@@ -174,10 +180,12 @@ int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, i
     int i;
 	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
     struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	if(x1>=0 && y1 >=0 && x1<sizeX && y1<sizeY && x2>=0 && y2 >=0 && x2<sizeX && y2<sizeY && check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID) && check_penguin(x1, x2, mapP, sizeX, sizeY) && check_target_coordinates(x2, y2, mapP, sizeX, sizeY) &&	check_valid_move(x1, y1, x2, y2, mapP, sizeX, sizeY))
+	if(x1>=0 && y1 >=0 && x1<sizeX && y1<sizeY && x2>=0 && y2 >=0 && x2<sizeX && y2<sizeY && check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID) && !check_penguin(x2, y2, mapP, sizeX, sizeY) && check_target_coordinates(x2, y2, mapP, sizeX, sizeY) &&	check_valid_move(x1, y1, x2, y2, mapP, sizeX, sizeY))
 	{
         (*map)[x1][y1].whosPenguin=0;
         (*map)[x2][y2].whosPenguin=playerID;
+        players[giveIndex(playerID,players,playerCount)].score+=(*map)[x1][y1].numbOfFish;
+        (*map)[x1][y1].numbOfFish=0;
         for(i=0;i<players[0].numberOfPenguins;i++)
         {
             if(players[giveIndex(playerID,players,playerCount)].penguins[i].x==x1&&players[giveIndex(playerID,players,playerCount)].penguins[i].y==y1)

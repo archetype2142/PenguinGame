@@ -61,7 +61,7 @@ int read_file(const char *filename, struct Player **players, struct Floe **mapPo
 			}
 		}
 	}
-
+    #ifdef debug
 	//Printing all what scanned for testing
 	printf("\nPlayers: %d\nPenguins per player: %d\n", (*num_of_players), num_of_pingus);
 
@@ -71,7 +71,7 @@ int read_file(const char *filename, struct Player **players, struct Floe **mapPo
 		for (j = 0; j < num_of_pingus; ++j)	{
 			printf("Penguin %d\nx: %d, y: %d\n", j + 1, (*players)[i].penguins[j].x, (*players)[i].penguins[j].y);
 		}
-	}/*
+	}
 	printf("\nsizeX: %d\nsizeY: %d\n", *sizeX, *sizeY);
 	for (i = 0; i < *sizeY; i++)
 	{
@@ -79,7 +79,8 @@ int read_file(const char *filename, struct Player **players, struct Floe **mapPo
 		{
 			printf("\nX: %d, Y: %d\nNumber of Fishes: %d\nPenguin belong to player: %d\n", j, i, (*map)[j][i].numbOfFish, (*map)[j][i].whosPenguin);
 		}
-	}*/
+	}
+	#endif // debug
 	fclose(file);
 	return 1;
 }
