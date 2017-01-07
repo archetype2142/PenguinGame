@@ -23,3 +23,5 @@ void findTarget(struct Vector *Vector, int x, int y, int distance, int direction
 struct Player *copyplayers(struct Player players[], int playerCount);
 
 float giveAgression(struct Player players[], int PlayerCount, struct Floe *mapp, int sizeX, int sizeY, int playerID);
+
+int giveBranches(int x, int y, struct Floe *mapp, int sizeX, int sizeY);

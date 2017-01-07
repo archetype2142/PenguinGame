@@ -57,7 +57,7 @@ int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int 
             {
                 return 0;
             }
-            if(x1+vectors1[direction].x==x2 && y1+vectors1[direction].y==y2)
+            if(x1+vectors1[direction].x*i==x2 && y1+vectors1[direction].y*i==y2)
             {
                 return 1;
             }
