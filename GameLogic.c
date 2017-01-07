@@ -53,7 +53,7 @@ int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int 
     {
         for(i=1;x1+vectors1[direction].x*i<sizeX &&x1+vectors1[direction].x*i>=0 && y1+vectors1[direction].y*i<sizeY &&y1+vectors1[direction].y*i>=0;i++)
         {
-            if((*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].whosPenguin!=0 && (*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].numbOfFish==0)
+            if((*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].whosPenguin!=0 || (*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].numbOfFish==0)
             {
                 return 0;
             }

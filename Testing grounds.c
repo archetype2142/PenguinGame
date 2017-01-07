@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     struct Player *players;
     while(numbOfTests>0)
     {
-        sprintf(buffer,"%s %s.txt %d %d %d %d",mapgenerator,filename,10, 10,2,1); //map generator location, map name, sizex, sizey, players, pinguins
+        sprintf(buffer,"%s %s.txt %d %d %d %d",mapgenerator,filename,30, 30,2,1); //map generator location, map name, sizex, sizey, players, pinguins
         system(buffer);
         printf("\n===================\nMAP GENERATED!\n===================\n");
         sprintf(buffer,"%s.txt",filename);
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
                         printf("\n");
                         #ifdef debug
                         BasicPrintMao(map,sizeX,sizeY, players,numberOfPlayers);
-                        getchar();
+                        system("pause");
                         #endif // debug
                     }
                     else
