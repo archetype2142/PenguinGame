@@ -144,3 +144,36 @@ int IsGameOver(void *mapP, int sizeX, int sizeY, struct Player players[],int pla
     }
     return 0;
 }
+
+//0 means placement 1 means movement
+int whatphase(struct Player *players, int playerCount)
+{
+    int i,k, Phase=1;
+    for(i=0;i<playerCount;i++)
+    {
+        for(k=0;k<players[i].numberOfPenguins;k++)
+        {
+            if(players[i].penguins[k].y<0 || players[i].penguins[k].y<0)
+            {
+                Phase=0;
+            }
+        }
+    }
+    return Phase;
+}
+
+int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID)
+{
+    int k, directions=0;
+        for(k=0;k<players[giveIndex(playerID,players,playerCount)].numberOfPenguins;k++)
+        {
+            for(directions=0;directions<6;directions++)
+            {
+                if(check_target_coordinates(players[giveIndex(playerID,players,playerCount)].penguins[k].x+vectors[directions].x,players[giveIndex(playerID,players,playerCount)].penguins[k].y+vectors[directions].y,map,sizeX,sizeY))
+                {
+                    return 1;
+                }
+            }
+        }
+    return 0;
+}

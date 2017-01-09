@@ -6,8 +6,6 @@
 #define debug
 
 struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
-int whatphase(struct Player *players, int playerCount);
-int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID);
 
 int main(int argc, char* argv[])
 {
@@ -89,37 +87,5 @@ int main(int argc, char* argv[])
     system("cls");
     printf("\n===================\nGAME ENDED\nscore1:%d\nscore2:%d\nAVERAGE SCORE\nscore1:%f\nscore2:%f\n===================",score1,score2,(float)score1/(float)k,(float)score2/(float)k);
     getchar();
-    return 0;
-}
-//0 means placement 1 means movement
-int whatphase(struct Player *players, int playerCount)
-{
-    int i,k, Phase=1;
-    for(i=0;i<playerCount;i++)
-    {
-        for(k=0;k<players[i].numberOfPenguins;k++)
-        {
-            if(players[i].penguins[k].y<0 || players[i].penguins[k].y<0)
-            {
-                Phase=0;
-            }
-        }
-    }
-    return Phase;
-}
-
-int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID)
-{
-    int k, directions=0;
-        for(k=0;k<players[giveIndex(playerID,players,playerCount)].numberOfPenguins;k++)
-        {
-            for(directions=0;directions<6;directions++)
-            {
-                if(check_target_coordinates(players[giveIndex(playerID,players,playerCount)].penguins[k].x+vectors[directions].x,players[giveIndex(playerID,players,playerCount)].penguins[k].y+vectors[directions].y,map,sizeX,sizeY))
-                {
-                    return 1;
-                }
-            }
-        }
     return 0;
 }

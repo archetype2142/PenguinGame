@@ -13,10 +13,10 @@ and puts the penguin on the new coordinates*/
 int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
 
 /*takes in coordinates to put a penguin on*/
-void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
+int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
 
 /*the interactive mode. handles all user input output*/
-void interactive(void *mapP, int, int, int, struct Player players[]);//to do!!!!
+void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player players[], int numbOfPlayers);//to do!!!!
 
 
 int main(int argc, char* argv[])
@@ -33,10 +33,18 @@ int main(int argc, char* argv[])
 	// check if arguments are less than 3
 	if(argc < 3&&argc!=0)
 	{
-	    printf("invalid number of parameters");
-	    return 1;
+	    printf("no command line arguments\ninteractive mode selected\nprovide input file:\n");
+	    inFile=argv[1];
+	    scanf("%s",inFile);
+	    if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
+        {
+            printf("failed to read %s",inFile);
+            getchar();
+            exit(1);
+        }
+		interactive(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+		return 0;
 	}
-	// assign command line arguments to variables
 	else
     {
 		phase = argv[1];
@@ -55,21 +63,6 @@ int main(int argc, char* argv[])
 			outFile = argv[3];
 		}
 	}
-    if (argc == 0)
-	{
-	    printf("no command line arguments\ninteractive mode selected\nprovide input file:\n");
-	    inFile=malloc(sizeof(char)*40);
-	    scanf("%s",inFile);
-	    if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
-        {
-            printf("failed to read %s",inFile);
-            getchar();
-            exit(1);
-        }
-		interactive(map, sizeX, sizeY, MY_ID, players);
-	}
-	else
-    {
         if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
         {
             fputs("File error", stderr);
@@ -129,14 +122,13 @@ int main(int argc, char* argv[])
                 printf("error writing file");
             }
         }
-    }
 	return 0;
 }
 
 
 //=================Custom function definitions===============//
 
-void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
+int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
 {
     int i;
 	if (check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_penguin(x, y, mapP, sizeX, sizeY))
@@ -151,30 +143,63 @@ void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, str
                 break;
             }
         }
+        return 1;
 	}
+	return 0;
 }
-void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player players[])
+void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player players[], int numbOfPlayers)
 {
-    char penguinos[10], phase[10];
-	char inFile[10], outFile[10];
+    int VSmachine, x1,x2,y1,y2;
+    struct Point result;
+    struct Vector targetVector;
+    printf("play vs machine? 1/0\n");
+    scanf("%d",&VSmachine);
     // take all values from user for interactive mode
-    printf("Phase: ");
-    scanf("%s", phase);
-    if(strcmp(phase, "movement") == 0)
+    while(!whatphase(players,numbOfPlayers))
     {
-        printf("Input file name: ");
-        scanf("%s", inFile);
-        printf("Output file name: ");
-        scanf("%s", outFile);
+        do
+        {
+        printf("player one place your penguin!");
+        scanf("%d %d", &x1, &y1);
+        }
+        while(!placement(x1,y1,mapP,sizeX,sizeY,1,players,numbOfPlayers));
+        if(VSmachine)
+        {
+            result = placePenguin(2,mapP,sizeX,sizeY,players,numbOfPlayers);
+            placement(result.x,result.y,mapP,sizeX,sizeY,2,players,numbOfPlayers);
+        }
+        else
+        {
+            do
+            {
+                printf("player two place your penguin!");
+                scanf("%d %d", &x1, &y1);
+            }
+            while(!placement(x1,y1,mapP,sizeX,sizeY,2,players,numbOfPlayers));
+        }
     }
-    else
+    while(!IsGameOver(mapP,sizeX,sizeY,players,numbOfPlayers))
     {
-        printf("Number of penguins: ");
-        scanf("%s", penguinos);
-        printf("Input file name: ");
-        scanf("%s", inFile);
-        printf("Output file name: ");
-        scanf("%s", outFile);
+        do
+        {
+        printf("player one move your penguin!");
+        scanf("%d %d %d %d", &x1, &y1, &x2, &y2);
+        }
+        while(!movement(x1,y1,x2,y2,mapP,sizeX,sizeY,1,players,numbOfPlayers)));
+        if(VSmachine)
+        {
+            targetVector = movePenguin(2,mapP,sizeX,sizeY,players,numbOfPlayers);
+            movement();
+        }
+        else
+        {
+            do
+            {
+                printf("player two place your penguin!");
+                scanf("%d %d", &x1, &y1);
+            }
+            while(!placement(x1,y1,mapP,sizeX,sizeY,2,players,numbOfPlayers));
+        }
     }
 }
 int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
