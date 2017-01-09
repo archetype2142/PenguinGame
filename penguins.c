@@ -45,7 +45,9 @@ int main(int argc, char* argv[])
 			penguinos = argv[2];
 			inFile = argv[3];
 			outFile = argv[4];
+			#ifdef debug
 			printf("\nPhase: %s\nPenguins: %s\nInputFile: %s\nOutputFile: %s\n", phase, penguinos, inFile, outFile);
+			#endif // debug
 		}
 		else
 		{
