@@ -6,8 +6,6 @@
 #define debug
 
 struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
-int whatphase(struct Player *players, int playerCount);
-int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID);
 
 int main(int argc, char* argv[])
 {
@@ -16,9 +14,12 @@ int main(int argc, char* argv[])
     struct Floe *map=NULL;
     char buffer[100];
     struct Player *players;
+    int k=numbOfTests, print, scoreTotal1=0, scoreTotal2=0;
+    printf("print the map? 1/0\n");
+    scanf("%d",&print);
     while(numbOfTests>0)
     {
-        sprintf(buffer,"%s %s.txt %d %d %d %d",mapgenerator,filename,10, 10,2,1); //map generator location, map name, sizex, sizey, players, pinguins
+        sprintf(buffer,"%s %s.txt %d %d %d %d",mapgenerator,filename,30, 30,2,1); //map generator location, map name, sizex, sizey, players, pinguins
         system(buffer);
         printf("\n===================\nMAP GENERATED!\n===================\n");
         sprintf(buffer,"%s.txt",filename);
@@ -57,11 +58,19 @@ int main(int argc, char* argv[])
                         }
                         if((!moved2 && !moved1))
                             break;
+
+                        if(!moved1)
+                            printf("player1 has no move!\n");
+
+                        if(!moved2)
+                            printf("player2 has no move!\n");
+
+                        if(print)
+                        {
                         printf("\n");
-                        #ifdef debug
                         BasicPrintMao(map,sizeX,sizeY, players,numberOfPlayers);
-                        getchar();
-                        #endif // debug
+                        system("pause");
+                        }
                     }
                     else
                         break;
@@ -69,54 +78,25 @@ int main(int argc, char* argv[])
         }
         sprintf(buffer,"%s.txt",filename);
         read_file(buffer, &players, &map, &sizeX, &sizeY, &numberOfPlayers);
-        if(players[giveIndex(1,players,numberOfPlayers)].score>players[giveIndex(2,players,numberOfPlayers)].score && players[giveIndex(2,players,numberOfPlayers)].score && players[giveIndex(1,players,numberOfPlayers)].score>players[giveIndex(2,players,numberOfPlayers)].score)
+        if(players[0].score>players[1].score && players[1].score)
         {
             score1++;
         }
         else
         {
-            if(players[giveIndex(1,players,numberOfPlayers)].score==players[giveIndex(2,players,numberOfPlayers)].score);
+            if(players[0].score==players[1].score);
             else
                 score2++;
         }
+        scoreTotal1+=players[0].score;
+        scoreTotal2+=players[1].score;
         system("cls");
-        printf("\n===========\nSCORE1:%d\nTHIS GAME:%d\nSCORE2:%d\nTHIS GAME:%d\n==========\n",score1,players[giveIndex(1,players,numberOfPlayers)].score,score2,players[giveIndex(2,players,numberOfPlayers)].score);
+        printf("\n===================\nSCORE1:%d\nTHIS GAME:%d\nSCORE2:%d\nTHIS GAME:%d\n===================\n",score1,players[giveIndex(1,players,numberOfPlayers)].score,score2,players[giveIndex(2,players,numberOfPlayers)].score);
         numbOfTests--;
         printf("TESTS LEFT %d",numbOfTests);
     }
-    printf("\nGAME ENDED\nscore1:%d\nscore2:%d",score1,score2);
-    getchar();
-    return 0;
-}
-//0 means placement 1 means movement
-int whatphase(struct Player *players, int playerCount)
-{
-    int i,k, Phase=1;
-    for(i=0;i<playerCount;i++)
-    {
-        for(k=0;k<players[i].numberOfPenguins;k++)
-        {
-            if(players[i].penguins[k].y<0 || players[i].penguins[k].y<0)
-            {
-                Phase=0;
-            }
-        }
-    }
-    return Phase;
-}
-
-int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID)
-{
-    int k, directions=0;
-        for(k=0;k<players[giveIndex(playerID,players,playerCount)].numberOfPenguins;k++)
-        {
-            for(directions=0;directions<6;directions++)
-            {
-                if(check_target_coordinates(players[giveIndex(playerID,players,playerCount)].penguins[k].x+vectors[directions].x,players[giveIndex(playerID,players,playerCount)].penguins[k].y+vectors[directions].y,map,sizeX,sizeY))
-                {
-                    return 1;
-                }
-            }
-        }
+    system("cls");
+    printf("\n===================\nGAME ENDED\nscore1:%d\nscore2:%d\nAVERAGE SCORE\nscore1:%f\nscore2:%f\n===================\n",score1,score2,(float)scoreTotal1/(float)k,(float)scoreTotal2/(float)k);
+    system("pause");
     return 0;
 }

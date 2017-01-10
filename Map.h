@@ -1,5 +1,5 @@
 #pragma once
-#define MY_ID 2
+#define MY_ID 1
 
 
 struct Floe

@@ -5,7 +5,7 @@ and puts the penguin on the new coordinates*/
 int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
 
 /*takes in coordinates to put a penguin on*/
-void placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
+int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
 
 /* checks the number of fishes available on
 the given floe */
@@ -36,3 +36,9 @@ void checkIfPlaying(int playerID, struct Player *players, int playerCount);
 
 //checks if there is a move possible
 int IsGameOver(void *mapP, int sizeX, int sizeY, struct Player players[],int playerCount);
+
+//checks what phase the game is in returns 0 for placement and 1 for movement
+int whatphase(struct Player *players, int playerCount);
+
+//checks if a specific player can preform at least one move
+int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID);

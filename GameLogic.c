@@ -53,11 +53,11 @@ int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int 
     {
         for(i=1;x1+vectors1[direction].x*i<sizeX &&x1+vectors1[direction].x*i>=0 && y1+vectors1[direction].y*i<sizeY &&y1+vectors1[direction].y*i>=0;i++)
         {
-            if((*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].whosPenguin!=0 && (*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].numbOfFish==0)
+            if((*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].whosPenguin!=0 || (*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].numbOfFish==0)
             {
                 return 0;
             }
-            if(x1+vectors1[direction].x==x2 && y1+vectors1[direction].y==y2)
+            if(x1+vectors1[direction].x*i==x2 && y1+vectors1[direction].y*i==y2)
             {
                 return 1;
             }
@@ -142,5 +142,38 @@ int IsGameOver(void *mapP, int sizeX, int sizeY, struct Player players[],int pla
         }
 
     }
+    return 0;
+}
+
+//0 means placement 1 means movement
+int whatphase(struct Player *players, int playerCount)
+{
+    int i,k, Phase=1;
+    for(i=0;i<playerCount;i++)
+    {
+        for(k=0;k<players[i].numberOfPenguins;k++)
+        {
+            if(players[i].penguins[k].y<0 || players[i].penguins[k].y<0)
+            {
+                Phase=0;
+            }
+        }
+    }
+    return Phase;
+}
+
+int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID)
+{
+    int k, directions=0;
+        for(k=0;k<players[giveIndex(playerID,players,playerCount)].numberOfPenguins;k++)
+        {
+            for(directions=0;directions<6;directions++)
+            {
+                if(check_target_coordinates(players[giveIndex(playerID,players,playerCount)].penguins[k].x+vectors[directions].x,players[giveIndex(playerID,players,playerCount)].penguins[k].y+vectors[directions].y,map,sizeX,sizeY))
+                {
+                    return 1;
+                }
+            }
+        }
     return 0;
 }
