@@ -165,7 +165,7 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player 
         while(!placement(x1,y1,mapP,sizeX,sizeY,1,players,numbOfPlayers));
         if(VSmachine)
         {
-            result = placePenguin(2,mapP,sizeX,sizeY,players,numbOfPlayers);
+            result = placePenguin(mapP,sizeX,sizeY,2,players,numbOfPlayers);
             placement(result.x,result.y,mapP,sizeX,sizeY,2,players,numbOfPlayers);
         }
         else
@@ -185,11 +185,11 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player 
         printf("player one move your penguin!");
         scanf("%d %d %d %d", &x1, &y1, &x2, &y2);
         }
-        while(!movement(x1,y1,x2,y2,mapP,sizeX,sizeY,1,players,numbOfPlayers)));
+        while(!movement(x1,y1,x2,y2,mapP,sizeX,sizeY,1,players,numbOfPlayers));
         if(VSmachine)
         {
             targetVector = movePenguin(2,mapP,sizeX,sizeY,players,numbOfPlayers);
-            movement();
+            movement(targetVector.xInitial,targetVector.yInitial,targetVector.xTarget,targetVector.yTarget,mapP,sizeX,sizeY,2,players,numbOfPlayers);
         }
         else
         {

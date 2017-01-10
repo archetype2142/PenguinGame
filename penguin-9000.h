@@ -20,8 +20,11 @@ struct Vector convert(void *mapP, int sizeX, int sizeY, int x, int y, struct Pla
 //function that takes in penguin coordinates, direction and distance and returns target coordinates
 void findTarget(struct Vector *Vector, int x, int y, int distance, int direction);
 
+//funtion returns pointer to an array of players, copied from first argument
 struct Player *copyplayers(struct Player players[], int playerCount);
 
+//function returns calculated agresion factor for use in evaluating the map
 float giveAgression(struct Player players[], int PlayerCount, struct Floe *mapp, int sizeX, int sizeY, int playerID);
 
+//funtcion returns number of directions, a penguin can move to
 int giveBranches(int x, int y, struct Floe *mapp, int sizeX, int sizeY);
