@@ -220,3 +220,16 @@ int giveBranches(int x, int y, struct Floe *mapp, int sizeX, int sizeY)
     }
     return branches;
 }
+void freeplayer(struct Player players[],int playerCount )
+{
+    int i, j;
+    for(i=0;i<playerCount;i++)
+    {
+        for(j=0;j<players[i].numberOfPenguins;j++)
+        {
+            free(players[i].penguins);
+        }
+
+    }
+    free(players);
+}
