@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 	char *inFile, *outFile;
 	int sizeX, sizeY, NumberOfplayers=0;
 	// check if arguments are less than 3
-	if(argc < 3&&argc!=0)
+	if(argc < 3&&argc==0)
 	{
 	    printf("no command line arguments\ninteractive mode selected\nprovide input file:\n");
 	    inFile=argv[1];
