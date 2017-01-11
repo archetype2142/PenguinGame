@@ -14,9 +14,7 @@ int main(int argc, char* argv[])
     struct Floe *map=NULL;
     char buffer[100];
     struct Player *players;
-    int k=numbOfTests, print, scoreTotal1=0, scoreTotal2=0;
-    printf("print the map? 1/0\n");
-    scanf("%d",&print);
+    int k=numbOfTests;
     while(numbOfTests>0)
     {
         sprintf(buffer,"%s %s.txt %d %d %d %d",mapgenerator,filename,30, 30,2,1); //map generator location, map name, sizex, sizey, players, pinguins
@@ -59,18 +57,11 @@ int main(int argc, char* argv[])
                         if((!moved2 && !moved1))
                             break;
 
-                        if(!moved1)
-                            printf("player1 has no move!\n");
-
-                        if(!moved2)
-                            printf("player2 has no move!\n");
-
-                        if(print)
-                        {
+                        #ifdef debug
                         printf("\n");
                         BasicPrintMao(map,sizeX,sizeY, players,numberOfPlayers);
                         system("pause");
-                        }
+                        #endif // debug
                     }
                     else
                         break;
@@ -78,25 +69,23 @@ int main(int argc, char* argv[])
         }
         sprintf(buffer,"%s.txt",filename);
         read_file(buffer, &players, &map, &sizeX, &sizeY, &numberOfPlayers);
-        if(players[0].score>players[1].score && players[1].score)
+        if(players[giveIndex(1,players,numberOfPlayers)].score>players[giveIndex(2,players,numberOfPlayers)].score && players[giveIndex(2,players,numberOfPlayers)].score && players[giveIndex(1,players,numberOfPlayers)].score>players[giveIndex(2,players,numberOfPlayers)].score)
         {
             score1++;
         }
         else
         {
-            if(players[0].score==players[1].score);
+            if(players[giveIndex(1,players,numberOfPlayers)].score==players[giveIndex(2,players,numberOfPlayers)].score);
             else
                 score2++;
         }
-        scoreTotal1+=players[0].score;
-        scoreTotal2+=players[1].score;
         system("cls");
         printf("\n===================\nSCORE1:%d\nTHIS GAME:%d\nSCORE2:%d\nTHIS GAME:%d\n===================\n",score1,players[giveIndex(1,players,numberOfPlayers)].score,score2,players[giveIndex(2,players,numberOfPlayers)].score);
         numbOfTests--;
         printf("TESTS LEFT %d",numbOfTests);
     }
     system("cls");
-    printf("\n===================\nGAME ENDED\nscore1:%d\nscore2:%d\nAVERAGE SCORE\nscore1:%f\nscore2:%f\n===================\n",score1,score2,(float)scoreTotal1/(float)k,(float)scoreTotal2/(float)k);
-    system("pause");
+    printf("\n===================\nGAME ENDED\nscore1:%d\nscore2:%d\nAVERAGE SCORE\nscore1:%f\nscore2:%f\n===================",score1,score2,(float)score1/(float)k,(float)score2/(float)k);
+    getchar();
     return 0;
 }

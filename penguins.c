@@ -21,48 +21,48 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player 
 
 int main(int argc, char* argv[])
 {
-	/* declare structures and some variables  */
-	struct Floe *map=NULL;
-	struct Point target;
-	struct Vector moveVector;
-	struct Player *players=NULL;
-	char *phase;
-	char *penguinos;
-	char *inFile, *outFile;
-	int sizeX, sizeY, NumberOfplayers=0;
-	// check if arguments are less than 3
-	if(argc < 3&&argc!=0)
-	{
-	    printf("no command line arguments\ninteractive mode selected\nprovide input file:\n");
-	    inFile=argv[1];
-	    scanf("%s",inFile);
-	    if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
+    /* declare structures and some variables  */
+    struct Floe *map=NULL;
+    struct Point target;
+    struct Vector moveVector;
+    struct Player *players=NULL;
+    char *phase;
+    char *penguinos;
+    char *inFile, *outFile;
+    int sizeX, sizeY, NumberOfplayers=0;
+    // check if arguments are less than 3
+    if(argc < 3&&argc!=0)
+    {
+        printf("no command line arguments\ninteractive mode selected\nprovide input file:\n");
+        inFile=argv[1];
+        scanf("%s",inFile);
+        if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
         {
             printf("failed to read %s",inFile);
             getchar();
             exit(1);
         }
-		interactive(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
-		return 0;
-	}
-	else
+        interactive(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+        return 0;
+    }
+    else
     {
-		phase = argv[1];
-		if(strcmp(phase, "phase=placement") == 0)
-		{
-			penguinos = argv[2];
-			inFile = argv[3];
-			outFile = argv[4];
-			#ifdef debug
-			printf("\nPhase: %s\nPenguins: %s\nInputFile: %s\nOutputFile: %s\n", phase, penguinos, inFile, outFile);
-			#endif // debug
-		}
-		else
-		{
-			inFile = argv[2];
-			outFile = argv[3];
-		}
-	}
+        phase = argv[1];
+        if(strcmp(phase, "phase=placement") == 0)
+        {
+            penguinos = argv[2];
+            inFile = argv[3];
+            outFile = argv[4];
+            #ifdef debug
+            printf("\nPhase: %s\nPenguins: %s\nInputFile: %s\nOutputFile: %s\n", phase, penguinos, inFile, outFile);
+            #endif // debug
+        }
+        else
+        {
+            inFile = argv[2];
+            outFile = argv[3];
+        }
+    }
         if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
         {
             fputs("File error", stderr);
@@ -79,9 +79,9 @@ int main(int argc, char* argv[])
                 if(target.x!=-1 || target.y!=-1)
                 {
                     placement(target.x, target.y, map, sizeX, sizeY, MY_ID,players,NumberOfplayers);
-					#ifdef debug
+                    #ifdef debug
                     printf("placed penguin on: x=%d y=%d",target.x,target.y);
-					#endif
+                    #endif
                 }
                 else
                 {
@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
                         #ifdef debug
                         printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
                         #endif // debug
-					}
+                    }
                         else
                         {
                             printf("error in movePenguin function!");
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
                 printf("error writing file");
             }
         }
-	return 0;
+    return 0;
 }
 
 
@@ -131,10 +131,10 @@ int main(int argc, char* argv[])
 int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
 {
     int i;
-	if (check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_penguin(x, y, mapP, sizeX, sizeY))
-	{
-		place_penguin(x, y, playerID, mapP, sizeX, sizeY);
-			for(i=0;i<players[0].numberOfPenguins;i++)
+    if (check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_penguin(x, y, mapP, sizeX, sizeY))
+    {
+        place_penguin(x, y, playerID, mapP, sizeX, sizeY);
+            for(i=0;i<players[0].numberOfPenguins;i++)
         {
             if(players[giveIndex(playerID,players,playerCount)].penguins[i].x<0&&players[giveIndex(playerID,players,playerCount)].penguins[i].y<0)
             {
@@ -144,11 +144,12 @@ int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, stru
             }
         }
         return 1;
-	}
-	return 0;
+    }
+    return 0;
 }
 void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player players[], int numbOfPlayers)
 {
+    /*
     int VSmachine, x1,x2,y1,y2;
     struct Point result;
     struct Vector targetVector;
@@ -165,7 +166,7 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player 
         while(!placement(x1,y1,mapP,sizeX,sizeY,1,players,numbOfPlayers));
         if(VSmachine)
         {
-            result = placePenguin(mapP,sizeX,sizeY,2,players,numbOfPlayers);
+            result = placePenguin(2,mapP,sizeX,sizeY,players,numbOfPlayers);
             placement(result.x,result.y,mapP,sizeX,sizeY,2,players,numbOfPlayers);
         }
         else
@@ -185,11 +186,11 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player 
         printf("player one move your penguin!");
         scanf("%d %d %d %d", &x1, &y1, &x2, &y2);
         }
-        while(!movement(x1,y1,x2,y2,mapP,sizeX,sizeY,1,players,numbOfPlayers));
+        while(!movement(x1,y1,x2,y2,mapP,sizeX,sizeY,1,players,numbOfPlayers)));
         if(VSmachine)
         {
             targetVector = movePenguin(2,mapP,sizeX,sizeY,players,numbOfPlayers);
-            movement(targetVector.xInitial,targetVector.yInitial,targetVector.xTarget,targetVector.yTarget,mapP,sizeX,sizeY,2,players,numbOfPlayers);
+            movement();
         }
         else
         {
@@ -201,14 +202,15 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player 
             while(!placement(x1,y1,mapP,sizeX,sizeY,2,players,numbOfPlayers));
         }
     }
+    */
 }
 int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
 {
     int i;
-	// x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
+    // x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
     struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-	if(x1>=0 && y1 >=0 && x1<sizeX && y1<sizeY && x2>=0 && y2 >=0 && x2<sizeX && y2<sizeY && check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID) && !check_penguin(x2, y2, mapP, sizeX, sizeY) && check_target_coordinates(x2, y2, mapP, sizeX, sizeY) &&	check_valid_move(x1, y1, x2, y2, mapP, sizeX, sizeY))
-	{
+    if(x1>=0 && y1 >=0 && x1<sizeX && y1<sizeY && x2>=0 && y2 >=0 && x2<sizeX && y2<sizeY && check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID) && !check_penguin(x2, y2, mapP, sizeX, sizeY) && check_target_coordinates(x2, y2, mapP, sizeX, sizeY) &&   check_valid_move(x1, y1, x2, y2, mapP, sizeX, sizeY))
+    {
         (*map)[x1][y1].whosPenguin=0;
         (*map)[x2][y2].whosPenguin=playerID;
         players[giveIndex(playerID,players,playerCount)].score+=(*map)[x1][y1].numbOfFish;
@@ -223,10 +225,10 @@ int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, i
             }
         }
         return 1;
-	}
-	else
+    }
+    else
     {
     return 0;
-	}
+    }
 }
 

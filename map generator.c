@@ -7,34 +7,34 @@ struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
 
 void randomise(int sizeX, int sizeY, struct Floe map[sizeX][sizeY] )
 {
- 	int x, y;
-	srand(time(NULL));
-	for (y = 0; y < sizeY; y++)
-		for (x = ((y) % 2); x < sizeX; x += 2)
-		{
-			map[x][y].numbOfFish =1 + (rand()%3);
-			map[x][y].whosPenguin = 0;
-		}
+    int x, y;
+    srand(time(NULL));
     for (y = 0; y < sizeY; y++)
-		for (x = ((y) % 2)+1; x < sizeX; x += 2)
-		{
-			map[x][y].numbOfFish =0;
-			map[x][y].whosPenguin = 0;
-		}
-        for (y = 0; y < sizeY; y++)
-            for (x =0; x < sizeX; x++)
-            {
-                map[x][y].whosPenguin = 0;
-            }
+        for (x = ((y) % 2); x < sizeX; x += 2)
+        {
+            map[x][y].numbOfFish =1 + (rand()%3);
+            map[x][y].whosPenguin = 0;
+        }
+    for (y = 0; y < sizeY; y++)
+        for (x = ((y) % 2)+1; x < sizeX; x += 2)
+        {
+            map[x][y].numbOfFish =0;
+            map[x][y].whosPenguin = 0;
+        }
+    for (y = 0; y < sizeY; y++)
+        for (x =0; x < sizeX; x++)
+        {
+            map[x][y].whosPenguin = 0;
+        }
 }
 
 int main(int argc, char* argv[])
 {
-	char *filename = argv[1];
-	int sizeX=atoi(argv[2]), sizeY=atoi(argv[3]), playersn=atoi(argv[4]), penguins=atoi(argv[5]), i,k;
-	struct Floe map[sizeX][sizeY];
-	struct Player players[playersn];
-	for(i=0;i<playersn;i++)
+    char *filename = argv[1];
+    int sizeX=atoi(argv[2]), sizeY=atoi(argv[3]), playersn=atoi(argv[4]), penguins=atoi(argv[5]), i,k;
+    struct Floe map[sizeX][sizeY];
+    struct Player players[playersn];
+    for(i=0;i<playersn;i++)
     {
         players[i].numberOfPenguins=penguins;
         players[i].score=0;
@@ -48,4 +48,4 @@ int main(int argc, char* argv[])
     }
     randomise(sizeX, sizeY, map);
     write_file(filename, map, sizeX, sizeY, players,playersn);
-	}
+}
