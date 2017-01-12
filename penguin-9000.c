@@ -26,7 +26,7 @@ struct Vector movePenguin(int playerID, void *mapP, int sizeX, int sizeY, struct
                          players[playerIndex].penguins[i].y+vectors[direction].y*distanse,
                          mapTMPP,sizeX,sizeY,playerID,playerstmp,numberOfPlayers))
                    {
-                    newEvaluate=evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
+                    newEvaluate=pow(check_how_many_fishes(players[playerIndex].penguins[i].x+vectors[direction].x*distanse,players[playerIndex].penguins[i].y+vectors[direction].y*distanse,mapP,sizeX,sizeY),2) * evaluate(mapTMPP, sizeX, sizeY, playerID, playerstmp,numberOfPlayers);
                     if (bestvalue<newEvaluate || best.xInitial==-1 || best.yInitial==-1 || best.xTarget==-1 || best.yTarget==-1)//new best move has been found, generating its vector//
                     {
                         best.xInitial = players[playerIndex].penguins[i].x;
@@ -112,7 +112,7 @@ float evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct Player pla
                 {
                     for (direction = 0; direction < 6; direction++)
                     {
-                        sum +=pow(check_how_many_fishes(players[i].penguins[k].x,players[i].penguins[k].y,mapP,sizeX,sizeY),2)* evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction)/ giveAgression(players,numberOfPlayers,mapP,sizeX,sizeY,playerID);
+                        sum +=(giveBranches(players[i].penguins[k].x, players[i].penguins[k].y,mapP,sizeX,sizeY)) * evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction)/ giveAgression(players,numberOfPlayers,mapP,sizeX,sizeY,playerID);
                     }
                 }
             }
@@ -127,7 +127,7 @@ float evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct Player pla
                     {
                         for (direction = 0; direction < 6; direction++)
                         {
-                            sum -=pow(check_how_many_fishes(players[i].penguins[k].x,players[i].penguins[k].y,mapP,sizeX,sizeY),2)* giveAgression(players,numberOfPlayers,mapP,sizeX,sizeY,playerID) * evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
+                            sum -=(giveBranches(players[i].penguins[k].x, players[i].penguins[k].y,mapP,sizeX,sizeY)) * giveAgression(players,numberOfPlayers,mapP,sizeX,sizeY,playerID) * evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
                         }
                     }
                 }

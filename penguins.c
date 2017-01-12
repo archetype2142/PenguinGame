@@ -131,9 +131,11 @@ int main(int argc, char* argv[])
 int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
 {
     int i;
+    struct Floe (*map)[sizeX][sizeY]=(struct Floe (*)[sizeX][sizeY]) mapP;
     if (check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_penguin(x, y, mapP, sizeX, sizeY))
     {
         place_penguin(x, y, playerID, mapP, sizeX, sizeY);
+        players[giveIndex(playerID,players,playerCount)].score+=(*map)[x][y].numbOfFish;
             for(i=0;i<players[0].numberOfPenguins;i++)
         {
             if(players[giveIndex(playerID,players,playerCount)].penguins[i].x<0&&players[giveIndex(playerID,players,playerCount)].penguins[i].y<0)
@@ -213,8 +215,8 @@ int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, i
     {
         (*map)[x1][y1].whosPenguin=0;
         (*map)[x2][y2].whosPenguin=playerID;
-        players[giveIndex(playerID,players,playerCount)].score+=(*map)[x1][y1].numbOfFish;
-        (*map)[x1][y1].numbOfFish=0;
+        players[giveIndex(playerID,players,playerCount)].score+=(*map)[x2][y2].numbOfFish;
+        (*map)[x2][y2].numbOfFish=0;
         for(i=0;i<players[0].numberOfPenguins;i++)
         {
             if(players[giveIndex(playerID,players,playerCount)].penguins[i].x==x1&&players[giveIndex(playerID,players,playerCount)].penguins[i].y==y1)

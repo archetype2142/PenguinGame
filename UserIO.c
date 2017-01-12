@@ -38,7 +38,7 @@ int read_file(const char *filename, struct Player **players, struct Floe **mapPo
 		}
 
 	//seek to the end of 'Map'
-	while(ch != 'P')
+	while(ch != 'P'&&ch!='p')
 		ch = getc(file);
 
 
@@ -47,7 +47,6 @@ int read_file(const char *filename, struct Player **players, struct Floe **mapPo
 
 	(*mapPointer) = malloc(sizeof(struct Floe)*(*sizeX)*(*sizeY));
 	struct Floe(*map)[(*sizeX)][(*sizeY)] = (struct Floe(*)[(*sizeX)][(*sizeY)]) (*mapPointer);
-
 	//Scanning map
 	while(ch != EOF)
 	{
