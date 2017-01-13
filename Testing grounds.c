@@ -97,6 +97,7 @@ int main(int argc, char* argv[])
     }
     system("cls");
     printf("\n===================\nGAME ENDED\nscore1:%d\nscore2:%d\nAVERAGE SCORE\nscore1:%f\nscore2:%f\n===================",score1,score2,(float)score1/(float)k,(float)score2/(float)k);
+    system("pause");
     getchar();
     return 0;
 }
