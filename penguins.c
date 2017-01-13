@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
             {
                 if(IsGameOver(map,sizeX,sizeY,players,NumberOfplayers))
                 {
-                    moveVector = movePenguin(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
+                    //moveVector = movePenguinR(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
                     if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
                     {
                         movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
