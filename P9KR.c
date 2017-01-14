@@ -43,7 +43,7 @@ int recursionAlfa(struct Floe *Map, int sizeX, int sizeY, struct Player players[
                             step.yInitial=players[playerIndex].penguins[i].y;
                             step.xTarget=players[playerIndex].penguins[i].x+vectors[direction].x*distanse;
                             step.yTarget=players[playerIndex].penguins[i].y+vectors[direction].y*distanse;
-                            newbest=recursionBeta(mapTMPP,sizeX,sizeY,playerstmp,plaayerCount,++depth,playerID,chain);
+                            newbest=recursionBeta(mapTMPP,sizeX,sizeY,playerstmp,plaayerCount,++depth,playerID,chain,playerID);
                             if(flag||best<newbest)
                             {
                                 best=newbest;
@@ -59,12 +59,12 @@ int recursionAlfa(struct Floe *Map, int sizeX, int sizeY, struct Player players[
     return best;
 }
 
-int recursionBeta(struct Floe *Map, int sizeX, int sizeY, struct Player players[], int plaayerCount, int depth, int playerID, struct Vector *chain)
+int recursionBeta(struct Floe *Map, int sizeX, int sizeY, struct Player players[], int plaayerCount, int depth, int playerID, struct Vector *chain, int MyId)
 {
     struct Floe *mapTMPP=NULL;
     struct Vector step;
     struct Player *playerstmp=copyplayers(players,plaayerCount);
-    int direction, distanse, playerIndex=giveIndex(playerID,players,plaayerCount),i, worst, newWorst, flag=1;//change playerIdnex
+    int direction, distanse, playerIndex=giveNextPlayer(giveIndex(playerID,players,plaayerCount),plaayerCount),i, worst, newWorst, flag=1;//change playerIdnex
     memcpy(mapTMPP,Map,sizeof(struct Floe)*sizeX*sizeY);
     for(i=0;i<players[playerIndex].numberOfPenguins;i++)
     {
@@ -83,6 +83,7 @@ int recursionBeta(struct Floe *Map, int sizeX, int sizeY, struct Player players[
                             step.yInitial=players[playerIndex].penguins[i].y;
                             step.xTarget=players[playerIndex].penguins[i].x+vectors[direction].x*distanse;
                             step.yTarget=players[playerIndex].penguins[i].y+vectors[direction].y*distanse;
+                            if(players[playerIndex].playerID==)
                             newWorst=recursionAlfa(mapTMPP,sizeX,sizeY,playerstmp,plaayerCount,++depth,playerID,chain);
                             if(flag||worst>newWorst)
                             {
@@ -179,4 +180,16 @@ struct Player *copyplayers(struct Player players[], int playerCount)
 
     }
     return copy;
+}
+
+int giveNextPlayer(int playerIndex, int playerCount)
+{
+    if(playerIndex+1<playerCount)
+    {
+        return playerIndex+1;
+    }
+    else
+    {
+        return 0;
+    }
 }
