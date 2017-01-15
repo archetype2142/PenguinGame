@@ -3,165 +3,173 @@
 #include <stdlib.h>
 #include <string.h>
 #include "P9KR.h"
-#define DEPTH 5
+#define DEPTH 2
 
-struct Vector movePenguinR(int playerID, struct Map map, struct Player players[],int numberOfPlayers)
+struct Vector movePenguinR(int playerID, struct Map * map)
 {
-    struct Vector chain[DEPTH];
-    recursionAlfa(map,players,numberOfPlayers,0,playerID,chain);
-    return chain[0];
+    map->maxChanges = DEPTH * map->playerCount * 2;
+    map->changeCount=0;
+    map->changelog=malloc(sizeof(struct Box) * map->maxChanges);
+
+    struct Vector move;
+
+    recursionAlfa( * map, DEPTH, playerID, & move);
+    return move;
 }
 
-struct Point placePenguin(struct Map map, int playerID, struct Player players[], int numberOfPlayers)
+struct Point placePenguin(struct Map *map, int playerID)
 {
-    struct Player *playerstmp;
     struct Point result={-1,-1};
     int x, y;
-    float best=0;
-    for (y = 0; y < map.sizeY; y++)
+    float best;
+    for (y = 0; y < map->sizeY; y++)
     {
-        for (x = 0; x < map.sizeX; x++)
+        for (x = 0; x < map->sizeX; x++)
         {
             if (giveFloe(map,x,y)->numbOfFish == 1 && giveFloe(map,x,y)->whosPenguin == 0)
             {
-                playerstmp=copyplayers(players,numberOfPlayers);
-                placement(x, y, mapTMP,sizeX,sizeY,playerID,playerstmp,numberOfPlayers);
-                int newEvalueate = evaluate(map, playerID, playerstmp,numberOfPlayers);
-                if (newEvalueate>best || result.x==-1 || result.y==-1)
+                tryPlace(map,x,y,playerID);
+                int newEvalueate = evaluate(map, playerID);
+                if (result.y==-1 || result.x==-1 || newEvalueate>best)
                 {
                     result.x = x;
                     result.y = y;
                     best = newEvalueate;
                 }
-                free(playerstmp);
+                map->changeCount--;
             }
         }
     }
-    free(mapTMP);
     return result;
 }
 
-int recursionAlfa(struct Map map, struct Player players[], int plaayerCount, int depth, int playerID, struct Vector *chain)
+int recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move)
 {
     struct Vector step;
-    struct Player *playerstmp=copyplayers(players,plaayerCount);
-    int direction, distanse, playerIndex=giveIndex(playerID,players,plaayerCount),i, best, newbest, flag=1;
-    if(depth>DEPTH)
-        return evaluate(map,playerID,players,plaayerCount);
-    memcpy(mapTMPP,Map,sizeof(struct Floe)*sizeX*sizeY);
-    for(i=0;i<players[playerIndex].numberOfPenguins;i++)
+    struct penguin penguintmp;
+    int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, best, newbest, flag=1;
+
+    depth --;
+
+    if(playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,playerID))
     {
-    for(direction=0;direction<6;++direction)
+        for(i=0;i<map.players[playerIndex].numberOfPenguins;i++)
         {
-            for(distanse=1;players[playerIndex].penguins[i].x+vectors[direction].x*distanse>=0 && players[playerIndex].penguins[i].y+vectors[direction].y*distanse>=0 &&
-                players[playerIndex].penguins[i].x+vectors[direction].x*distanse<sizeX && players[playerIndex].penguins[i].y+vectors[direction].y*distanse<sizeY;distanse++)
-                {
-                    if(movement(players[playerIndex].penguins[i].x,
-                       players[playerIndex].penguins[i].y ,
-                       players[playerIndex].penguins[i].x+vectors[direction].x*distanse,
-                       players[playerIndex].penguins[i].y+vectors[direction].y*distanse,
-                       mapTMPP,sizeX,sizeY,playerID,playerstmp,plaayerCount))
-                        {
-                            step.xInitial=players[playerIndex].penguins[i].x;
-                            step.yInitial=players[playerIndex].penguins[i].y;
-                            step.xTarget=players[playerIndex].penguins[i].x+vectors[direction].x*distanse;
-                            step.yTarget=players[playerIndex].penguins[i].y+vectors[direction].y*distanse;
-                            newbest=recursionBeta(mapTMPP,sizeX,sizeY,playerstmp,plaayerCount,depth+1,playerID,chain,playerID);
-                            if(flag||best<newbest)
+            for(direction=0;direction<6;++direction)
+            {
+                penguintmp=givePenguin(&map,playerID,i);
+                for(distanse=1;penguintmp.x+vectors[direction].x*distanse>=0 && penguintmp.y+vectors[direction].y*distanse>=0 &&
+                    penguintmp.x+vectors[direction].x*distanse<map.sizeX && penguintmp.y+vectors[direction].y*distanse<map.sizeY;distanse++)
+                    {
+                        step.xInitial=penguintmp.x;
+                        step.yInitial=penguintmp.y;
+                        step.xTarget=penguintmp.x+vectors[direction].x*distanse;
+                        step.yTarget=penguintmp.y+vectors[direction].y*distanse;
+                        if(addChange(&map,step,i))
                             {
-                                best=newbest;
-                                flag=0;
-                                chain[depth]=step;
+                                newbest=recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,playerID);
+                                if(flag||best<newbest)
+                                {
+                                    best=newbest;
+                                    flag=0;
+                                    if( move != NULL)
+                                        (*move)=step;
+                                }
+                                map.changeCount-=2;
                             }
-                            free(mapTMPP);
-                            free(playerstmp);
-                            memcpy(mapTMPP,Map,sizeof(struct Floe)*sizeX*sizeY);
-                            playerstmp=copyplayers(players,plaayerCount);
-                        }
-                }
+                            else
+                                break;
+                    }
+            }
         }
     }
-    free(mapTMPP);
-    free(playerstmp);
+    else
+        return recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,playerID);
     return best;
 }
 
-int recursionBeta(struct Map map, struct Player players[], int plaayerCount, int depth, int playerID, struct Vector *chain, int MyId)
+int recursionBeta(struct Map map, int depth, int playerID, int MyId)
 {
-    struct Floe *mapTMPP=malloc(sizeof(struct Floe)*sizeX*sizeY);
     struct Vector step;
-    struct Player *playerstmp=copyplayers(players,plaayerCount);
-    int direction, distanse, playerIndex=giveNextPlayer(giveIndex(playerID,players,plaayerCount),plaayerCount),i, worst, newWorst, flag=1;//change playerIdnex
-    memcpy(mapTMPP,Map,sizeof(struct Floe)*sizeX*sizeY);
-    for(i=0;i<players[playerIndex].numberOfPenguins;i++)
+    struct penguin penguintmp;
+    int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, worst, newWorst, flag=1;//change playerIdnex
+
+    if(depth == 0)
+        return evaluate( & map, MyId);
+
+    if(playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,playerID))
     {
-    for(direction=0;direction<6;++direction)
+        for(i=0;i<map.players[playerIndex].numberOfPenguins;i++)
         {
-            for(distanse=1;players[playerIndex].penguins[i].x+vectors[direction].x*distanse>=0 && players[playerIndex].penguins[i].y+vectors[direction].y*distanse>=0 &&
-                players[playerIndex].penguins[i].x+vectors[direction].x*distanse<sizeX && players[playerIndex].penguins[i].y+vectors[direction].y*distanse<sizeY;distanse++)
-                {
-                    if(movement(players[playerIndex].penguins[i].x,
-                       players[playerIndex].penguins[i].y ,
-                       players[playerIndex].penguins[i].x+vectors[direction].x*distanse,
-                       players[playerIndex].penguins[i].y+vectors[direction].y*distanse,
-                       mapTMPP,sizeX,sizeY,playerstmp[playerIndex].playerID,playerstmp,plaayerCount))
-                        {
-                            step.xInitial=players[playerIndex].penguins[i].x;
-                            step.yInitial=players[playerIndex].penguins[i].y;
-                            step.xTarget=players[playerIndex].penguins[i].x+vectors[direction].x*distanse;
-                            step.yTarget=players[playerIndex].penguins[i].y+vectors[direction].y*distanse;
-                            if(players[playerIndex+1].playerID==MyId)
-                                newWorst=recursionAlfa(mapTMPP,sizeX,sizeY,playerstmp,plaayerCount,depth,playerID,chain);
-                            else
-                                newWorst=recursionBeta(mapTMPP,sizeX,sizeY,playerstmp,plaayerCount,depth,playerID,chain,MyId);
-                            if(flag||worst>newWorst)
+        for(direction=0;direction<6;++direction)
+            {
+                penguintmp=givePenguin(&map,playerID,i);
+                for(distanse=1;penguintmp.x+vectors[direction].x*distanse>=0 && penguintmp.y+vectors[direction].y*distanse>=0 &&
+                    penguintmp.x+vectors[direction].x*distanse<map.sizeX && penguintmp.y+vectors[direction].y*distanse<map.sizeY;distanse++)
+                    {
+                        step.xInitial=penguintmp.x;
+                        step.yInitial=penguintmp.y;
+                        step.xTarget=penguintmp.x+vectors[direction].x*distanse;
+                        step.yTarget=penguintmp.y+vectors[direction].y*distanse;
+                        if(addChange(&map,step,i))
                             {
-                                worst=newWorst;
-                                flag=0;
-                                chain[depth]=step;
+                                if(map.players[giveNextPlayer(playerIndex,map.playerCount)].playerID==MyId)
+                                    newWorst=recursionAlfa(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,NULL);
+                                else
+                                    newWorst=recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,MyId);
+                                if(flag||worst>newWorst)
+                                {
+                                    worst=newWorst;
+                                    flag=0;
+                                }
+                                map.changeCount-=2;
                             }
-                            free(mapTMPP);
-                            free(playerstmp);
-                            memcpy(mapTMPP,Map,sizeof(struct Floe)*sizeX*sizeY);
-                            playerstmp=copyplayers(players,plaayerCount);
-                        }
-                }
+                            else
+                                break;
+                    }
+            }
         }
+
     }
-    free(mapTMPP);
-    free(playerstmp);
+    else
+    {
+    if(map.players[giveNextPlayer(playerIndex,map.playerCount)].playerID==MyId)
+        return recursionAlfa(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,NULL);
+    else
+        return recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,MyId);
+    }
     return worst;
 }
-float evaluate(struct Map map, int playerID, struct Player players[], int numberOfPlayers)// needs reworking (might be fixed already XD)
+float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed already XD)
 {
     int direction, i,k;
     float sum=0;
-    for (i = 0; i < numberOfPlayers; i++)
+    for (i = 0; i < map->playerCount; i++)
     {
-        if (players[i].playerID == playerID)
+        if (map->players[i].playerID == playerID)
         {
-            for (k = 0; k < players[i].numberOfPenguins; k++)
+            for (k = 0; k < map->players[i].numberOfPenguins; k++)
             {
-                if(players[i].penguins[k].x>=0 && players[i].penguins[k].y>=0)
+                if(map->players[i].penguins[k].x>=0 && map->players[i].penguins[k].y>=0)
                 {
                     for (direction = 0; direction < 6; direction++)
                     {
-                        sum +=(giveBranches(players[i].penguins[k].x, players[i].penguins[k].y,mapP,sizeX,sizeY)) * evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
+                        sum +=giveScore(map->players[i].playerID,map)*(giveBranches(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y,*map)) * evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                     }
                 }
             }
         }
         else
         {
-            if (players[i].playerID != playerID && players[i].playerID>0)
+            if (map->players[i].playerID != playerID && map->players[i].playerID>0)
             {
-                for (k = 0; k < players[i].numberOfPenguins; k++)
+                for (k = 0; k < map->players[i].numberOfPenguins; k++)
                 {
-                    if(players[i].penguins[k].x>=0 && players[i].penguins[k].y>=0)
+                    if(map->players[i].penguins[k].x>=0 && map->players[i].penguins[k].y>=0)
                     {
                         for (direction = 0; direction < 6; direction++)
                         {
-                            sum -=(giveBranches(players[i].penguins[k].x, players[i].penguins[k].y,mapP,sizeX,sizeY)) * evaluateBranch(mapP, sizeX, sizeY, players[i].penguins[k].x, players[i].penguins[k].y, direction);
+                            sum -=giveScore(map->players[i].playerID,map)*(giveBranches(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y,*map)) * evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                         }
                     }
                 }
@@ -171,49 +179,28 @@ float evaluate(struct Map map, int playerID, struct Player players[], int number
     return sum;
 }
 
-float evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction)
+float evaluateBranch(struct Map map, int x, int y, int direction)
 {
-    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
     int i;
     float sum=0;
-    for(i=1; x+i*vectors[direction].x<sizeX && y+i*vectors[direction].y<sizeY && x+i*vectors[direction].x>=0 && y+i*vectors[direction].y>=0 && (*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].numbOfFish!=0 && (*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].whosPenguin==0; i++)
+    for(i=1; x+i*vectors[direction].x < map.sizeX && y+i*vectors[direction].y<map.sizeY && x+i*vectors[direction].x>=0 && y+i*vectors[direction].y>=0 && giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->numbOfFish!=0 && giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->whosPenguin==0; i++)
     {
-        sum+=((*map)[x + i*vectors[direction].x][y + i*vectors[direction].y].numbOfFish);
+        sum+=(giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->numbOfFish);
     }
     return sum;
 }
 
-int giveBranches(int x, int y, struct Floe *mapp, int sizeX, int sizeY)
+int giveBranches(int x, int y, struct Map map)
 {
-    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapp;
     int i, branches=0;
     for(i=0;i<6;i++)
     {
-        if(y+vectors[i].y>=0 && y+vectors[i].y<sizeY && x+vectors[i].x>=0 && x+vectors[i].x<sizeX && (*map)[x+vectors[i].x][y+vectors[i].y].numbOfFish!=0 && (*map)[x+vectors[i].x][y+vectors[i].y].whosPenguin==0)
+        if(y+vectors[i].y>=0 && y+vectors[i].y<map.sizeY && x+vectors[i].x>=0 && x+vectors[i].x<map.sizeX && giveFloe(&map,x+vectors[i].x,y+vectors[i].y)->numbOfFish!=0 && giveFloe(&map,x+vectors[i].x,y+vectors[i].y)->whosPenguin==0)
             branches++;
     }
     return branches;
 }
 
-struct Player *copyplayers(struct Player players[], int playerCount)
-{
-    int i,k, pengI;
-    struct Player *copy=malloc(sizeof(struct Player)*playerCount);
-    for(i=0;i<playerCount;i++)
-    {
-        copy[i]=players[i];
-        for(k=0;k<copy[i].numberOfPenguins;k++)
-        {
-            copy[i].penguins=malloc(sizeof(struct penguin)*copy[i].numberOfPenguins);
-            for(pengI=0;pengI<copy[i].numberOfPenguins;pengI++)
-            {
-                copy[i].penguins[pengI]=players[i].penguins[pengI];
-            }
-        }
-
-    }
-    return copy;
-}
 
 int giveNextPlayer(int playerIndex, int playerCount)
 {

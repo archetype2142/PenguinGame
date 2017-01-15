@@ -73,13 +73,19 @@ int main(int argc, char* argv[])
         }
         else
         {
+            mapStructure.scores=malloc(sizeof(int)*NumberOfplayers);
             mapStructure.mapPointer=map;
             mapStructure.sizeX=sizeX;
             mapStructure.sizeY=sizeY;
+            mapStructure.players=players;
+            mapStructure.playerCount=NumberOfplayers;
             if (strcmp(phase, "phase=placement") == 0)
             {
+                mapStructure.changelog=malloc(sizeof(struct Box));
+                mapStructure.maxChanges=1;
+                mapStructure.changeCount=0;
                 checkIfPlaying(MY_ID,players,NumberOfplayers);
-                target = placePenguin(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+                target = placePenguin(&mapStructure, MY_ID);
                 if(target.x!=-1 || target.y!=-1)
                 {
                     placement(target.x, target.y, map, sizeX, sizeY, MY_ID,players,NumberOfplayers);
@@ -98,7 +104,7 @@ int main(int argc, char* argv[])
             {
                 if(IsGameOver(map,sizeX,sizeY,players,NumberOfplayers))
                 {
-                   moveVector = movePenguinR(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
+                    moveVector = movePenguinR(MY_ID, &mapStructure);
                     if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
                     {
                         movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
@@ -106,13 +112,12 @@ int main(int argc, char* argv[])
                         printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
                         #endif // debug
                     }
-                        else
-                        {
-                            printf("error in movePenguin function!");
-                            getchar();
-                            exit(1);
-                        }
-
+                    else
+                    {
+                        printf("error in movePenguin function!");
+                        getchar();
+                        exit(1);
+                    }
                 }
                 else
                 {
@@ -140,7 +145,7 @@ int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, stru
     {
         place_penguin(x, y, playerID, mapP, sizeX, sizeY);
         players[giveIndex(playerID,players,playerCount)].score+=(*map)[x][y].numbOfFish;
-            for(i=0;i<players[0].numberOfPenguins;i++)
+        for(i=0;i<players[0].numberOfPenguins;i++)
         {
             if(players[giveIndex(playerID,players,playerCount)].penguins[i].x<0&&players[giveIndex(playerID,players,playerCount)].penguins[i].y<0)
             {

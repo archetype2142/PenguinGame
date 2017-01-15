@@ -259,6 +259,8 @@ int write_file(char *filename, void *mapP, int sizeX, int sizeY, struct Player p
 	struct Floe(*map)[sizeX][sizeY] = (struct Floe (*)[sizeX][sizeY]) mapP;
 	int i, k, numbOfPenguins = players[0].numberOfPenguins;
 	FILE *file = fopen(filename, "w");
+	if(file==NULL)
+        return 0;
 	fprintf(file, "%d;%d;\n", numbOfPlayers,numbOfPenguins);
 	for (i = 0; i < numbOfPlayers; i++)
 	{

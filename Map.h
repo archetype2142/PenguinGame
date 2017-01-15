@@ -1,5 +1,5 @@
 #pragma once
-#define MY_ID 3242
+#define MY_ID 14
 
 
 struct Floe
@@ -49,6 +49,7 @@ struct Box
     struct Floe floe;
     int x;
     int y;
+    short int penguinIndex;
 };
 
 struct Map
@@ -59,10 +60,21 @@ struct Map
     struct Box *changelog;
     int changeCount;
     int maxChanges;
+    struct Player *players;
+    int playerCount;
+    int *scores;
 };
 
 extern struct directions vectors[6];
 
-struct Floe *giveFloe(struct Map map, int x, int y);
+struct Floe *giveFloe(struct Map *map, int x, int y);
 
 struct Box *findChange(struct Box changes[], int changeCount, int x, int y);
+
+int addChange(struct Map *map, struct Vector move, int penguinIndex);
+
+struct penguin givePenguin(struct Map *map, int playerID, int penguinIndex);
+
+void tryPlace(struct Map *map, int x, int y, int playerID);
+
+int giveScore(int playerID, struct Map *map);
