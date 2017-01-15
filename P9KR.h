@@ -1,16 +1,18 @@
 
-struct Vector movePenguinR(int playerID, void *mapP, int sizeX, int sizeY, struct Player players[],int numberOfPlayers);
+struct Vector movePenguinR(int playerID, struct Map map, struct Player players[],int numberOfPlayers);
 
-struct Point placePenguin(void *mapP, int sizeX, int sizeY, int playerID, struct Player players[], int numberOfPlayers);
+struct Point placePenguin(struct Map map, int playerID, struct Player players[], int numberOfPlayers);
 
-float evaluate(void *mapP, int sizeX, int sizeY, int playerID, struct Player players[], int numberOfPlayers);
+float evaluate(struct Map map, int playerID, struct Player players[], int numberOfPlayers);
 
-float evaluateBranch(void *mapP, int sizeX, int sizeY, int x, int y, int direction);
+float evaluateBranch(struct Map map, int x, int y, int direction);
 
 int giveBranches(int x, int y, struct Floe *mapp, int sizeX, int sizeY);
 
-int recursionAlfa(struct Floe *map, int sizeX, int sizeY, struct Player players[], int plaayerCount, int depth, int playerID, struct Vector *chain);
+int recursionAlfa(struct Map map, struct Player players[], int plaayerCount, int depth, int playerID, struct Vector *chain);
 
-int recursionBeta(struct Floe *map, int sizeX, int sizeY, struct Player players[], int plaayerCount, int depth, int playerID, struct Vector *chain, int MyId);
+int recursionBeta(struct Map map, struct Player players[], int plaayerCount, int depth, int playerID, struct Vector *chain, int MyId);
 
 struct Player *copyplayers(struct Player players[], int playerCount);
+
+int giveNextPlayer(int playerIndex, int playerCount);

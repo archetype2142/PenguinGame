@@ -4,7 +4,7 @@
 #include "Map.h"
 #include "UserIO.h"
 #include "GameLogic.h"
-#include "penguin-9000.h"
+#include "P9KR.h"
 
 struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
 
@@ -22,6 +22,7 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player 
 int main(int argc, char* argv[])
 {
     /* declare structures and some variables  */
+    struct Map mapStructure;
     struct Floe *map=NULL;
     struct Point target;
     struct Vector moveVector;
@@ -72,6 +73,9 @@ int main(int argc, char* argv[])
         }
         else
         {
+            mapStructure.mapPointer=map;
+            mapStructure.sizeX=sizeX;
+            mapStructure.sizeY=sizeY;
             if (strcmp(phase, "phase=placement") == 0)
             {
                 checkIfPlaying(MY_ID,players,NumberOfplayers);
@@ -94,7 +98,7 @@ int main(int argc, char* argv[])
             {
                 if(IsGameOver(map,sizeX,sizeY,players,NumberOfplayers))
                 {
-                    //moveVector = movePenguinR(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
+                   moveVector = movePenguinR(MY_ID, map, sizeX, sizeY, players, NumberOfplayers);
                     if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
                     {
                         movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);

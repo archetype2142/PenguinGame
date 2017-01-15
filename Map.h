@@ -44,4 +44,25 @@ struct Point
 	int y;
 };
 
+struct Box
+{
+    struct Floe floe;
+    int x;
+    int y;
+};
+
+struct Map
+{
+    struct Floe *mapPointer;
+    int sizeX;
+    int sizeY;
+    struct Box *changelog;
+    int changeCount;
+    int maxChanges;
+};
+
 extern struct directions vectors[6];
+
+struct Floe *giveFloe(struct Map map, int x, int y);
+
+struct Box *findChange(struct Box changes[], int changeCount, int x, int y);
