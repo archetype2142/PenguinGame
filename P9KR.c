@@ -3,13 +3,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include "P9KR.h"
-#define DEPTH 2
+#define DEPTH 3
 
 struct Vector movePenguinR(int playerID, struct Map * map)
 {
+    int i;
     map->maxChanges = DEPTH * map->playerCount * 2;
     map->changeCount=0;
     map->changelog=malloc(sizeof(struct Box) * map->maxChanges);
+    map->scores=malloc(sizeof(int)*map->playerCount);
+    for(i=0;i<map->playerCount;i++)
+        map->scores[i]=0;
 
     struct Vector move;
 
@@ -95,7 +99,7 @@ int recursionBeta(struct Map map, int depth, int playerID, int MyId)
     int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, worst, newWorst, flag=1;//change playerIdnex
 
     if(depth == 0)
-        return evaluate( & map, MyId);
+        return evaluate( & map, MyId)*giveScore(MyId, &map);
 
     if(playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,playerID))
     {

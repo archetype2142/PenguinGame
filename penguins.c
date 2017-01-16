@@ -10,7 +10,7 @@ struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
 
 /* takes in coordinates to move the penguin to
 and puts the penguin on the new coordinates*/
-int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
+int movement(int x1, int y1, int x2, int y2, struct Map *map, int playerID);
 
 /*takes in coordinates to put a penguin on*/
 int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
                     moveVector = movePenguinR(MY_ID, &mapStructure);
                     if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
                     {
-                        movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+                        movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, &mapStructure, MY_ID);
                         #ifdef debug
                         printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
                         #endif // debug
@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
                     exit(1);
                 }
             }
-            if(!write_file(outFile, map, sizeX,sizeY,players, NumberOfplayers))
+            if(!write_file(outFile, mapStructure.mapPointer, mapStructure.sizeX,mapStructure.sizeY,mapStructure.players, mapStructure.playerCount))
             {
                 printf("error writing file");
             }
@@ -215,23 +215,23 @@ void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player 
     }
     */
 }
-int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
+int movement(int x1, int y1, int x2, int y2, struct Map *map, int playerID)
 {
     int i;
+    map->changeCount=0;
     // x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
-    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-    if(x1>=0 && y1 >=0 && x1<sizeX && y1<sizeY && x2>=0 && y2 >=0 && x2<sizeX && y2<sizeY && check_coordinates(x1, y1, mapP, sizeX, sizeY, playerID) && !check_penguin(x2, y2, mapP, sizeX, sizeY) && check_target_coordinates(x2, y2, mapP, sizeX, sizeY) &&   check_valid_move(x1, y1, x2, y2, mapP, sizeX, sizeY))
+    if(x1>=0 && y1 >=0 && x1<map->sizeX && y1<map->sizeY && x2>=0 && y2 >=0 && x2<map->sizeX && y2<map->sizeY && check_coordinates(x1, y1, map->mapPointer, map->sizeX, map->sizeY, playerID) && !check_penguin(x2, y2, map->mapPointer, map->sizeX, map->sizeY) && check_target_coordinates(x2, y2, map->mapPointer, map->sizeX, map->sizeY) &&   check_valid_move(x1, y1, x2, y2, map))
     {
-        (*map)[x1][y1].whosPenguin=0;
-        (*map)[x2][y2].whosPenguin=playerID;
-        players[giveIndex(playerID,players,playerCount)].score+=(*map)[x2][y2].numbOfFish;
-        (*map)[x2][y2].numbOfFish=0;
-        for(i=0;i<players[0].numberOfPenguins;i++)
+        giveFloe(map,x1,y1)->whosPenguin=0;
+        giveFloe(map,x2,y2)->whosPenguin=playerID;
+        map->players[giveIndex(playerID,map->players,map->playerCount)].score+=giveFloe(map,x2,y2)->numbOfFish;
+        giveFloe(map,x2,y2)->numbOfFish=0;
+        for(i=0;i<map->players[0].numberOfPenguins;i++)
         {
-            if(players[giveIndex(playerID,players,playerCount)].penguins[i].x==x1&&players[giveIndex(playerID,players,playerCount)].penguins[i].y==y1)
+            if(map->players[giveIndex(playerID,map->players,map->playerCount)].penguins[i].x==x1&&map->players[giveIndex(playerID,map->players,map->playerCount)].penguins[i].y==y1)
             {
-                players[giveIndex(playerID,players,playerCount)].penguins[i].x=x2;
-                players[giveIndex(playerID,players,playerCount)].penguins[i].y=y2;
+                map->players[giveIndex(playerID,map->players,map->playerCount)].penguins[i].x=x2;
+                map->players[giveIndex(playerID,map->players,map->playerCount)].penguins[i].y=y2;
                 break;
             }
         }

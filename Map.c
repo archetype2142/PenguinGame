@@ -37,7 +37,7 @@ struct Box *findChange(struct Box changes[], int changeCount, int x, int y)
 
 int addChange(struct Map *map, struct Vector move, int penguinIndex)
 {
-    if(check_valid_move(move.xInitial,move.yInitial,move.xTarget,move.yTarget,map->mapPointer,map->sizeX,map->sizeY))
+    if(check_valid_move(move.xInitial,move.yInitial,move.xTarget,move.yTarget,map))
     {
         map->changelog[map->changeCount+1].floe.whosPenguin=map->changelog[map->changeCount].floe.whosPenguin;
         map->changelog[map->changeCount+1].floe.numbOfFish=0;

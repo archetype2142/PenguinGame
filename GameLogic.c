@@ -34,10 +34,9 @@ int check_penguin(int x, int y, void *mapP, int sizeX, int sizeY)
     return (*map)[x][y].whosPenguin;
 }
 
-int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY)
+int check_valid_move(int x1, int y1, int x2, int y2, struct Map *map)
 {
     struct directions vectors1[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
-    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
     int pathClear = 0;
     int i, direction;
     for(direction=0;direction<6;direction++)
@@ -51,9 +50,9 @@ int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int 
     }
     if(pathClear)
     {
-        for(i=1;x1+vectors1[direction].x*i<sizeX &&x1+vectors1[direction].x*i>=0 && y1+vectors1[direction].y*i<sizeY &&y1+vectors1[direction].y*i>=0;i++)
+        for(i=1;x1+vectors1[direction].x*i<map->sizeX && x1+vectors1[direction].x*i>=0 && y1+vectors1[direction].y*i<map->sizeY &&y1+vectors1[direction].y*i>=0;i++)
         {
-            if((*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].whosPenguin!=0 || (*map)[x1+vectors1[direction].x*i][y1+vectors1[direction].y*i].numbOfFish==0)
+            if(giveFloe(map,x1+vectors1[direction].x*i,y1+vectors1[direction].y*i)->whosPenguin!=0 || giveFloe(map,x1+vectors1[direction].x*i,y1+vectors1[direction].y*i)->numbOfFish==0)
             {
                 return 0;
             }

@@ -2,7 +2,7 @@
 #include "Map.h"
 /* takes in coordinates to move the penguin to
 and puts the penguin on the new coordinates*/
-int movement(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
+int movement(int x1, int y1, int x2, int y2, struct Map *map, int playerID);
 
 /*takes in coordinates to put a penguin on*/
 int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
@@ -18,7 +18,7 @@ int check_penguin(int x, int y, void *mapP, int sizeX, int sizeY);
 /* checks if the move to be performed is legal
 or not, taking values of current coordinates
 and coordinates of the floe to be moved on to */
-int check_valid_move(int x1, int y1, int x2, int y2, void *mapP, int sizeX, int sizeY);
+int check_valid_move(int x1, int y1, int x2, int y2, struct Map *map);
 
 /*checks if floe of given coordinates can be moved onto*/
 int check_target_coordinates(int x, int y, void *mapP, int sizeX, int sizeY);
