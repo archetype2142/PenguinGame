@@ -13,6 +13,7 @@
 struct Vector movePenguinR(int playerID, struct Map * map)
 {
     int i;
+    float *evalArray=malloc(map->playerCount*sizeof(float));
     map->maxChanges = MAX_DEPTH * map->sizeX*map->sizeY * 2;
     map->changeCount=0;
     map->changelog=malloc(sizeof(struct Box) * map->maxChanges);
@@ -26,9 +27,9 @@ struct Vector movePenguinR(int playerID, struct Map * map)
     printf("%f\n",(MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map)))));
     #endif // debug
     if((giveFloes(map))!=0 && MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map)))>0)
-        recursionAlfa( * map, MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map))), playerID, & move);
+        recursionAlfa( * map, MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map))), playerID, & move, evalArray);
     else
-        recursionAlfa( * map, MAX_DEPTH, playerID, & move);
+        recursionAlfa( * map, MAX_DEPTH, playerID, & move, evalArray);
     return move;
 }
 
@@ -58,7 +59,7 @@ struct Point placePenguin(struct Map *map, int playerID)
     return result;
 }
 
-int recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move)
+void recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move, float evalArray[])
 {
     struct Vector step;
     struct penguin penguintmp;
@@ -82,7 +83,8 @@ int recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move)
                         step.yTarget=penguintmp.y+vectors[direction].y*distanse;
                         if(addChange(&map,step,i))
                             {
-                                newbest=recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,playerID);
+                                recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,playerID, evalArray);
+                                newbest=evalArray[playerIndex];
                                 if(flag||best<newbest)
                                 {
                                     best=newbest;
@@ -99,19 +101,30 @@ int recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move)
         }
     }
     else
-        return -999999999;
-    return best;
+    {
+        for(i;i<map.playerCount;i++)
+        {
+            if(map.players[i].playerID!=playerID)
+                evalArray[i]=evaluate(&map,map.players[i].playerID);
+            else
+                evalArray[i]=-999999999;
+        }
+    }
 }
 
-int recursionBeta(struct Map map, int depth, int playerID, int MyId)
+void recursionBeta(struct Map map, int depth, int playerID, int MyId, float evalArray[])
 {
     struct Vector step;
     struct penguin penguintmp;
-    int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, worst, newWorst, flag=1;//change playerIdnex
+    int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, best, newBest, flag=1;//change playerIdnex
 
     if(depth == 0)
-        return evaluate( & map, MyId)*giveScore(MyId, &map)/giveEnemyScore(&map,MyId);
-
+    {
+        for(i=0;i<map.playerCount;i++)
+        {
+            evalArray[i]=evaluate( & map, map.players[i].playerID)*giveScore(map.players[i].playerID, &map)/giveEnemyScore(&map,map.players[i].playerID);
+        }
+    }
     if(playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,playerID))
     {
         for(i=0;i<map.players[playerIndex].numberOfPenguins;i++)
@@ -129,12 +142,13 @@ int recursionBeta(struct Map map, int depth, int playerID, int MyId)
                         if(addChange(&map,step,i))
                             {
                                 if(map.players[giveNextPlayer(playerIndex,map.playerCount)].playerID==MyId)
-                                    newWorst=recursionAlfa(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,NULL);
+                                    recursionAlfa(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,NULL, evalArray);
                                 else
-                                    newWorst=recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,MyId);
-                                if(flag||worst>newWorst)
+                                    recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,MyId,evalArray);
+                                newBest=evalArray[playerIndex];
+                                if(flag||best>newBest)
                                 {
-                                    worst=newWorst;
+                                    best=newBest;
                                     flag=0;
                                 }
                                 map.changeCount-=2;
@@ -149,11 +163,10 @@ int recursionBeta(struct Map map, int depth, int playerID, int MyId)
     else
     {
     if(map.players[giveNextPlayer(playerIndex,map.playerCount)].playerID==MyId)
-        return recursionAlfa(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,NULL);
+        recursionAlfa(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,NULL, evalArray);
     else
-        return recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,MyId);
+        recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,MyId, evalArray);
     }
-    return worst;
 }
 float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed already XD)
 {

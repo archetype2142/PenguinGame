@@ -9,9 +9,9 @@ float evaluateBranch(struct Map map, int x, int y, int direction);
 
 int giveBranches(int x, int y, struct Map map);
 
-int recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move);
+void recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move, float evalArray[]);
 
-int recursionBeta(struct Map map, int depth, int playerID, int MyId);
+void recursionBeta(struct Map map, int depth, int playerID, int MyId, float evalArray[]);
 
 struct Player *copyplayers(struct Player players[], int playerCount);
 
