@@ -18,3 +18,7 @@ struct Player *copyplayers(struct Player players[], int playerCount);
 int giveNextPlayer(int playerIndex, int playerCount);
 
  void freeplayer(struct Player players[],int playerCount );
+
+ int giveFloes(struct Map *map);
+
+ int giveEnemyScore(struct Map *map, int MyId);

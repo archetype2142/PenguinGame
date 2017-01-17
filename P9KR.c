@@ -3,12 +3,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include "P9KR.h"
-#define DEPTH 3
+#include <math.h>
+#define MAX_DEPTH 1.5
+#define debug
+#ifdef debug
+#include <stdio.h>
+#endif // debug
 
 struct Vector movePenguinR(int playerID, struct Map * map)
 {
     int i;
-    map->maxChanges = DEPTH * map->playerCount * 2;
+    map->maxChanges = MAX_DEPTH * map->sizeX*map->sizeY * 2;
     map->changeCount=0;
     map->changelog=malloc(sizeof(struct Box) * map->maxChanges);
     map->scores=malloc(sizeof(int)*map->playerCount);
@@ -17,7 +22,13 @@ struct Vector movePenguinR(int playerID, struct Map * map)
 
     struct Vector move;
 
-    recursionAlfa( * map, DEPTH, playerID, & move);
+    #ifdef debug
+    printf("%f\n",(MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map)))));
+    #endif // debug
+    if((giveFloes(map))!=0 && MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map)))>0)
+        recursionAlfa( * map, MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map))), playerID, & move);
+    else
+        recursionAlfa( * map, MAX_DEPTH, playerID, & move);
     return move;
 }
 
@@ -88,7 +99,7 @@ int recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move)
         }
     }
     else
-        return recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,playerID);
+        return -999999999;
     return best;
 }
 
@@ -99,7 +110,7 @@ int recursionBeta(struct Map map, int depth, int playerID, int MyId)
     int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, worst, newWorst, flag=1;//change playerIdnex
 
     if(depth == 0)
-        return evaluate( & map, MyId)*giveScore(MyId, &map);
+        return evaluate( & map, MyId)*giveScore(MyId, &map)/giveEnemyScore(&map,MyId);
 
     if(playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,playerID))
     {
@@ -158,11 +169,12 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                 {
                     for (direction = 0; direction < 6; direction++)
                     {
-                        sum +=giveScore(map->players[i].playerID,map)*(giveBranches(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y,*map)) * evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
+                        sum +=(giveBranches(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y,*map)) * evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                     }
                 }
             }
         }
+
         else
         {
             if (map->players[i].playerID != playerID && map->players[i].playerID>0)
@@ -173,7 +185,7 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                     {
                         for (direction = 0; direction < 6; direction++)
                         {
-                            sum -=giveScore(map->players[i].playerID,map)*(giveBranches(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y,*map)) * evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
+                            sum -=(giveBranches(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y,*map)) * evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                         }
                     }
                 }
@@ -216,4 +228,31 @@ int giveNextPlayer(int playerIndex, int playerCount)
     {
         return 0;
     }
+}
+
+int giveFloes(struct Map *map)
+{
+    int x,y, numOfFloes=0;
+    for(y=0;y<map->sizeY;y++)
+    {
+        for(x=0;x<map->sizeX;x++)
+            if(giveFloe(map,x,y)->numbOfFish>0)
+        {
+            numOfFloes++;
+        }
+    }
+    return numOfFloes;
+}
+
+int giveEnemyScore(struct Map *map, int MyId)
+{
+    int x, enemyScore=0;
+    for(x=0;x<map->playerCount;x++)
+    {
+        if(map->players[x].playerID!=MyId)
+        {
+            enemyScore+=giveScore(map->players[x].playerID,map);
+        }
+    }
+    return enemyScore;
 }
