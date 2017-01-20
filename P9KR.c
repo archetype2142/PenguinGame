@@ -26,10 +26,13 @@ struct Vector movePenguinR(int playerID, struct Map * map)
     #ifdef debug
     printf("%f\n",(MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map)))));
     #endif // debug
+
     if((giveFloes(map))!=0 && MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map)))>0)
         recursionAlfa( * map, MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map))), playerID, & move, evalArray);
     else
         recursionAlfa( * map, MAX_DEPTH, playerID, & move, evalArray);
+
+    recursionAlfa( * map, MAX_DEPTH, playerID, & move, evalArray);
     return move;
 }
 
@@ -102,10 +105,10 @@ void recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move
     }
     else
     {
-        for(i;i<map.playerCount;i++)
+        for(i=0;i<map.playerCount;i++)
         {
             if(map.players[i].playerID!=playerID)
-                evalArray[i]=evaluate(&map,map.players[i].playerID);
+                evalArray[i]=evaluate(&map,map.players[i].playerID)*(giveScore(map.players[i].playerID, &map)/giveEnemyScore(&map,map.players[i].playerID));
             else
                 evalArray[i]=-999999999;
         }
@@ -122,9 +125,21 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
     {
         for(i=0;i<map.playerCount;i++)
         {
-            evalArray[i]=evaluate( & map, map.players[i].playerID)*giveScore(map.players[i].playerID, &map)/giveEnemyScore(&map,map.players[i].playerID);
+            if(!playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,MyId)&&map.players[i].playerID!=MyId)
+            {
+                evalArray[i]=999999999;
+            }
+            else
+            {
+                if(map.players[i].playerID!=MyId)
+                    evalArray[i]=-999999999;
+                else
+                    evalArray[i]=evaluate( & map, map.players[i].playerID)*(giveScore(map.players[i].playerID, &map)/giveEnemyScore(&map,map.players[i].playerID));
+            }
         }
+    return;
     }
+
     if(playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,playerID))
     {
         for(i=0;i<map.players[playerIndex].numberOfPenguins;i++)
@@ -182,12 +197,12 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                 {
                     for (direction = 0; direction < 6; direction++)
                     {
-                        sum +=(giveBranches(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y,*map)) * evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
+                        sum +=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                     }
                 }
             }
         }
-
+/*
         else
         {
             if (map->players[i].playerID != playerID && map->players[i].playerID>0)
@@ -203,7 +218,7 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                     }
                 }
             }
-        }
+        }*/
     }
     return sum;
 }
