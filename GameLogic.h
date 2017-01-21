@@ -35,7 +35,7 @@ int giveIndex(int playerID, struct Player players[], int playerCount);
 int checkIfPlaying(int playerID, struct Player *players, int playerCount);
 
 //checks if there is a move possible
-int IsGameOver(void *mapP, int sizeX, int sizeY, struct Player players[],int playerCount);
+int IsGameNotOver(struct Map *map);
 
 //checks what phase the game is in returns 0 for placement and 1 for movement
 int whatphase(struct Player *players, int playerCount);

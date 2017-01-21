@@ -78,6 +78,7 @@ int main(int argc, char* argv[])
             mapStructure.sizeY=sizeY;
             mapStructure.players=players;
             mapStructure.playerCount=NumberOfplayers;
+            mapStructure.changeCount=0;
             if (strcmp(phase, "phase=placement") == 0)
             {
                 mapStructure.changelog=malloc(sizeof(struct Box)*2);
@@ -103,7 +104,7 @@ int main(int argc, char* argv[])
             }
             else
             {
-                if(IsGameOver(map,sizeX,sizeY,players,NumberOfplayers))
+                if(IsGameNotOver(&mapStructure))
                 {
                     moveVector = movePenguinR(MY_ID, &mapStructure);
                     if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)

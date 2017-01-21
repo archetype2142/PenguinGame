@@ -125,16 +125,16 @@ int checkIfPlaying(int playerID, struct Player *players, int playerCount)
     return 1;
 }
 
-int IsGameOver(void *mapP, int sizeX, int sizeY, struct Player players[],int playerCount)
+int IsGameNotOver(struct Map *map)
 {
     int i,k, directions=0;
-    for(i=0;i<playerCount;i++)
+    for(i=0;i<map->playerCount;i++)
     {
-        for(k=0;k<players[i].numberOfPenguins;k++)
+        for(k=0;k<map->players[i].numberOfPenguins;k++)
         {
             for(directions=0;directions<6;directions++)
             {
-                if(check_target_coordinates(players[i].penguins[k].x+vectors[directions].x,players[i].penguins[k].y+vectors[directions].y,mapP,sizeX,sizeY))
+                if(giveFloe(map,map->players[i].penguins[k].x+vectors[directions].x,map->players[i].penguins[k].y+vectors[directions].y)->numbOfFish>0&&giveFloe(map,map->players[i].penguins[k].x+vectors[directions].x,map->players[i].penguins[k].y+vectors[directions].y)->whosPenguin==0)
                 {
                     return 1;
                 }
@@ -183,7 +183,7 @@ int giveNewPenguin(struct Map map, int playerID)
     int i;
     for(i=map.players[0].numberOfPenguins-1;i>=0;i--)
     {
-        if(map.players[giveIndex(playerID,map.players,map.playerCount)].penguins[i].x=-1)
+        if(map.players[giveIndex(playerID,map.players,map.playerCount)].penguins[i].x==-1)
             return i;
     }
     exit(1);

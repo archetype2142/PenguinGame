@@ -4,7 +4,8 @@
 #include <string.h>
 #include "P9KR.h"
 #include <math.h>
-#define MAX_DEPTH 1.5
+#define MIN_DEPTH 1.5
+#define DEPTH_CONSTANT 450
 #define debug
 #ifdef debug
 #include <stdio.h>
@@ -12,26 +13,27 @@
 
 struct Vector movePenguinR(int playerID, struct Map * map)
 {
+    int depth;
     int i;
     float *evalArray=malloc(map->playerCount*sizeof(float));
-    map->maxChanges = MAX_DEPTH * map->sizeX*map->sizeY * 2;
+    map->maxChanges = MIN_DEPTH * map->sizeX*map->sizeY * 2;
     map->changeCount=0;
     map->changelog=malloc(sizeof(struct Box) * map->maxChanges);
     for(i=0;i<map->playerCount;i++)
         map->players[i].scoreGained=0;
 
     struct Vector move;
-
+    depth=DEPTH_CONSTANT/(1.2*giveFloes(map));
     #ifdef debug
-    printf("%f\n",(MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map)))));
+    printf("%d\n",depth);
     #endif // debug
 
-    if((giveFloes(map))!=0 && MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map)))>0)
-        recursionAlfa( * map, MAX_DEPTH*(map->sizeX*map->sizeY/(1.2*giveFloes(map))), playerID, & move, evalArray);
+    if((giveFloes(map))!=0 && depth>0)
+        recursionAlfa( * map, depth, playerID, & move, evalArray);
     else
-        recursionAlfa( * map, MAX_DEPTH, playerID, & move, evalArray);
+        recursionAlfa( * map, MIN_DEPTH, playerID, & move, evalArray);
 
-    recursionAlfa( * map, MAX_DEPTH, playerID, & move, evalArray);
+    recursionAlfa( * map, MIN_DEPTH, playerID, & move, evalArray);
     return move;
 }
 
@@ -70,8 +72,6 @@ void recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move
 
     depth --;
 
-    if(playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,playerID))
-    {
         for(i=0;i<map.players[playerIndex].numberOfPenguins;i++)
         {
             for(direction=0;direction<6;++direction)
@@ -102,17 +102,6 @@ void recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move
                     }
             }
         }
-    }
-    else
-    {
-        for(i=0;i<map.playerCount;i++)
-        {
-            if(map.players[i].playerID!=playerID)
-                evalArray[i]=evaluate(&map,map.players[i].playerID)*(giveScore(map.players[i].playerID, &map)/giveEnemyScore(&map,map.players[i].playerID));
-            else
-                evalArray[i]=-999999999;
-        }
-    }
 }
 
 void recursionBeta(struct Map map, int depth, int playerID, int MyId, float evalArray[])
@@ -121,20 +110,26 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
     struct penguin penguintmp;
     int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, best, newBest, flag=1;//change playerIdnex
 
+
+    //this needs work!
     if(depth == 0)
     {
         for(i=0;i<map.playerCount;i++)
         {
-            if(!playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,MyId)&&map.players[i].playerID!=MyId)
+            if(map.players[i].playerID==MyId && !IsGameNotOver(&map) && checkIfWon(&map,MyId)==1)//game has ended and we have won
             {
-                evalArray[i]=999999999;
+                evalArray[giveIndex(MyId,map.players,map.playerCount)]=999999999;
             }
             else
             {
-                if(map.players[i].playerID!=MyId)
+                if(!playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,MyId)&&map.players[i].playerID!=MyId)
+                {
                     evalArray[i]=-999999999;
+                }
                 else
-                    evalArray[i]=evaluate( & map, map.players[i].playerID)*(giveScore(map.players[i].playerID, &map)/giveEnemyScore(&map,map.players[i].playerID));
+                {
+                    evalArray[i]=evaluate( & map, map.players[i].playerID)*(giveScore(map.players[i].playerID, &map)-giveEnemyScore(&map,map.players[i].playerID));
+                }
             }
         }
     return;
@@ -186,7 +181,7 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
 float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed already XD)
 {
     int direction, i,k;
-    float sum=0;
+    float sum=0, sumtmp;
     for (i = 0; i < map->playerCount; i++)
     {
         if (map->players[i].playerID == playerID)
@@ -197,8 +192,9 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                 {
                     for (direction = 0; direction < 6; direction++)
                     {
-                        sum +=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
+                        sumtmp +=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                     }
+                    sum+=sumtmp*mapExplorer(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y, map, map->sizeX, map->sizeY);
                 }
             }
         }
@@ -213,8 +209,9 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                     {
                         for (direction = 0; direction < 6; direction++)
                         {
-                            sum -=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
+                            sumtmp -=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                         }
+                    sum+=sumtmp*mapExplorer(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y, map, map->sizeX, map->sizeY);
                     }
                 }
             }
@@ -294,7 +291,7 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
     int i = 0, j = 0;
 
     //goes up the y axis starting from x, y and checks all 6 directions of every floe
-    for (int newY = y; newY < sizeY; newY++) {  
+    for (newY = y; newY < sizeY; newY++) {
         for(int direction = 0; direction < 6; direction++) {
             if(direction == 0) { //goes straight up in y axis
                 for (i = newY; i < sizeY && i >= 0; ++i) {
@@ -308,16 +305,16 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
                 for (i = x, j = newY; i < sizeX && j < sizeY && i >= 0 && j >= 0; ++i, j++) {
                     if(giveFloe(map, i, j)->numbOfFish > 0)
                         myMap[i][j] = 1;
-                    else 
+                    else
                         break;
                 }
             }
             if(direction == 2) { //goes towards right
                 for(i = x; i < sizeX && i >= 0; i++) {
-                    i++; //because skips one 
+                    i++; //because skips one
                     if(giveFloe(map, i, newY)->numbOfFish > 0)
                         myMap[i][newY] = 1;
-                    else 
+                    else
                         break;
                 }
             }
@@ -327,7 +324,7 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
                         myMap[i][j] = 1;
                     else
                         break;
-                }                        
+                }
             }
             if(direction == 4) { //goes down
                 for (i = newY; i < sizeY && i >= 0; ++i) {
@@ -350,7 +347,7 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
                     i--; //because skips one
                     if(giveFloe(map, i, newY)->numbOfFish > 0)
                         myMap[i][newY] = 1;
-                    else 
+                    else
                         break;
                 }
             }
@@ -358,7 +355,7 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
     }
 
     //now goes down in y axis checking all 6 directions of every floe till end of map in y direction
-    for (int newY = y; newY < sizeY; newY--) {  
+    for (int newY = y; newY < sizeY && newY>=0; newY--) {
         for(int direction = 0; direction < 6; direction++) {
             if(direction == 0) { //goes straight up in y axis
                 for (i = newY; i < sizeY && i >= 0; ++i) {
@@ -376,20 +373,20 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
             }
             if(direction == 2) { //goes towards right
                 for(int i = x; i < sizeX && i >= 0; i++) {
-                    i++; //because skips one 
+                    i++; //because skips one
                     if(giveFloe(map, i, newY)->numbOfFish > 0)
                         myMap[i][newY] = 1;
-                    else 
-                        berak;
+                    else
+                        break;
                 }
             }
             if (direction == 3) { //right diagonal down
                 for(i = x, j = newY; i < sizeX && j < sizeY && i >= 0 && j >= 0; i++, j--) {
                     if(giveFloe(map, i, j)->numbOfFish > 0)
                         myMap[i][j] = 1;
-                    else 
+                    else
                         break;
-                }                        
+                }
             }
             if(direction == 4) { //goes down
                 for (i = newY; i < sizeY && i >= 0; ++i) {
@@ -412,20 +409,31 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
                     i--; //because skips one
                     if(giveFloe(map, i, newY)->numbOfFish > 0)
                         myMap[i][newY] = 1;
-                    else 
+                    else
                         break;
                 }
             }
         }
     }
 
-    //count all the 1's in the array 
+    //count all the 1's in the array
     for (int i = 0; i < sizeX; ++i) {
         for (int j = 0; j < sizeY; ++j) {
-            if(myMap[i][j] == 1) 
+            if(myMap[i][j] == 1)
                 count++;
         }
     }
 
     return count;
+}
+
+int checkIfWon(struct Map *map, int playerID)
+{
+    int i;
+    for(i=0;i<map->playerCount;i++)
+    {
+        if(map->players[i].playerID!=playerID && giveScore(map->players[i].playerID,map)>giveScore(playerID,map))
+            return 0;
+    }
+    return 1;
 }
