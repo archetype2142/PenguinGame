@@ -209,7 +209,7 @@ int moveExplorer(int x, int y, int sizeX, int sizeY, struct Floe *mapp) {
     {
         for (int direction = 0; direction < 6; direction++)
         {
-            for(int i = 1; x+i*vectors[direction].x<sizeX && y+i*vectors[direction].y<sizeY && x+i*vectors[direction].x>=0 && y+i*vectors[direction].y>=0; i++)
+            for(int i = 1; (x+j)+i*vectors[direction].x<sizeX && (y+j)+i*vectors[direction].y<sizeY && (x+j)+i*vectors[direction].x>=0 && (y+j)+i*vectors[direction].y>=0; i++)
             {
                 if((y+j)+vectors[i].y>=0 && (y+j)+vectors[i].y<sizeY && (x+j)+vectors[i].x>=0 && (x+j)+vectors[i].x<sizeX) {
                     movesPossible++;
@@ -217,5 +217,6 @@ int moveExplorer(int x, int y, int sizeX, int sizeY, struct Floe *mapp) {
             }
         }   
     }
+    printf("moves: %d\n", movesPossible);
     return movesPossible;
 }
