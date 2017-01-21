@@ -27,3 +27,6 @@ int giveNextPlayer(int playerIndex, int playerCount);
 
  //returns total score of all players, exept for MyId
  int giveEnemyScore(struct Map *map, int MyId);
+
+//returns number of every acessible floe on the map
+int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY);
