@@ -106,7 +106,7 @@ int giveIndex(int playerID, struct Player players[], int playerCount)
     return -1;
 }
 
-void checkIfPlaying(int playerID, struct Player *players, int playerCount)
+int checkIfPlaying(int playerID, struct Player *players, int playerCount)
 {
     int i, freePlace = -1;
     for(i=0; i<playerCount; i++)
@@ -116,12 +116,13 @@ void checkIfPlaying(int playerID, struct Player *players, int playerCount)
         if(players[i].playerID==playerID)
         {
             players[i].playerID=playerID;
-            return;
+            return 0;
         }
     }
 
     if(freePlace>=0)
         players[freePlace].playerID=playerID;
+    return 1;
 }
 
 int IsGameOver(void *mapP, int sizeX, int sizeY, struct Player players[],int playerCount)
@@ -175,4 +176,15 @@ int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int
             }
         }
     return 0;
+}
+
+int giveNewPenguin(struct Map map, int playerID)
+{
+    int i;
+    for(i=map.players[0].numberOfPenguins-1;i>=0;i--)
+    {
+        if(map.players[giveIndex(playerID,map.players,map.playerCount)].penguins[i].x=-1)
+            return i;
+    }
+    exit(1);
 }

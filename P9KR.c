@@ -17,9 +17,8 @@ struct Vector movePenguinR(int playerID, struct Map * map)
     map->maxChanges = MAX_DEPTH * map->sizeX*map->sizeY * 2;
     map->changeCount=0;
     map->changelog=malloc(sizeof(struct Box) * map->maxChanges);
-    map->scores=malloc(sizeof(int)*map->playerCount);
     for(i=0;i<map->playerCount;i++)
-        map->scores[i]=0;
+        map->players[i].scoreGained=0;
 
     struct Vector move;
 
@@ -36,8 +35,9 @@ struct Vector movePenguinR(int playerID, struct Map * map)
     return move;
 }
 
-struct Point placePenguin(struct Map *map, int playerID)
+struct Point placePenguin(struct Map *map, int playerID, int PenguinIndex)
 {
+    int newEvalueate;
     struct Point result={-1,-1};
     int x, y;
     float best;
@@ -47,8 +47,8 @@ struct Point placePenguin(struct Map *map, int playerID)
         {
             if (giveFloe(map,x,y)->numbOfFish == 1 && giveFloe(map,x,y)->whosPenguin == 0)
             {
-                tryPlace(map,x,y,playerID);
-                int newEvalueate = evaluate(map, playerID);
+                tryPlace(map,x,y,playerID,PenguinIndex);
+                 newEvalueate= evaluate(map, playerID);
                 if (result.y==-1 || result.x==-1 || newEvalueate>best)
                 {
                     result.x = x;
@@ -193,7 +193,7 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
         {
             for (k = 0; k < map->players[i].numberOfPenguins; k++)
             {
-                if(map->players[i].penguins[k].x>=0 && map->players[i].penguins[k].y>=0)
+                if(givePenguin(map,map->players[i].playerID,k).x>=0 && givePenguin(map,map->players[i].playerID,k).y>=0)
                 {
                     for (direction = 0; direction < 6; direction++)
                     {
@@ -202,23 +202,23 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                 }
             }
         }
-/*
+
         else
         {
             if (map->players[i].playerID != playerID && map->players[i].playerID>0)
             {
                 for (k = 0; k < map->players[i].numberOfPenguins; k++)
                 {
-                    if(map->players[i].penguins[k].x>=0 && map->players[i].penguins[k].y>=0)
+                    if(givePenguin(map,map->players[i].playerID,k).x>=0 && givePenguin(map,map->players[i].playerID,k).y>=0)
                     {
                         for (direction = 0; direction < 6; direction++)
                         {
-                            sum -=(giveBranches(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y,*map)) * evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
+                            sum -=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                         }
                     }
                 }
             }
-        }*/
+        }
     }
     return sum;
 }
@@ -229,7 +229,7 @@ float evaluateBranch(struct Map map, int x, int y, int direction)
     float sum=0;
     for(i=1; x+i*vectors[direction].x < map.sizeX && y+i*vectors[direction].y<map.sizeY && x+i*vectors[direction].x>=0 && y+i*vectors[direction].y>=0 && giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->numbOfFish!=0 && giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->whosPenguin==0; i++)
     {
-        sum+=(giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->numbOfFish);
+        sum+=(giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->numbOfFish)+giveBranches(x+i*vectors[direction].x,y+i*vectors[direction].y,map);
     }
     return sum;
 }

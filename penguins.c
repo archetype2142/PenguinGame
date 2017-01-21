@@ -73,7 +73,6 @@ int main(int argc, char* argv[])
         }
         else
         {
-            mapStructure.scores=malloc(sizeof(int)*NumberOfplayers);
             mapStructure.mapPointer=map;
             mapStructure.sizeX=sizeX;
             mapStructure.sizeY=sizeY;
@@ -81,11 +80,13 @@ int main(int argc, char* argv[])
             mapStructure.playerCount=NumberOfplayers;
             if (strcmp(phase, "phase=placement") == 0)
             {
-                mapStructure.changelog=malloc(sizeof(struct Box));
+                mapStructure.changelog=malloc(sizeof(struct Box)*2);
                 mapStructure.maxChanges=1;
                 mapStructure.changeCount=0;
-                checkIfPlaying(MY_ID,players,NumberOfplayers);
-                target = placePenguin(&mapStructure, MY_ID);
+                if(checkIfPlaying(MY_ID,players,NumberOfplayers))
+                    target = placePenguin(&mapStructure, MY_ID,0);
+                else
+                    target = placePenguin(&mapStructure, MY_ID, giveNewPenguin(mapStructure,MY_ID));
                 if(target.x!=-1 || target.y!=-1)
                 {
                     placement(target.x, target.y, map, sizeX, sizeY, MY_ID,players,NumberOfplayers);

@@ -17,9 +17,10 @@ struct penguin
 struct Player
 {
 	int score; // current score of a player
-	struct penguin *penguins; //array of penguins, hardcoding might need to be fixed
+	struct penguin *penguins;
 	int numberOfPenguins;
 	int playerID;
+	int scoreGained;
 };
 
 struct Vector
@@ -62,7 +63,6 @@ struct Map
     int maxChanges;
     struct Player *players;
     int playerCount;
-    int *scores;
 };
 
 extern struct directions vectors[6];
@@ -75,6 +75,6 @@ int addChange(struct Map *map, struct Vector move, int penguinIndex);
 
 struct penguin givePenguin(struct Map *map, int playerID, int penguinIndex);
 
-void tryPlace(struct Map *map, int x, int y, int playerID);
+void tryPlace(struct Map *map, int x, int y, int playerID,int penguinIndex);
 
 int giveScore(int playerID, struct Map *map);

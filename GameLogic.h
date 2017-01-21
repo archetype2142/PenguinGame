@@ -32,7 +32,7 @@ void place_penguin(int x, int y, int playerID, void *mapP, int sizeX, int sizeY)
 /*function that retrievs index of player of playerID*/
 int giveIndex(int playerID, struct Player players[], int playerCount);
 
-void checkIfPlaying(int playerID, struct Player *players, int playerCount);
+int checkIfPlaying(int playerID, struct Player *players, int playerCount);
 
 //checks if there is a move possible
 int IsGameOver(void *mapP, int sizeX, int sizeY, struct Player players[],int playerCount);
@@ -42,3 +42,5 @@ int whatphase(struct Player *players, int playerCount);
 
 //checks if a specific player can preform at least one move
 int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID);
+
+int giveNewPenguin(struct Map map, int playerID);
