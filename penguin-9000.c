@@ -200,3 +200,22 @@ int giveBranches(int x, int y, struct Floe *mapp, int sizeX, int sizeY)
     }
     return branches;
 }
+int moveExplorer(int x, int y, int sizeX, int sizeY, struct Floe *mapp) {
+
+    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapp;
+    int movesPossible = 0;
+    int distance = 6; //how far to go?
+    for (int j = 0; j < distance; ++j)
+    {
+        for (int direction = 0; direction < 6; direction++)
+        {
+            for(int i = 1; x+i*vectors[direction].x<sizeX && y+i*vectors[direction].y<sizeY && x+i*vectors[direction].x>=0 && y+i*vectors[direction].y>=0; i++)
+            {
+                if((y+j)+vectors[i].y>=0 && (y+j)+vectors[i].y<sizeY && (x+j)+vectors[i].x>=0 && (x+j)+vectors[i].x<sizeX) {
+                    movesPossible++;
+                }
+            }
+        }   
+    }
+    return movesPossible;
+}

@@ -28,3 +28,5 @@ float giveAgression(struct Player players[], int PlayerCount, struct Floe *mapp,
 
 //funtcion returns number of directions, a penguin can move to
 int giveBranches(int x, int y, struct Floe *mapp, int sizeX, int sizeY);
+
+int moveExplorer(int x, int y, int sizeX, int sizeY, struct Floe *mapp);
