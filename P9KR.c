@@ -297,47 +297,61 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
     for (int newY = y; newY < sizeY; newY++) {  
         for(int direction = 0; direction < 6; direction++) {
             if(direction == 0) { //goes straight up in y axis
-                for (i = newY; i < sizeY; ++i) {
+                for (i = newY; i < sizeY && i >= 0; ++i) {
                     if(giveFloe(map, x, i)->numbOfFish > 0)
                         myMap[x][i] = 1;
+                    else
+                        break;
                 }
             }
             if(direction == 1) { //goes diagonal top right
-                for (i = x, j = newY; i < sizeX, j < sizeY; ++i, j++) {
+                for (i = x, j = newY; i < sizeX && j < sizeY && i >= 0 && j >= 0; ++i, j++) {
                     if(giveFloe(map, i, j)->numbOfFish > 0)
                         myMap[i][j] = 1;
+                    else 
+                        break;
                 }
             }
             if(direction == 2) { //goes towards right
-                for(i = x; i < sizeX; i++) {
+                for(i = x; i < sizeX && i >= 0; i++) {
                     i++; //because skips one 
                     if(giveFloe(map, i, newY)->numbOfFish > 0)
                         myMap[i][newY] = 1;
+                    else 
+                        break;
                 }
             }
             if (direction == 3) { //right diagonal down
-                for(i = x, j = newY; i < sizeX, j < sizeY; i++, j--) {
+                for(i = x, j = newY; i < sizeX && j < sizeY && i >= 0 && j >= 0; i++, j--) {
                     if(giveFloe(map, i, j)->numbOfFish > 0)
                         myMap[i][j] = 1;
+                    else
+                        break;
                 }                        
             }
             if(direction == 4) { //goes down
-                for (i = newY; i < sizeY; ++i) {
+                for (i = newY; i < sizeY && i >= 0; ++i) {
                     if(giveFloe(map, x, i)->numbOfFish > 0)
                         myMap[x][i] = 1;
+                    else
+                        break;
                 }
             }
             if(direction == 5) { //left diagonal down
-                for (i = x, j = newY; i < sizeX, j < sizeY; i--, j--) {
+                for (i = x, j = newY; i < sizeX && j < sizeY && i >= 0 && j >= 0; i--, j--) {
                     if(giveFloe(map, i, j)->numbOfFish > 0)
                         myMap[i][j] = 1;
+                    else
+                        break;
                 }
             }
             if(direction == 6) { //goes left
-                for (i = x; i < sizeX; i--) {
+                for (i = x; i < sizeX && i >= 0; i--) {
                     i--; //because skips one
                     if(giveFloe(map, i, newY)->numbOfFish > 0)
                         myMap[i][newY] = 1;
+                    else 
+                        break;
                 }
             }
         }
@@ -347,47 +361,59 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
     for (int newY = y; newY < sizeY; newY--) {  
         for(int direction = 0; direction < 6; direction++) {
             if(direction == 0) { //goes straight up in y axis
-                for (i = newY; i < sizeY; ++i) {
+                for (i = newY; i < sizeY && i >= 0; ++i) {
                     if(giveFloe(map, x, i)->numbOfFish > 0)
                         myMap[x][i] = 1;
                 }
             }
             if(direction == 1) { //goes diagonal top right
-                for (i = x, j = newY; i < sizeX, j < sizeY; ++i, j++) {
+                for (i = x, j = newY; i < sizeX && j < sizeY && i >= 0 && j >= 0; ++i, j++) {
                     if(giveFloe(map, i, j)->numbOfFish > 0)
                         myMap[i][j] = 1;
+                    else
+                        break;
                 }
             }
             if(direction == 2) { //goes towards right
-                for(int i = x; i < sizeX; i++) {
+                for(int i = x; i < sizeX && i >= 0; i++) {
                     i++; //because skips one 
                     if(giveFloe(map, i, newY)->numbOfFish > 0)
                         myMap[i][newY] = 1;
+                    else 
+                        berak;
                 }
             }
             if (direction == 3) { //right diagonal down
-                for(i = x, j = newY; i < sizeX, j < sizeY; i++, j--) {
+                for(i = x, j = newY; i < sizeX && j < sizeY && i >= 0 && j >= 0; i++, j--) {
                     if(giveFloe(map, i, j)->numbOfFish > 0)
                         myMap[i][j] = 1;
+                    else 
+                        break;
                 }                        
             }
             if(direction == 4) { //goes down
-                for (i = newY; i < sizeY; ++i) {
+                for (i = newY; i < sizeY && i >= 0; ++i) {
                     if(giveFloe(map, x, i)->numbOfFish > 0)
                         myMap[x][i] = 1;
+                    else
+                        break;
                 }
             }
             if(direction == 5) { //left diagonal down
-                for (i = x, j = newY; i < sizeX, j < sizeY; i--, j--) {
+                for (i = x, j = newY; i < sizeX && j < sizeY && i >= 0 && j >= 0; i--, j--) {
                     if(giveFloe(map, i, j)->numbOfFish > 0)
                         myMap[i][j] = 1;
+                    else
+                        break;
                 }
             }
             if(direction == 6) { //goes left
-                for (i = x; i < sizeX; i--) {
+                for (i = x; i < sizeX && i >= 0; i--) {
                     i--; //because skips one
                     if(giveFloe(map, i, newY)->numbOfFish > 0)
                         myMap[i][newY] = 1;
+                    else 
+                        break;
                 }
             }
         }
