@@ -284,3 +284,122 @@ int giveEnemyScore(struct Map *map, int MyId)
     }
     return enemyScore;
 }
+
+int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
+   int myMap[100][100] = {0};
+    //start from x, y go up and go down check all branches
+    int count = 0;
+    //check 6 directions of from x, y
+    int newY = y;
+    int i = 0, j = 0;
+
+    //goes up the y axis starting from x, y and checks all 6 directions of every floe
+    for (int newY = y; newY < sizeY; newY++) {  
+        for(int direction = 0; direction < 6; direction++) {
+            if(direction == 0) { //goes straight up in y axis
+                for (i = newY; i < sizeY; ++i) {
+                    if(giveFloe(map, x, i)->numbOfFish > 0)
+                        myMap[x][i] = 1;
+                }
+            }
+            if(direction == 1) { //goes diagonal top right
+                for (i = x, j = newY; i < sizeX, j < sizeY; ++i, j++) {
+                    if(giveFloe(map, i, j)->numbOfFish > 0)
+                        myMap[i][j] = 1;
+                }
+            }
+            if(direction == 2) { //goes towards right
+                for(i = x; i < sizeX; i++) {
+                    i++; //because skips one 
+                    if(giveFloe(map, i, newY)->numbOfFish > 0)
+                        myMap[i][newY] = 1;
+                }
+            }
+            if (direction == 3) { //right diagonal down
+                for(i = x, j = newY; i < sizeX, j < sizeY; i++, j--) {
+                    if(giveFloe(map, i, j)->numbOfFish > 0)
+                        myMap[i][j] = 1;
+                }                        
+            }
+            if(direction == 4) { //goes down
+                for (i = newY; i < sizeY; ++i) {
+                    if(giveFloe(map, x, i)->numbOfFish > 0)
+                        myMap[x][i] = 1;
+                }
+            }
+            if(direction == 5) { //left diagonal down
+                for (i = x, j = newY; i < sizeX, j < sizeY; i--, j--) {
+                    if(giveFloe(map, i, j)->numbOfFish > 0)
+                        myMap[i][j] = 1;
+                }
+            }
+            if(direction == 6) { //goes left
+                for (i = x; i < sizeX; i--) {
+                    i--; //because skips one
+                    if(giveFloe(map, i, newY)->numbOfFish > 0)
+                        myMap[i][newY] = 1;
+                }
+            }
+        }
+    }
+
+    //now goes down in y axis checking all 6 directions of every floe till end of map in y direction
+    for (int newY = y; newY < sizeY; newY--) {  
+        for(int direction = 0; direction < 6; direction++) {
+            if(direction == 0) { //goes straight up in y axis
+                for (i = newY; i < sizeY; ++i) {
+                    if(giveFloe(map, x, i)->numbOfFish > 0)
+                        myMap[x][i] = 1;
+                }
+            }
+            if(direction == 1) { //goes diagonal top right
+                for (i = x, j = newY; i < sizeX, j < sizeY; ++i, j++) {
+                    if(giveFloe(map, i, j)->numbOfFish > 0)
+                        myMap[i][j] = 1;
+                }
+            }
+            if(direction == 2) { //goes towards right
+                for(int i = x; i < sizeX; i++) {
+                    i++; //because skips one 
+                    if(giveFloe(map, i, newY)->numbOfFish > 0)
+                        myMap[i][newY] = 1;
+                }
+            }
+            if (direction == 3) { //right diagonal down
+                for(i = x, j = newY; i < sizeX, j < sizeY; i++, j--) {
+                    if(giveFloe(map, i, j)->numbOfFish > 0)
+                        myMap[i][j] = 1;
+                }                        
+            }
+            if(direction == 4) { //goes down
+                for (i = newY; i < sizeY; ++i) {
+                    if(giveFloe(map, x, i)->numbOfFish > 0)
+                        myMap[x][i] = 1;
+                }
+            }
+            if(direction == 5) { //left diagonal down
+                for (i = x, j = newY; i < sizeX, j < sizeY; i--, j--) {
+                    if(giveFloe(map, i, j)->numbOfFish > 0)
+                        myMap[i][j] = 1;
+                }
+            }
+            if(direction == 6) { //goes left
+                for (i = x; i < sizeX; i--) {
+                    i--; //because skips one
+                    if(giveFloe(map, i, newY)->numbOfFish > 0)
+                        myMap[i][newY] = 1;
+                }
+            }
+        }
+    }
+
+    //count all the 1's in the array 
+    for (int i = 0; i < sizeX; ++i) {
+        for (int j = 0; j < sizeY; ++j) {
+            if(myMap[i][j] == 1) 
+                count++;
+        }
+    }
+
+    return count;
+}
