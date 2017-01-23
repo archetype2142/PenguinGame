@@ -114,7 +114,7 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
     if(depth == 0)
     {
         for(i=0;i<map.playerCount;i++)
-        {
+        {/*
             if(map.players[i].playerID==MyId && !IsGameNotOver(&map) && checkIfWon(&map,MyId)==1)//game has ended and we have won
             {
                 evalArray[giveIndex(MyId,map.players,map.playerCount)]=999999999;
@@ -126,10 +126,10 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
                     evalArray[i]=-999999999;
                 }
                 else
-                {
+                {*/
                     evalArray[i]=evaluate( & map, map.players[i].playerID)*((float)giveScore(map.players[i].playerID, &map)/(float)giveEnemyScore(&map,map.players[i].playerID));
-                }
-            }
+                /*}
+            }*/
         }
     return;
     }
@@ -227,7 +227,7 @@ float evaluateBranch(struct Map map, int x, int y, int direction)
     float sum=0;
     for(i=1; x+i*vectors[direction].x < map.sizeX && y+i*vectors[direction].y<map.sizeY && x+i*vectors[direction].x>=0 && y+i*vectors[direction].y>=0 && giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->numbOfFish!=0 && giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->whosPenguin==0; i++)
     {
-        sum+=(giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->numbOfFish)+giveBranches(x+i*vectors[direction].x,y+i*vectors[direction].y,map);
+        sum+=(giveFloe(&map,x+i*vectors[direction].x,y+i*vectors[direction].y)->numbOfFish)/*+giveBranches(x+i*vectors[direction].x,y+i*vectors[direction].y,map)*/;
     }
     return sum;
 }
