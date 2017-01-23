@@ -5,7 +5,7 @@
 #include "P9KR.h"
 #include <math.h>
 #define MIN_DEPTH 1.5
-#define DEPTH_CONSTANT 450
+#define DEPTH_CONSTANT 500
 #define debug
 #ifdef debug
 #include <stdio.h>
@@ -15,7 +15,7 @@ struct Vector movePenguinR(int playerID, struct Map * map)
 {
     int depth;
     int i;
-    float *evalArray=malloc(map->playerCount*sizeof(float));
+    float *evalArray=malloc((1+map->playerCount)*sizeof(float));
     map->maxChanges = MIN_DEPTH * map->sizeX*map->sizeY * 2;
     map->changeCount=0;
     map->changelog=malloc(sizeof(struct Box) * map->maxChanges);
@@ -68,7 +68,8 @@ void recursionAlfa(struct Map map, int depth, int playerID, struct Vector * move
 {
     struct Vector step;
     struct penguin penguintmp;
-    int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, best, newbest, flag=1;
+    int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, flag=1;
+    float best, newbest;
 
     depth --;
 
@@ -108,7 +109,8 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
 {
     struct Vector step;
     struct penguin penguintmp;
-    int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, best, newBest, flag=1;//change playerIdnex
+    float best, newBest;
+    int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, flag=1;//change playerIdnex
 
 
     //this needs work!
@@ -128,7 +130,7 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
                 }
                 else
                 {
-                    evalArray[i]=evaluate( & map, map.players[i].playerID)*(giveScore(map.players[i].playerID, &map)-giveEnemyScore(&map,map.players[i].playerID));
+                    evalArray[i]=evaluate( & map, map.players[i].playerID)*((float)giveScore(map.players[i].playerID, &map)/(float)giveEnemyScore(&map,map.players[i].playerID));
                 }
             }
         }
@@ -195,6 +197,7 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                         sumtmp +=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                     }
                     sum+=sumtmp*mapExplorer(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y, map, map->sizeX, map->sizeY);
+                    sumtmp=0;
                 }
             }
         }
@@ -212,6 +215,7 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                             sumtmp -=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
                         }
                     sum+=sumtmp*mapExplorer(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y, map, map->sizeX, map->sizeY);
+                    sumtmp=0;
                     }
                 }
             }
@@ -288,11 +292,11 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
     int count = 0;
     //check 6 directions of from x, y
     int newY = y;
-    int i = 0, j = 0;
+    int i = 0, j = 0, direction;
 
     //goes up the y axis starting from x, y and checks all 6 directions of every floe
     for (newY = y; newY < sizeY; newY++) {
-        for(int direction = 0; direction < 6; direction++) {
+        for( direction = 0; direction < 6; direction++) {
             if(direction == 0) { //goes straight up in y axis
                 for (i = newY; i < sizeY && i >= 0; ++i) {
                     if(giveFloe(map, x, i)->numbOfFish > 0)
@@ -355,8 +359,8 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
     }
 
     //now goes down in y axis checking all 6 directions of every floe till end of map in y direction
-    for (int newY = y; newY < sizeY && newY>=0; newY--) {
-        for(int direction = 0; direction < 6; direction++) {
+    for (newY = y; newY < sizeY && newY>=0; newY--) {
+        for(direction = 0; direction < 6; direction++) {
             if(direction == 0) { //goes straight up in y axis
                 for (i = newY; i < sizeY && i >= 0; ++i) {
                     if(giveFloe(map, x, i)->numbOfFish > 0)
@@ -372,7 +376,7 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
                 }
             }
             if(direction == 2) { //goes towards right
-                for(int i = x; i < sizeX && i >= 0; i++) {
+                for(i = x; i < sizeX && i >= 0; i++) {
                     i++; //because skips one
                     if(giveFloe(map, i, newY)->numbOfFish > 0)
                         myMap[i][newY] = 1;
@@ -417,8 +421,8 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY) {
     }
 
     //count all the 1's in the array
-    for (int i = 0; i < sizeX; ++i) {
-        for (int j = 0; j < sizeY; ++j) {
+    for (i = 0; i < sizeX; ++i) {
+        for (j = 0; j < sizeY; ++j) {
             if(myMap[i][j] == 1)
                 count++;
         }
