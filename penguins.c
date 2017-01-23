@@ -25,11 +25,9 @@ int main(int argc, char* argv[])
     struct Map mapStructure;
     struct Point target;
     struct Vector moveVector;
-    struct Player *players=NULL;
     char *phase;
     char *penguinos;
     char *inFile, *outFile;
-    int NumberOfplayers=0;
     // check if arguments are less than 3
     #ifdef INTERACTIVE
     printf("interactive mode selected\n");
@@ -74,7 +72,7 @@ int main(int argc, char* argv[])
             mapStructure.changelog=malloc(sizeof(struct Box)*2);
             mapStructure.maxChanges=1;
             mapStructure.changeCount=0;
-            if(checkIfPlaying(MY_ID,players,NumberOfplayers))
+            if(checkIfPlaying(MY_ID,mapStructure.players,mapStructure.playerCount))
                 target = placePenguin(&mapStructure, MY_ID,0);
             else
                 target = placePenguin(&mapStructure, MY_ID, giveNewPenguin(mapStructure,MY_ID));

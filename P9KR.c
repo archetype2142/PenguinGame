@@ -114,22 +114,22 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
     if(depth == 0)
     {
         for(i=0;i<map.playerCount;i++)
-        {/*
-            if(map.players[i].playerID==MyId && !IsGameNotOver(&map) && checkIfWon(&map,MyId)==1)//game has ended and we have won
+        {
+            if(!IsGameNotOver(&map) && checkIfWon(&map,map.players[i].playerID)==1)//game has ended and we have won
             {
-                evalArray[giveIndex(MyId,map.players,map.playerCount)]=999999999;
+                evalArray[i]=999999999;
             }
             else
             {
-                if(!playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,MyId)&&map.players[i].playerID!=MyId)
+                if(!playerHasMove(map.players,map.playerCount,map.mapPointer,map.sizeX,map.sizeY,map.players[i].playerID))
                 {
                     evalArray[i]=-999999999;
                 }
                 else
-                {*/
+                {
                     evalArray[i]=evaluate( & map, map.players[i].playerID)*((float)giveScore(map.players[i].playerID, &map)/(float)giveEnemyScore(&map,map.players[i].playerID));
-                /*}
-            }*/
+                }
+            }
         }
     return;
     }
@@ -181,17 +181,19 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
 {
     int direction, i,k;
     float sum=0, sumtmp=0;
+    struct penguin TMP;
     for (i = 0; i < map->playerCount; i++)
     {
         if (map->players[i].playerID == playerID)
         {
             for (k = 0; k < map->players[i].numberOfPenguins; k++)
             {
-                if(givePenguin(map,map->players[i].playerID,k).x>=0 && givePenguin(map,map->players[i].playerID,k).y>=0)
+                TMP=givePenguin(map,map->players[i].playerID,k);
+                if(TMP.x>=0 && TMP.y>=0)
                 {
                     for (direction = 0; direction < 6; direction++)
                     {
-                        sumtmp +=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
+                        sumtmp +=evaluateBranch(*map, TMP.x, TMP.y, direction);
                     }
                     sum+=sumtmp*mapExplorer(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y, map, map->sizeX, map->sizeY);
                     sumtmp=0;
@@ -205,14 +207,15 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
             {
                 for (k = 0; k < map->players[i].numberOfPenguins; k++)
                 {
-                    if(givePenguin(map,map->players[i].playerID,k).x>=0 && givePenguin(map,map->players[i].playerID,k).y>=0)
+                    TMP=givePenguin(map,map->players[i].playerID,k);
+                    if(TMP.x>=0 && TMP.y>=0)
                     {
                         for (direction = 0; direction < 6; direction++)
                         {
-                            sumtmp -=evaluateBranch(*map, map->players[i].penguins[k].x, map->players[i].penguins[k].y, direction);
+                            sumtmp -=evaluateBranch(*map, TMP.x, TMP.y, direction);
                         }
-                    sum+=sumtmp*mapExplorer(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y, map, map->sizeX, map->sizeY);
-                    sumtmp=0;
+                        sum+=sumtmp*mapExplorer(givePenguin(map,map->players[i].playerID,k).x, givePenguin(map,map->players[i].playerID,k).y, map, map->sizeX, map->sizeY);
+                        sumtmp=0;
                     }
                 }
             }
