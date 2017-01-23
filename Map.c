@@ -59,7 +59,6 @@ int addChange(struct Map *map, struct Vector move, int penguinIndex)
 
 void tryPlace(struct Map *map, int x, int y, int playerID,int penguinIndex)
 {
-    int i;
     map->changelog[map->changeCount].x=x;
     map->changelog[map->changeCount].y=y;
     map->changelog[map->changeCount].floe.numbOfFish=0;

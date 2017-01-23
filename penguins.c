@@ -23,117 +23,107 @@ int main(int argc, char* argv[])
 {
     /* declare structures and some variables  */
     struct Map mapStructure;
-    struct Floe *map=NULL;
     struct Point target;
     struct Vector moveVector;
     struct Player *players=NULL;
     char *phase;
     char *penguinos;
     char *inFile, *outFile;
-    int sizeX, sizeY, NumberOfplayers=0;
+    int NumberOfplayers=0;
     // check if arguments are less than 3
-    if(argc < 3&&argc!=0)
+    #ifdef INTERACTIVE
+    printf("interactive mode selected\n");
+    inFile=argv[1];
+    if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
     {
-        printf("no command line arguments\ninteractive mode selected\nprovide input file:\n");
-        inFile=argv[1];
-        scanf("%s",inFile);
-        if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
-        {
-            printf("failed to read %s",inFile);
-            getchar();
-            exit(1);
-        }
-        interactive(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+        printf("failed to read %s",inFile);
+        getchar();
+        exit(1);
+    }
+    interactive(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
         return 0;
+    #endif // INTERACTIVE
+    phase = argv[1];
+    if(strcmp(phase, "phase=placement") == 0)
+    {
+        penguinos = argv[2];
+        inFile = argv[3];
+        outFile = argv[4];
+        #ifdef debug
+        printf("\nPhase: %s\nPenguins: %s\nInputFile: %s\nOutputFile: %s\n", phase, penguinos, inFile, outFile);
+        #endif // debug
     }
     else
     {
-        phase = argv[1];
-        if(strcmp(phase, "phase=placement") == 0)
-        {
-            penguinos = argv[2];
-            inFile = argv[3];
-            outFile = argv[4];
-            #ifdef debug
-            printf("\nPhase: %s\nPenguins: %s\nInputFile: %s\nOutputFile: %s\n", phase, penguinos, inFile, outFile);
-            #endif // debug
-        }
-        else
-        {
-            inFile = argv[2];
-            outFile = argv[3];
-        }
+        inFile = argv[2];
+        outFile = argv[3];
     }
-        if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
+
+    if(!read_file(inFile, &mapStructure.players, &mapStructure.mapPointer, &mapStructure.sizeX, &mapStructure.sizeY, &mapStructure.playerCount))
+    {
+        fputs("File error", stderr);
+        printf("failed to read %s",inFile);
+        getchar();
+        exit(1);
+    }
+    else
+    {
+        mapStructure.changeCount=0;
+        if (strcmp(phase, "phase=placement") == 0)
         {
-            fputs("File error", stderr);
-            printf("failed to read %s",inFile);
-            getchar();
-            exit(1);
+            mapStructure.changelog=malloc(sizeof(struct Box)*2);
+            mapStructure.maxChanges=1;
+            mapStructure.changeCount=0;
+            if(checkIfPlaying(MY_ID,players,NumberOfplayers))
+                target = placePenguin(&mapStructure, MY_ID,0);
+            else
+                target = placePenguin(&mapStructure, MY_ID, giveNewPenguin(mapStructure,MY_ID));
+            if(target.x!=-1 || target.y!=-1)
+            {
+                placement(target.x, target.y, mapStructure.mapPointer, mapStructure.sizeX, mapStructure.sizeY, MY_ID,mapStructure.players,mapStructure.playerCount);
+                #ifdef debug
+                printf("placed penguin on: x=%d y=%d",target.x,target.y);
+                #endif
+            }
+            else
+            {
+                printf("failed to place a penguin");
+                getchar();
+                exit(1);
+            }
         }
         else
         {
-            mapStructure.mapPointer=map;
-            mapStructure.sizeX=sizeX;
-            mapStructure.sizeY=sizeY;
-            mapStructure.players=players;
-            mapStructure.playerCount=NumberOfplayers;
-            mapStructure.changeCount=0;
-            if (strcmp(phase, "phase=placement") == 0)
+            if(IsGameNotOver(&mapStructure))
             {
-                mapStructure.changelog=malloc(sizeof(struct Box)*2);
-                mapStructure.maxChanges=1;
-                mapStructure.changeCount=0;
-                if(checkIfPlaying(MY_ID,players,NumberOfplayers))
-                    target = placePenguin(&mapStructure, MY_ID,0);
-                else
-                    target = placePenguin(&mapStructure, MY_ID, giveNewPenguin(mapStructure,MY_ID));
-                if(target.x!=-1 || target.y!=-1)
+                moveVector = movePenguinR(MY_ID, &mapStructure);
+                if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
                 {
-                    placement(target.x, target.y, map, sizeX, sizeY, MY_ID,players,NumberOfplayers);
+                    movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, &mapStructure, MY_ID);
                     #ifdef debug
-                    printf("placed penguin on: x=%d y=%d",target.x,target.y);
-                    #endif
+                    printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
+                    #endif // debug
                 }
                 else
                 {
-                    printf("failed to place a penguin");
+                    printf("error in movePenguin function!");
                     getchar();
                     exit(1);
                 }
             }
             else
             {
-                if(IsGameNotOver(&mapStructure))
-                {
-                    moveVector = movePenguinR(MY_ID, &mapStructure);
-                    if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
-                    {
-                        movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, &mapStructure, MY_ID);
-                        #ifdef debug
-                        printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
-                        #endif // debug
-                    }
-                    else
-                    {
-                        printf("error in movePenguin function!");
-                        getchar();
-                        exit(1);
-                    }
-                }
-                else
-                {
-                    printf("no move possible!");
-                    getchar();
-                    exit(1);
-                }
-            }
-            if(!write_file(outFile, mapStructure.mapPointer, mapStructure.sizeX,mapStructure.sizeY,mapStructure.players, mapStructure.playerCount))
-            {
-                printf("error writing file");
+                printf("no move possible!");
+                getchar();
+                exit(1);
             }
         }
-    return 0;
+        if(!write_file(outFile, mapStructure.mapPointer, mapStructure.sizeX,mapStructure.sizeY,mapStructure.players, mapStructure.playerCount))
+        {
+            printf("error writing file");
+        }
+    }
+return 0;
 }
 
 
