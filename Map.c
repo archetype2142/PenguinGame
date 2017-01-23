@@ -39,16 +39,16 @@ int addChange(struct Map *map, struct Vector move, int penguinIndex)
 {
     if(check_valid_move(move.xInitial,move.yInitial,move.xTarget,move.yTarget,map))
     {
-        map->changelog[map->changeCount+1].floe.whosPenguin=map->changelog[map->changeCount].floe.whosPenguin;
+        map->changelog[map->changeCount+1].CurrentScore=giveScore(giveFloe(map,move.xInitial,move.yInitial)->whosPenguin,map)+giveFloe(map,move.xTarget,move.yTarget)->numbOfFish;
+        map->changelog[map->changeCount+1].floe.whosPenguin=giveFloe(map,move.xInitial,move.yInitial)->whosPenguin;
         map->changelog[map->changeCount+1].floe.numbOfFish=0;
         map->changelog[map->changeCount+1].penguinIndex=penguinIndex;
-        map->changelog[map->changeCount].penguinIndex=-1;
-        map->changelog[map->changeCount].x=move.xInitial;
         map->changelog[map->changeCount+1].y=move.yTarget;
         map->changelog[map->changeCount+1].x=move.xTarget;
+        map->changelog[map->changeCount].penguinIndex=-1;
+        map->changelog[map->changeCount].x=move.xInitial;
         map->changelog[map->changeCount].y=move.yInitial;
         map->changelog[map->changeCount].floe.whosPenguin=0;
-        map->players[giveIndex(map->changelog[map->changeCount+1].floe.whosPenguin,map->players,map->playerCount)].scoreGained+=giveFloe(map,move.xTarget,move.yTarget)->numbOfFish;
         map->changelog[map->changeCount].floe.numbOfFish=0;
         map->changeCount+=2;
         return 1;
@@ -65,8 +65,8 @@ void tryPlace(struct Map *map, int x, int y, int playerID,int penguinIndex)
     map->changelog[map->changeCount].floe.numbOfFish=0;
     map->changelog[map->changeCount].floe.whosPenguin=playerID;
     map->changelog[map->changeCount].penguinIndex=penguinIndex;
+    map->changelog[map->changeCount].CurrentScore=giveScore(playerID,map)+1;
     map->changeCount++;
-    map->players[giveIndex(playerID,map->players,map->playerCount)].scoreGained++;
 }
 
 struct penguin givePenguin(struct Map *map, int playerID, int penguinIndex)
@@ -88,6 +88,11 @@ struct penguin givePenguin(struct Map *map, int playerID, int penguinIndex)
 
 int giveScore(int playerID, struct Map *map)
 {
-    int playerIndex=giveIndex(playerID,map->players,map->playerCount);
-    return map->players[playerIndex].score+map->players[playerIndex].scoreGained;
+    int playerIndex=giveIndex(playerID,map->players,map->playerCount),i;
+    for(i=map->changeCount;i>=0;i--)
+    {
+        if(map->changelog[i].floe.whosPenguin==playerID)
+            return map->changelog[i].CurrentScore;
+    }
+    return map->players[playerIndex].score;
 }

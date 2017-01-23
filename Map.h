@@ -20,7 +20,6 @@ struct Player
 	struct penguin *penguins;
 	int numberOfPenguins;
 	int playerID;
-	int scoreGained;
 };
 
 struct Vector
@@ -51,6 +50,7 @@ struct Box
     int x;
     int y;
     short int penguinIndex;
+    int CurrentScore;
 };
 
 struct Map

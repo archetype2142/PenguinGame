@@ -14,13 +14,10 @@
 struct Vector movePenguinR(int playerID, struct Map * map)
 {
     int depth;
-    int i;
     float *evalArray=malloc((1+map->playerCount)*sizeof(float));
     map->maxChanges = MIN_DEPTH * map->sizeX*map->sizeY * 2;
     map->changeCount=0;
     map->changelog=malloc(sizeof(struct Box) * map->maxChanges);
-    for(i=0;i<map->playerCount;i++)
-        map->players[i].scoreGained=0;
 
     struct Vector move;
     depth=DEPTH_CONSTANT/(1.2*giveFloes(map));
@@ -158,7 +155,7 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
                                 else
                                     recursionBeta(map,depth,map.players[giveNextPlayer(giveIndex(playerID,map.players,map.playerCount),map.playerCount)].playerID,MyId,evalArray);
                                 newBest=evalArray[playerIndex];
-                                if(flag||best>newBest)
+                                if(flag||best<newBest)
                                 {
                                     best=newBest;
                                     flag=0;
@@ -183,7 +180,7 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
 float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed already XD)
 {
     int direction, i,k;
-    float sum=0, sumtmp;
+    float sum=0, sumtmp=0;
     for (i = 0; i < map->playerCount; i++)
     {
         if (map->players[i].playerID == playerID)
