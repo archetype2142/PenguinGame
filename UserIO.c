@@ -18,11 +18,9 @@ int read_file(const char *filename, struct Player **players, struct Floe **mapPo
 	}
 
 	//Reads first line
-	while(ch != '\n')
-	{
-		fscanf(file, "%d;%d;", num_of_players, &num_of_pingus);
-		ch = fgetc(file);
-	}
+
+    fscanf(file, "%d;%d;", num_of_players, &num_of_pingus);
+
 	(*players)=malloc(sizeof(struct Player)*(*num_of_players));
 	//Reads player stats and Map
 		for (i = 0; i < (*num_of_players); i++)
