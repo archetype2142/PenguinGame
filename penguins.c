@@ -14,7 +14,7 @@ and puts the penguin on the new coordinates*/
 int movement(int x1, int y1, int x2, int y2, struct Map *map, int playerID);
 
 /*takes in coordinates to put a penguin on*/
-int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount);
+int placement(int x, int y,struct Map *map, int playerID);
 
 /*the interactive mode. handles all user input output*/
 void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player players[], int numbOfPlayers);//to do!!!!
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
                 target = placePenguin(&mapStructure, MY_ID, giveNewPenguin(mapStructure,MY_ID));
             if(target.x!=-1 || target.y!=-1)
             {
-                placement(target.x, target.y, mapStructure.mapPointer, mapStructure.sizeX, mapStructure.sizeY, MY_ID,mapStructure.players,mapStructure.playerCount);
+                placement(target.x, target.y, &mapStructure, MY_ID);
                 #ifdef debug
                 printf("placed penguin on: x=%d y=%d",target.x,target.y);
                 #endif
@@ -135,20 +135,20 @@ return 0;
 
 //=================Custom function definitions===============//
 
-int placement(int x, int y, void *mapP, int sizeX, int sizeY, int playerID, struct Player players[],int playerCount)
+int placement(int x, int y,struct Map *map, int playerID)
 {
     int i;
-    struct Floe (*map)[sizeX][sizeY]=(struct Floe (*)[sizeX][sizeY]) mapP;
-    if (check_how_many_fishes(x, y, mapP, sizeX, sizeY) == 1 && !check_penguin(x, y, mapP, sizeX, sizeY))
+    map->changeCount=0;
+    if (check_how_many_fishes(x, y,map) == 1 && !check_penguin(x, y, map))
     {
-        place_penguin(x, y, playerID, mapP, sizeX, sizeY);
-        players[giveIndex(playerID,players,playerCount)].score+=(*map)[x][y].numbOfFish;
-        for(i=0;i<players[0].numberOfPenguins;i++)
+        place_penguin(x, y, playerID, map->mapPointer, map->sizeX, map->sizeY);
+        map->players[giveIndex(playerID,map->players,map->playerCount)].score+=giveFloe(map,x,y)->numbOfFish;
+        for(i=0;i<map->players[0].numberOfPenguins;i++)
         {
-            if(players[giveIndex(playerID,players,playerCount)].penguins[i].x<0&&players[giveIndex(playerID,players,playerCount)].penguins[i].y<0)
+            if(map->players[giveIndex(playerID,map->players,map->playerCount)].penguins[i].x<0&&map->players[giveIndex(playerID,map->players,map->playerCount)].penguins[i].y<0)
             {
-                players[giveIndex(playerID,players,playerCount)].penguins[i].x=x;
-                players[giveIndex(playerID,players,playerCount)].penguins[i].y=y;
+                map->players[giveIndex(playerID,map->players,map->playerCount)].penguins[i].x=x;
+                map->players[giveIndex(playerID,map->players,map->playerCount)].penguins[i].y=y;
                 break;
             }
         }
@@ -218,7 +218,7 @@ int movement(int x1, int y1, int x2, int y2, struct Map *map, int playerID)
     int i;
     map->changeCount=0;
     // x1,y1 are coordinates of a penguin user wants to move, x2,y2 are target coordinates
-    if(x1>=0 && y1 >=0 && x1<map->sizeX && y1<map->sizeY && x2>=0 && y2 >=0 && x2<map->sizeX && y2<map->sizeY && check_coordinates(x1, y1, map->mapPointer, map->sizeX, map->sizeY, playerID) && !check_penguin(x2, y2, map->mapPointer, map->sizeX, map->sizeY) && check_target_coordinates(x2, y2, map->mapPointer, map->sizeX, map->sizeY) &&   check_valid_move(x1, y1, x2, y2, map))
+    if(x1>=0 && y1 >=0 && x1<map->sizeX && y1<map->sizeY && x2>=0 && y2 >=0 && x2<map->sizeX && y2<map->sizeY && check_coordinates(x1, y1, map, playerID) && !check_penguin(x2, y2, map) && check_target_coordinates(x2, y2, map) &&   check_valid_move(x1, y1, x2, y2, map))
     {
         giveFloe(map,x1,y1)->whosPenguin=0;
         giveFloe(map,x2,y2)->whosPenguin=playerID;

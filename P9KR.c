@@ -108,8 +108,6 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
     float best, newBest;
     int direction, distanse, playerIndex=giveIndex(playerID,map.players,map.playerCount),i, flag=1;//change playerIdnex
 
-
-    //this needs work!
     if(depth == 0)
     {
         for(i=0;i<map.playerCount;i++)

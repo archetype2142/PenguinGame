@@ -22,16 +22,14 @@ int sign(int n)
         }
     }
 }
-int check_how_many_fishes(int x, int y, void *mapP, int sizeX, int sizeY)
+int check_how_many_fishes(int x, int y, struct Map *map)
 {
-    struct Floe (*map)[sizeX][sizeY]= (struct Floe(*)[sizeX][sizeY]) mapP;
-    return (*map)[x][y].numbOfFish;
+    return giveFloe(map,x,y)->numbOfFish;
 }
 
-int check_penguin(int x, int y, void *mapP, int sizeX, int sizeY)
+int check_penguin(int x, int y, struct Map *map)
 {
-    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-    return (*map)[x][y].whosPenguin;
+    return giveFloe(map,x,y)->whosPenguin;
 }
 
 int check_valid_move(int x1, int y1, int x2, int y2, struct Map *map)
@@ -65,10 +63,9 @@ int check_valid_move(int x1, int y1, int x2, int y2, struct Map *map)
     return 0;
 }
 
-int check_target_coordinates(int x, int y, void *mapP, int sizeX, int sizeY)
+int check_target_coordinates(int x, int y, struct Map *map)
 {
-    struct Floe(*map)[sizeX][sizeY] = (struct Floe(*)[sizeX][sizeY]) mapP;
-    if (x>=0 && y >=0 && x<sizeX && y<sizeY && (*map)[x][y].whosPenguin == 0 && (*map)[x][y].numbOfFish != 0)
+    if (x>=0 && y >=0 && x<map->sizeX && y<map->sizeY && giveFloe(map,x,y)->whosPenguin == 0 && giveFloe(map,x,y)->numbOfFish != 0)
     {
         return 1;
     }
@@ -78,10 +75,9 @@ int check_target_coordinates(int x, int y, void *mapP, int sizeX, int sizeY)
     }
 }
 
-int check_coordinates(int x, int y, void *mapP, int sizeX, int sizeY, int playerId)
+int check_coordinates(int x, int y, struct Map *map, int playerId)
 {
-    struct Floe (*map)[sizeX][sizeY]= (struct Floe(*)[sizeX][sizeY]) mapP;
-    if ((*map)[x][y].whosPenguin == playerId)
+    if (giveFloe(map,x,y)->whosPenguin == playerId)
     {
         return 1;
     }
