@@ -162,14 +162,18 @@ int whatphase(struct Player *players, int playerCount)
     return Phase;
 }
 
-int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID)
+int playerHasMove(struct Map *map, int playerID)
 {
+    struct penguin penguintmp;
+    struct Floe *floeTmp;
     int k, directions=0;
-        for(k=0;k<players[giveIndex(playerID,players,playerCount)].numberOfPenguins;k++)
+        for(k=0;k<map->players[giveIndex(playerID,map->players,map->playerCount)].numberOfPenguins;k++)
         {
+            penguintmp=givePenguin(map,playerID,k);
             for(directions=0;directions<6;directions++)
             {
-                if(check_target_coordinates(players[giveIndex(playerID,players,playerCount)].penguins[k].x+vectors[directions].x,players[giveIndex(playerID,players,playerCount)].penguins[k].y+vectors[directions].y,map,sizeX,sizeY))
+                floeTmp=giveFloe(map,penguintmp.x+vectors[directions].x,penguintmp.y+vectors[directions].y);
+                if(floeTmp->numbOfFish>0)
                 {
                     return 1;
                 }

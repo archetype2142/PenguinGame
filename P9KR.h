@@ -33,3 +33,5 @@ int mapExplorer(int x, int y, struct Map *map, int sizeX, int sizeY);
 
 //checks if playerID has won
 int checkIfWon(struct Map *map, int playerID);
+
+ int isPinguStuck(struct Map *map, int playerID);

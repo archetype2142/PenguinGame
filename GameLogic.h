@@ -41,6 +41,6 @@ int IsGameNotOver(struct Map *map);
 int whatphase(struct Player *players, int playerCount);
 
 //checks if a specific player can preform at least one move
-int playerHasMove(struct Player *players, int playerCount, struct Floe *map, int sizeX, int sizeY, int playerID);
+int playerHasMove(struct Map *map, int playerID);
 
 int giveNewPenguin(struct Map map, int playerID);

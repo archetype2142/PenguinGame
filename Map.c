@@ -1,6 +1,7 @@
 #include "Map.h"
 #include "GameLogic.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 struct Floe *giveFloe(struct Map *map, int x, int y)
 {
@@ -39,6 +40,11 @@ int addChange(struct Map *map, struct Vector move, int penguinIndex)
 {
     if(check_valid_move(move.xInitial,move.yInitial,move.xTarget,move.yTarget,map))
     {
+        if(map->changeCount+2>=map->maxChanges)
+        {
+            printf("Max changes exceeded!\n");
+            exit(1);
+        }
         map->changelog[map->changeCount+1].CurrentScore=giveScore(giveFloe(map,move.xInitial,move.yInitial)->whosPenguin,map)+giveFloe(map,move.xTarget,move.yTarget)->numbOfFish;
         map->changelog[map->changeCount+1].floe.whosPenguin=giveFloe(map,move.xInitial,move.yInitial)->whosPenguin;
         map->changelog[map->changeCount+1].floe.numbOfFish=0;

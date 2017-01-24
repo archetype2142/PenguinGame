@@ -6,6 +6,7 @@
 #include "GameLogic.h"
 #include "P9KR.h"
 
+
 struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
 
 /* takes in coordinates to move the penguin to
@@ -28,7 +29,7 @@ int main(int argc, char* argv[])
     char *phase;
     char *penguinos;
     char *inFile, *outFile;
-    // check if arguments are less than 3
+
     #ifdef INTERACTIVE
     printf("interactive mode selected\n");
     inFile=argv[1];
@@ -57,6 +58,7 @@ int main(int argc, char* argv[])
         outFile = argv[3];
     }
 
+//printf("");
     if(!read_file(inFile, &mapStructure.players, &mapStructure.mapPointer, &mapStructure.sizeX, &mapStructure.sizeY, &mapStructure.playerCount))
     {
         fputs("File error", stderr);
@@ -66,6 +68,8 @@ int main(int argc, char* argv[])
     }
     else
     {
+//printf("map read\n");
+
         mapStructure.changeCount=0;
         if (strcmp(phase, "phase=placement") == 0)
         {
@@ -92,15 +96,17 @@ int main(int argc, char* argv[])
         }
         else
         {
+//printf("checking is game over\n");
+
             if(IsGameNotOver(&mapStructure))
             {
+//printf("game is not over\n");
+
                 moveVector = movePenguinR(MY_ID, &mapStructure);
                 if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
                 {
                     movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, &mapStructure, MY_ID);
-                    #ifdef debug
-                    printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
-                    #endif // debug
+//printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
                 }
                 else
                 {
@@ -116,6 +122,8 @@ int main(int argc, char* argv[])
                 exit(1);
             }
         }
+//printf("move executed\n");
+
         if(!write_file(outFile, mapStructure.mapPointer, mapStructure.sizeX,mapStructure.sizeY,mapStructure.players, mapStructure.playerCount))
         {
             printf("error writing file");
