@@ -124,7 +124,12 @@ void recursionBeta(struct Map map, int depth, int playerID, int MyId, float eval
                 }
                 else
                 {
-                    evalArray[i]=evaluate( & map, map.players[i].playerID)*((float)giveScore(map.players[i].playerID, &map)/(float)giveEnemyScore(&map,map.players[i].playerID))/(float)(1+isPinguStuck(&map,map.players[i].playerID))*(giveScore(map.players[i].playerID,&map)-map.players[i].score);
+                    evalArray[i]=
+
+                    1*evaluate( & map, map.players[i].playerID)+
+                    1*((float)giveScore(map.players[i].playerID, &map)-(float)giveEnemyScore(&map,map.players[i].playerID))+
+                    1*giveScore(map.players[i].playerID, &map)-map.players[i].score-
+                    5*isPinguStuck(&map, map.players[i].playerID)/1;
                 }
             }
         }
@@ -190,9 +195,9 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                 {
                     for (direction = 0; direction < 6; direction++)
                     {
-                        sumtmp +=evaluateBranch(*map, TMP.x, TMP.y, direction);
+                        //sumtmp +=evaluateBranch(*map, TMP.x, TMP.y, direction);
                     }
-                    sum+=sumtmp*mapExplorer(TMP.x, TMP.y, map, map->sizeX, map->sizeY);
+                    sum+=sumtmp+mapExplorer(TMP.x, TMP.y, map, map->sizeX, map->sizeY);
                     sumtmp=0;
                 }
             }
@@ -209,9 +214,9 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                     {
                         for (direction = 0; direction < 6; direction++)
                         {
-                            sumtmp -=evaluateBranch(*map, TMP.x, TMP.y, direction);
+                            //sumtmp -=evaluateBranch(*map, TMP.x, TMP.y, direction);
                         }
-                        sum+=sumtmp*mapExplorer(TMP.x, TMP.y, map, map->sizeX, map->sizeY);
+                        //sum+=sumtmp-mapExplorer(TMP.x, TMP.y, map, map->sizeX, map->sizeY);
                         sumtmp=0;
                     }
                 }
