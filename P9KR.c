@@ -4,9 +4,8 @@
 #include <string.h>
 #include "P9KR.h"
 #include <math.h>
-#define MIN_DEPTH 1.5
-#define DEPTH_CONSTANT 500
-#define debug
+#define MIN_DEPTH 2
+#define DEPTH_CONSTANT 550
 #ifdef debug
 #include <stdio.h>
 #endif // debug
@@ -24,7 +23,7 @@ struct Vector movePenguinR(int playerID, struct Map * map)
     printf("%d\n",depth);
     #endif // debug
 
-    if((giveFloes(map))!=0 && depth>0)
+    if(depth>0)
         recursionAlfa( * map, depth, playerID, & move, evalArray);
     else
         recursionAlfa( * map, MIN_DEPTH, playerID, & move, evalArray);
@@ -202,7 +201,7 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                 }
             }
         }
-
+/*
         else
         {
             if (map->players[i].playerID != playerID && map->players[i].playerID>0)
@@ -221,7 +220,7 @@ float evaluate(struct Map *map, int playerID)// needs reworking (might be fixed 
                     }
                 }
             }
-        }
+        }*/
     }
     return sum;
 }
@@ -346,31 +345,34 @@ int checkIfWon(struct Map *map, int playerID)
     return 1;
 }
 
-int isPinguStuck(struct Map *map, int playerID) {
+int isPinguStuck(struct Map *map, int playerID)
+{
     int numOfPingus = map->players->numberOfPenguins, playerindex=giveIndex(playerID,map->players,map->playerCount);
     int pingus[numOfPingus];
-    int count = 0, count2 = 0;
+    int count = 0, count2 = 0, i, direction;
 
-    for (int i = 0; i < numOfPingus; ++i) {
-        for(int direction = 0; direction < 6; direction++) {
+    for (i = 0; i < numOfPingus; ++i) {
+        for(direction = 0; direction < 6; direction++) {
             if(giveFloe(map, map->players[playerindex].penguins[i].x+vectors[direction].x*1, map->players[playerindex].penguins[i].y+vectors[direction].y*1)->numbOfFish < 0) {
                 count++;
             }
         }
-        if (count == 6) {
+        if (count == 6)
+        {
             pingus[i] = 1;
         }
         else
             pingus[i] = 0;
     }
 
-    for (int i = 0; i < numOfPingus; ++i) {
+    for (i = 0; i < numOfPingus; ++i)
+    {
         if(pingus[i] == 1)
             count2++;
     }
 
     if(count2 > 0)
         return count2;
-    else
-        return 0;
+
+    return 0;
 }

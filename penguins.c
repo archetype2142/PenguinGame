@@ -5,6 +5,7 @@
 #include "UserIO.h"
 #include "GameLogic.h"
 #include "P9KR.h"
+#define INTERACTIVE
 
 
 struct directions vectors[6] = { {-1, -1},{0,-2},{1,-1},{1,1},{0,2},{-1,1} };
@@ -17,7 +18,7 @@ int movement(int x1, int y1, int x2, int y2, struct Map *map, int playerID);
 int placement(int x, int y,struct Map *map, int playerID);
 
 /*the interactive mode. handles all user input output*/
-void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player players[], int numbOfPlayers);//to do!!!!
+  void interactive(struct Map *map);
 
 
 int main(int argc, char* argv[])
@@ -33,13 +34,14 @@ int main(int argc, char* argv[])
     #ifdef INTERACTIVE
     printf("interactive mode selected\n");
     inFile=argv[1];
-    if(!read_file(inFile, &players, &map, &sizeX, &sizeY, &NumberOfplayers))
+    mapStructure.changeCount=0;
+    if(!read_file(inFile, &mapStructure.players, &mapStructure.mapPointer, &mapStructure.sizeX, &mapStructure.sizeY, &mapStructure.playerCount))
     {
         printf("failed to read %s",inFile);
         getchar();
         exit(1);
     }
-    interactive(map, sizeX, sizeY, MY_ID, players,NumberOfplayers);
+    interactive(&mapStructure);
         return 0;
     #endif // INTERACTIVE
     phase = argv[1];
@@ -156,62 +158,196 @@ int placement(int x, int y,struct Map *map, int playerID)
     }
     return 0;
 }
-void interactive(void * mapP, int sizeX, int sizeY, int playerID, struct Player players[], int numbOfPlayers)
+  void interactive(struct Map *map)
 {
-    /*
-    int VSmachine, x1,x2,y1,y2;
-    struct Point result;
-    struct Vector targetVector;
-    printf("play vs machine? 1/0\n");
-    scanf("%d",&VSmachine);
-    // take all values from user for interactive mode
-    while(!whatphase(players,numbOfPlayers))
-    {
-        do
+    int x,y,m,n,d, playerID=1;
+    int MvsM;// me vs. machine
+    struct Vector moveVector;
+    struct Point target;
+
+    printf("Do you want to play vs. machine? 1/0\n");
+    scanf("%d",&MvsM);
+    if(MvsM!=1&&MvsM!=0)
         {
-        printf("player one place your penguin!");
-        scanf("%d %d", &x1, &y1);
+            printf("error");
+            getchar();
+            exit(1);
         }
-        while(!placement(x1,y1,mapP,sizeX,sizeY,1,players,numbOfPlayers));
-        if(VSmachine)
+    printMap(map);
+    if (MvsM==1)
+    {
+        while(IsGameNotOver(map))
         {
-            result = placePenguin(2,mapP,sizeX,sizeY,players,numbOfPlayers);
-            placement(result.x,result.y,mapP,sizeX,sizeY,2,players,numbOfPlayers);
+        if(!whatphase(map->players,map->playerCount))
+        {
+            do
+            {
+                printf("whrere to place in order: x y");
+                scanf("%d %d",&x,&y);
+                checkIfPlaying(playerID, map->players,map->playerCount);
+            }
+            while (!placement(x,y,map,playerID));
         }
         else
         {
             do
             {
-                printf("player two place your penguin!");
-                scanf("%d %d", &x1, &y1);
+                printf("Enter coordinates of penguin and target coordinates:\n");
+                printf("penguin: ");
+                scanf("%d %d",&x,&y);
+                printf("\ntarget: ");
+                scanf("%d %d",&m,&n);
             }
-            while(!placement(x1,y1,mapP,sizeX,sizeY,2,players,numbOfPlayers));
+            while (!movement(x,y,m,n,map,playerID));
+
         }
-    }
-    while(!IsGameOver(mapP,sizeX,sizeY,players,numbOfPlayers))
-    {
-        do
-        {
-        printf("player one move your penguin!");
-        scanf("%d %d %d %d", &x1, &y1, &x2, &y2);
+        printMap(map);
+        printf("score:\n%d:%d\n%d:%d",map->players[0].playerID,map->players[0].score,map->players[1].playerID,map->players[1].score);
+        if(!IsGameNotOver(map))
+        {    ;
+            d=map->players[giveIndex(playerID,map->players,map->playerCount)].score>map->players[giveIndex(playerID+1,map->players,map->playerCount)].score?map->players[giveIndex(playerID,map->players,map->playerCount)].score:map->players[giveIndex(playerID+1,map->players,map->playerCount)].score;
+            printf("GAME OVER\n");
+            printf("WINNER:%d\n",d);
+            printf("SCORE:\n %d:%d",map->players[giveIndex(playerID,map->players,map->playerCount)].score,map->players[giveIndex(playerID+1,map->players,map->playerCount)].score);
         }
-        while(!movement(x1,y1,x2,y2,mapP,sizeX,sizeY,1,players,numbOfPlayers)));
-        if(VSmachine)
+
+
+
+        map->changeCount=0;
+        if(!whatphase(map->players,map->playerCount))
         {
-            targetVector = movePenguin(2,mapP,sizeX,sizeY,players,numbOfPlayers);
-            movement();
+            map->changelog=malloc(sizeof(struct Box)*2);
+            map->maxChanges=1;
+            map->changeCount=0;
+            if(checkIfPlaying(playerID+1,map->players,map->playerCount))
+                target = placePenguin(map, playerID+1,0);
+            else
+                target = placePenguin(map, playerID+1, giveNewPenguin(*map,playerID+1));
+            if(target.x!=-1 || target.y!=-1)
+            {
+                placement(target.x, target.y, map, playerID+1);
+            }
+            else
+            {
+                printf("failed to place a penguin");
+                getchar();
+                exit(1);
+            }
         }
         else
         {
+//printf("checking is game over\n");
+
+            if(IsGameNotOver(map))
+            {
+//printf("game is not over\n");
+
+                moveVector = movePenguinR(playerID+1, map);
+                if(moveVector.xInitial!=-1 || moveVector.xTarget!=-1 || moveVector.yInitial!=-1 || moveVector.yTarget!=-1)
+                {
+                    movement(moveVector.xInitial, moveVector.yInitial, moveVector.xTarget, moveVector.yTarget, map, playerID+1);
+//printf("executed move to: x=%d y=%d\nto:x=%d y=%d",moveVector.xInitial,moveVector.yInitial,moveVector.xTarget,moveVector.yTarget);
+                }
+                else
+                {
+                    printf("error in movePenguin function!");
+                    getchar();
+                    exit(1);
+                }
+                    printMap(map);
+                    printf("%d:%d\n",map->players[giveIndex(playerID,map->players,map->playerCount)].score,map->players[giveIndex(playerID+1,map->players,map->playerCount)].score);
+
+            }
+
+        }
+
+    }
+    if(!IsGameNotOver(map))
+                    {
+                        d=map->players[giveIndex(playerID,map->players,map->playerCount)].score>map->players[giveIndex(playerID+1,map->players,map->playerCount)].score?map->players[giveIndex(playerID,map->players,map->playerCount)].score:map->players[giveIndex(playerID+1,map->players,map->playerCount)].score;
+                        printf("GAME OVER\n");
+                        printf("WINNER:%d\n",d);
+                        printf("SCORE:\n %d:%d",map->players[giveIndex(playerID,map->players,map->playerCount)].score,map->players[giveIndex(playerID+1,map->players,map->playerCount)].score);
+                    }
+
+    }
+
+    else if (MvsM==0)
+    {
+       while(IsGameNotOver(map))
+        {
+        if(!whatphase(map->players,map->playerCount))
+            {
+                do
+                    {
+                        printf("whrere to place in order: x y");
+                        scanf("%d %d",&x,&y);
+                        checkIfPlaying(playerID, map->players,map->playerCount);
+                    }
+                while (!placement(x,y,map,playerID));
+            }
+         else
+            {
+                do
+                    {
+                        printf("Enter coordinates of penguin and target coordinates:\n");
+                        printf("penguin: ");
+                        scanf("%d %d",&x,&y);
+                        printf("\ntarget: ");
+                        scanf("%d %d",&m,&n);
+                    }
+            while (!movement(x,y,m,n,map,playerID));
+
+            }
+        printMap(map);
+        printf("%d:%d\n",map->players[giveIndex(playerID,map->players,map->playerCount)].score,map->players[giveIndex(playerID+1,map->players,map->playerCount)].score);
+        if(!IsGameNotOver(map))
+        {
+            d=map->players[giveIndex(playerID,map->players,map->playerCount)].score>map->players[giveIndex(playerID+1,map->players,map->playerCount)].score?map->players[giveIndex(playerID,map->players,map->playerCount)].score:map->players[giveIndex(playerID+1,map->players,map->playerCount)].score;
+            printf("GAME OVER\n");
+            printf("WINNER:%d\n",d);
+            printf("SCORE:\n %d:%d",map->players[giveIndex(playerID,map->players,map->playerCount)].score,map->players[giveIndex(playerID+1,map->players,map->playerCount)].score);
+        }
+
+        if(!whatphase(map->players,map->playerCount))
+            {
+                do
+                    {
+                        printf("whrere to place in order: x y");
+                        scanf("%d %d",&x,&y);
+                        checkIfPlaying(playerID+1, map->players,map->playerCount);
+                    }
+                while (!placement(x,y,map,playerID+1));
+            }
+         else
+        {
             do
             {
-                printf("player two place your penguin!");
-                scanf("%d %d", &x1, &y1);
+                printf("Enter coordinates of penguin and target coordinates:\n");
+                printf("penguin: ");
+                scanf("%d %d",&x,&y);
+                printf("\ntarget: ");
+                scanf("%d %d",&m,&n);
             }
-            while(!placement(x1,y1,mapP,sizeX,sizeY,2,players,numbOfPlayers));
+
+            while (!movement(x,y,m,n,map,playerID+1));
+
         }
     }
-    */
+       printMap(map);
+        printf("%d:%d\n",map->players[giveIndex(playerID,map->players,map->playerCount)].score,map->players[giveIndex(playerID+1,map->players,map->playerCount)].score);
+        if(!IsGameNotOver(map))
+        {
+            d=map->players[giveIndex(playerID,map->players,map->playerCount)].score>map->players[giveIndex(playerID+1,map->players,map->playerCount)].score?map->players[giveIndex(playerID,map->players,map->playerCount)].score:map->players[giveIndex(playerID+1,map->players,map->playerCount)].score;
+            printf("GAME OVER\n");
+            printf("WINNER:%d\n",d);
+            printf("SCORE:\n %d:%d",map->players[giveIndex(playerID,map->players,map->playerCount)].score,map->players[giveIndex(playerID+1,map->players,map->playerCount)].score);
+        }
+
+
+}
+
+
 }
 int movement(int x1, int y1, int x2, int y2, struct Map *map, int playerID)
 {

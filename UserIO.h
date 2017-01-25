@@ -15,3 +15,5 @@ int read_file(const char *filename, struct Player **players, struct Floe **mapPo
 void PrintMap(void *mapP, int sizeX, int sizeY);
 
 void BasicPrintMao(void *mapP, int sizeX, int sizeY, struct Player players[], int playerCount);
+
+void printMap(struct Map *map);
